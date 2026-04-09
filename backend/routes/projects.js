@@ -1,0 +1,199 @@
+const express = require('express');
+const router = express.Router();
+const Project = require('../models/Project');
+const multer = require('multer');
+const path = require('path');
+
+// Configure Multer for image uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Get all projects
+router.get('/', async (req, res) => {
+    try {
+        const projects = await Project.find();
+        res.json(projects);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get single project
+router.get('/:id', async (req, res) => {
+    try {
+        const project = await Project.findById(req.params.id);
+        if (!project) return res.status(404).json({ error: 'Project not found' });
+        res.json(project);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Add new project with images
+router.post('/', upload.array('images', 20), async (req, res) => { // Limit increased to 20
+    try {
+        const { name, clientId, status, startDate, endDate, deadline, budget, paymentDetails, services, notes, locationLink } = req.body;
+
+        let imageUrls = [];
+        if (req.files) {
+            imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+        }
+
+        let parsedServices = [];
+        if (services) {
+            try {
+                parsedServices = JSON.parse(services);
+            } catch (e) {
+                console.error("Error parsing services:", e);
+                parsedServices = [];
+            }
+        }
+
+        const project = new Project({
+            name,
+            clientId: clientId || null,
+            status,
+            startDate,
+            endDate,
+            deadline,
+            budget,
+            paymentDetails,
+            services: parsedServices,
+            notes,
+            locationLink,
+            images: imageUrls
+        });
+
+        await project.save();
+
+        // Optional: If client assigned, notify them
+        if (clientId) {
+            const Client = require('../models/Client');
+            await Client.findByIdAndUpdate(clientId, {
+                $push: {
+                    notifications: {
+                        message: `An Admin has assigned a new project to you: ${name}`
+                    }
+                }
+            });
+        }
+
+        res.status(201).json(project);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Update project
+router.put('/:id', upload.array('images', 20), async (req, res) => { // Limit increased to 20
+    try {
+        const { 
+            name, clientId, status, startDate, endDate, deadline, 
+            budget, paymentDetails, services, notes, existingImages,
+            totalBudget, totalPaid, remainingAmount, locationLink 
+        } = req.body;
+
+        let newImageUrls = [];
+        if (req.files) {
+            newImageUrls = req.files.map(file => `/uploads/${file.filename}`);
+        }
+
+        // Combine existing images (if any) with new ones. existingImages might be a string or array depending on frontend
+        let finalImages = [];
+        if (existingImages) {
+            finalImages = Array.isArray(existingImages) ? existingImages : [existingImages];
+        }
+        finalImages = [...finalImages, ...newImageUrls];
+
+        let parsedServices = [];
+        if (services) {
+            try {
+                parsedServices = JSON.parse(services);
+            } catch (e) {
+                console.error("Error parsing services:", e);
+                parsedServices = [];
+            }
+        }
+
+        const updateData = {
+            name,
+            clientId: clientId || null,
+            status,
+            startDate,
+            endDate,
+            deadline,
+            budget,
+            paymentDetails,
+            services: parsedServices,
+            notes,
+            images: finalImages,
+            totalBudget: Number(totalBudget),
+            totalPaid: Number(totalPaid),
+            remainingAmount: Number(remainingAmount),
+            locationLink
+        };
+
+        const project = await Project.findByIdAndUpdate(req.params.id, updateData, { returnDocument: 'after' });
+        if (!project) return res.status(404).json({ error: 'Project not found' });
+
+        res.json(project);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Delete project
+router.delete('/:id', async (req, res) => {
+    try {
+        const project = await Project.findByIdAndDelete(req.params.id);
+        if (!project) return res.status(404).json({ error: 'Project not found' });
+        res.json({ message: 'Project deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Add Progress Milestone
+router.put('/:id/progress', async (req, res) => {
+    try {
+        const { title, description, status } = req.body;
+
+        const project = await Project.findByIdAndUpdate(
+            req.params.id,
+            {
+                $push: {
+                    progress: { title, description, status }
+                }
+            },
+            { returnDocument: 'after' }
+        );
+
+        if (!project) return res.status(404).json({ error: 'Project not found' });
+
+        // Optional: Notify the client about progress update
+        if (project.clientId) {
+            const Client = require('../models/Client');
+            await Client.findByIdAndUpdate(project.clientId, {
+                $push: {
+                    notifications: {
+                        message: `Project update on "${project.name}": ${title}`
+                    }
+                }
+            });
+        }
+
+        res.json(project);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+module.exports = router;
