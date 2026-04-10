@@ -85,11 +85,6 @@ export default function Team() {
           <div className="ab-profile">
             {/* Avatar */}
             <div className="ab-avatar-wrap">
-              <img
-                src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?crop=faces&fit=crop&h=400&w=400"
-                alt="Swapnil Dhanvij"
-                className="ab-avatar"
-              />
               <div className="ab-avatar-name">Swapnil Dhanvij</div>
               <div className="ab-avatar-role">Civil Engineer & Founder</div>
             </div>
