@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { registerAdmin, loginAdmin, changePassword, universalLogin, sendAdminOtp, verifyAdminOtp, resetAdminPassword, getMe, updateMe } = require('../controllers/authController');
+const { loginAdmin, changePassword, universalLogin, sendAdminOtp, verifyAdminOtp, resetAdminPassword, getMe, updateMe } = require('../controllers/authController');
 const { verifyToken } = require('../middleware/authMiddleware'); // Replaced old 'protect'
 
 // @route   POST /api/auth/register
 // @desc    Register a new admin & get token
 // @access  Public
-router.post('/register', registerAdmin);
+// router.post('/register', registerAdmin); (Removed as per requirements)
+
 
 // @route   POST /api/auth/login
 // @desc    Authenticate admin & get token

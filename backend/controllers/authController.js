@@ -6,66 +6,8 @@ const jwt = require('jsonwebtoken');
 // @desc    Register a new Admin & get token
 // @route   POST /api/auth/register
 // @access  Public
-const registerAdmin = async (req, res) => {
-    try {
-        const { username, password, name, email, phone } = req.body;
+// registerAdmin removed as per requirements
 
-        // Validate request
-        if (!username || !password) {
-            return res.status(400).json({ message: 'Please provide username and password' });
-        }
-
-        // Check if admin already exists
-        const adminExists = await Admin.findOne({ username });
-        if (adminExists) {
-            return res.status(400).json({ message: 'Admin with this username already exists' });
-        }
-
-        // Hash the password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        // Create the admin user
-        const admin = await Admin.create({
-            username,
-            email,
-            name,
-            phone,
-            password: hashedPassword,
-        });
-
-        if (admin) {
-            // Generate JWT
-            const payload = {
-                user: {
-                    id: admin._id,
-                    role: admin.role,
-                },
-            };
-
-            const token = jwt.sign(payload, process.env.JWT_SECRET, {
-                expiresIn: '1d', // Token expires in 1 day
-            });
-
-            res.status(201).json({
-                message: 'Admin registered successfully',
-                token,
-                admin: {
-                    id: admin._id,
-                    username: admin.username,
-                    name: admin.name,
-                    email: admin.email,
-                    phone: admin.phone,
-                }
-            });
-        } else {
-            res.status(400).json({ message: 'Invalid admin data' });
-        }
-    } catch (error) {
-        console.error('Registration Error:', error);
-        res.status(500).json({ message: 'Server error during registration' });
-    }
-};
 
 // @desc    Auth Admin & get token
 // @route   POST /api/auth/login
@@ -79,21 +21,20 @@ const loginAdmin = async (req, res) => {
             return res.status(400).json({ message: 'Please provide username and password' });
         }
 
-        // Check for admin user
-        const admin = await Admin.findOne({ 
-            $or: [
-                { username: username.trim() },
-                { email: username.toLowerCase().trim() }
-            ]
-        });
-        if (!admin) {
+        const fixedEmail = "swapnildhanvij@gmail.com";
+        const fixedPassword = "swapnil@60+";
+        const identifier = username.toLowerCase().trim();
+
+        // Check against fixed credentials
+        if (identifier !== fixedEmail || password !== fixedPassword) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Check if password matches
-        const isMatch = await bcrypt.compare(password, admin.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+        // Fetch the admin record from DB to get the actual ID and other details
+        const admin = await Admin.findOne({ email: fixedEmail });
+        
+        if (!admin) {
+            return res.status(401).json({ message: 'Admin account not found in database' });
         }
 
         // Generate JWT
@@ -105,7 +46,7 @@ const loginAdmin = async (req, res) => {
         };
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: '1d', // Token expires in 1 day
+            expiresIn: '1d', 
         });
 
         res.status(200).json({
@@ -175,16 +116,14 @@ const universalLogin = async (req, res) => {
             return res.status(400).json({ message: 'Please provide credentials' });
         }
 
-        // 1. Check Admin Collection
-        const admin = await Admin.findOne({ 
-            $or: [
-                { username: identifier.trim() },
-                { email: identifier.toLowerCase().trim() }
-            ]
-        });
-        if (admin) {
-            const isMatch = await bcrypt.compare(password, admin.password);
-            if (isMatch) {
+        // 1. Check Admin Credentials (Fixed)
+        const fixedEmail = "swapnildhanvij@gmail.com";
+        const fixedPassword = "swapnil@60+";
+        const inputIdentifier = identifier.toLowerCase().trim();
+
+        if (inputIdentifier === fixedEmail && password === fixedPassword) {
+            const admin = await Admin.findOne({ email: fixedEmail });
+            if (admin) {
                 const payload = { user: { id: admin._id, role: admin.role } };
                 const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
                 return res.status(200).json({
@@ -201,6 +140,7 @@ const universalLogin = async (req, res) => {
                 });
             }
         }
+
 
         // 2. Check Client Collection (if not Admin)
         const client = await Client.findOne({ 
@@ -413,7 +353,6 @@ const updateMe = async (req, res) => {
 };
 
 module.exports = {
-    registerAdmin,
     loginAdmin,
     changePassword,
     universalLogin,

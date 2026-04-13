@@ -6,7 +6,8 @@ import LoginPage from "./homepage/Login/Login";
 import LoginChoice from "./homepage/Login/LoginChoice";
 import Homepage1 from "./homepage/Home/Homepage1";
 import Projects from "./homepage/Projects/Projects"; // Import Projects page
-import SignUp from "./homepage/SignUp/SignUp";
+// import SignUp from "./homepage/SignUp/SignUp"; (Removed Admin Signup)
+
 import Services from "./homepage/Services/Services";
 import AboutPage from "./homepage/About/AboutPage";
 

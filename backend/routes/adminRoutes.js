@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { registerAdmin, loginAdmin } = require('../controllers/authController');
+const { loginAdmin } = require('../controllers/authController');
 const { verifyToken, authorizeRoles } = require('../middleware/authMiddleware');
 
 // @route   POST /api/admin/signup
-router.post('/signup', registerAdmin);
+// router.post('/signup', registerAdmin); removed as per requirement
+
 
 // @route   POST /api/admin/login
 router.post('/login', loginAdmin);
