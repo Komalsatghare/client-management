@@ -57,7 +57,7 @@ function Navbar() {
       case "services":      navigate("/services");        break;
       case "about":         navigate("/about");           break;
       case "client-signup": navigate("/client-signup");   break;
-      case "admin-signup":  navigate("/admin-signup");    break;
+
       case "signup":        navigate("/signup");          break;
       case "client-login":  navigate("/client-login");    break;
       case "admin-login":   navigate("/login");           break;
@@ -375,36 +375,13 @@ function Navbar() {
             ) : (
               <>
                 {/* Sign Up Dropdown */}
-                <div className="nb-dropdown-wrap" ref={signUpRef}>
-                  <button
-                    className="nb-signup"
-                    onClick={() => setSignUpDropdownOpen((p) => !p)}
-                    aria-haspopup="true"
-                    aria-expanded={signUpDropdownOpen}
-                  >
-                    Sign Up
-                    <i className={`nb-chevron${signUpDropdownOpen ? " open" : ""}`}>▾</i>
-                  </button>
-                  {signUpDropdownOpen && (
-                    <div className="nb-dropdown" role="menu">
-                      <div className="nb-dropdown-head">Choose Role</div>
-                      <div className="nb-dropdown-item" onClick={() => handleNavigate("client-signup")}>
-                        <div className="nb-di-icon client">👤</div>
-                        <div>
-                          <div className="nb-di-title">Create Client Account</div>
-                          <div className="nb-di-sub">Sign up for projects</div>
-                        </div>
-                      </div>
-                      <div className="nb-dropdown-item" onClick={() => handleNavigate("admin-signup")}>
-                        <div className="nb-di-icon admin">🛡️</div>
-                        <div>
-                          <div className="nb-di-title">Create Admin Account</div>
-                          <div className="nb-di-sub">Manage portal & clients</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <button
+                  className="nb-signup"
+                  onClick={() => handleNavigate("client-signup")}
+                >
+                  Sign Up
+                </button>
+
                 {/* Sign In Dropdown */}
                 <div className="nb-dropdown-wrap" ref={dropdownRef}>
                   <button
@@ -497,10 +474,7 @@ function Navbar() {
                 style={{ background: "#10b981", boxShadow: "0 6px 20px rgba(16,185,129,0.35)" }}>
                 Create Client Account
               </button>
-              <button className="nb-mobile-signin" onClick={() => handleNavigate("admin-signup")}
-                style={{ marginTop: 8, background: "linear-gradient(135deg,#4f46e5,#3730a3)", boxShadow: "0 6px 20px rgba(79,70,229,0.35)" }}>
-                Create Admin Account
-              </button>
+
             </>
           )}
         </div>

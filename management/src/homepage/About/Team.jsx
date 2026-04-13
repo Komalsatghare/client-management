@@ -85,6 +85,7 @@ export default function Team() {
           <div className="ab-profile">
             {/* Avatar */}
             <div className="ab-avatar-wrap">
+              <img src="/images/swapnil.jpeg" alt="Swapnil Dhanvij" className="ab-avatar" />
               <div className="ab-avatar-name">Swapnil Dhanvij</div>
               <div className="ab-avatar-role">Civil Engineer & Founder</div>
             </div>

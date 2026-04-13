@@ -5,7 +5,8 @@ import DashboardLayout from "./Dashboard/DashboardLayout";
 import LoginPage from "./Login/LoginPage";
 import Homepage1 from "./homepage/Home/Homepage1";
 import Projects from "./homepage/Projects/Projects"; // Import Projects page
-import SignUp from "./homepage/Signup/SignUp";
+// import SignUp from "./homepage/Signup/SignUp"; (Removed Admin Signup)
+
 import Services from "./homepage/Services/Services";
 import AboutPage from "./homepage/About/AboutPage";
 
@@ -30,7 +31,7 @@ function App() {
 
         {/* Auth Routes */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/admin-signup" element={<SignUp />} />
+
         <Route path="/client-signup" element={<ClientSignup />} />
         <Route path="/signup" element={<ClientSignup />} />
         <Route path="/client-login" element={<ClientLogin />} />
