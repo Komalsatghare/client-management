@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
+
 import { useLanguage } from "../context/LanguageContext";
 
 export default function UploadRequirementsModal({ isOpen, onClose, requestId, onSuccess }) {
@@ -25,7 +27,7 @@ export default function UploadRequirementsModal({ isOpen, onClose, requestId, on
             formData.append("requirementsDescription", description);
             images.forEach(img => formData.append("images", img));
 
-            await axios.post(`http://localhost:5000/api/project-requests/${requestId}/requirements`, formData, {
+            await axios.post(`${API_BASE_URL}/api/project-requests/${requestId}/requirements`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data"

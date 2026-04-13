@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { User, Eye, EyeOff, Lock, LogIn } from "lucide-react";
 import ForgotPasswordModal from "../components/ForgotPasswordModal";
 import { useLanguage } from "../context/LanguageContext";
+import { API_BASE_URL } from "../config";
+
 import LanguageSwitcher from "../components/LanguageSwitcher";
 
 export default function LoginPage() {
@@ -21,7 +23,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/universal-login", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/universal-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ identifier, password }),
@@ -345,7 +347,7 @@ export default function LoginPage() {
       <ForgotPasswordModal
         isOpen={showForgot}
         onClose={() => setShowForgot(false)}
-        apiBase="http://localhost:5000/api/auth"
+        apiBase={`${API_BASE_URL}/api/auth`}
         accentColor="#10b981"
       />
     </>

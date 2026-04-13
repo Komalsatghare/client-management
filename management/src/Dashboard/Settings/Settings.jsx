@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 import '../dashboard.css';
+
 
 const Settings = () => {
     // ─── Change Password ─────────────────────────────────────────────
@@ -21,7 +23,7 @@ const Settings = () => {
     useEffect(() => {
         const fetchAdminEmail = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/admin/dashboard', authHeader);
+                const res = await axios.get(`${API_BASE_URL}/api/admin/dashboard`, authHeader);
                 // Try to get email from a profile endpoint if available
             } catch {}
         };
@@ -44,7 +46,7 @@ const Settings = () => {
         setLoading(true);
         try {
             await axios.post(
-                'http://localhost:5000/api/auth/change-password',
+                `${API_BASE_URL}/api/auth/change-password`,
                 { oldPassword: form.oldPassword, newPassword: form.newPassword },
                 authHeader
             );
@@ -66,7 +68,7 @@ const Settings = () => {
         setEmailMsg(null);
         try {
             const res = await axios.patch(
-                'http://localhost:5000/api/admin/update-email',
+                `${API_BASE_URL}/api/admin/update-email`,
                 { email: recoveryEmail.trim() },
                 authHeader
             );

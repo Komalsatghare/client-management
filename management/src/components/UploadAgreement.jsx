@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
+
 import { FileText, UploadCloud, Download, Trash2, Shield, User, PenTool, CheckCircle, Eye, X, Save, Edit3, AlertCircle, Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, AlignJustify, Type, Palette, RotateCcw, Monitor } from 'lucide-react';
 import mammoth from 'mammoth';
 import { useLanguage } from '../context/LanguageContext';
@@ -58,7 +60,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
 
     const fetchAgreements = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/agreements');
+            const res = await axios.get(`${API_BASE_URL}/api/agreements`);
             setAgreements(res.data);
         } catch (err) {
             console.error('Error fetching agreements', err);
@@ -83,7 +85,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         formData.append('uploadedByName', uploadedByName || 'Unknown');
 
         try {
-            await axios.post('http://localhost:5000/api/agreements/upload', formData, {
+            await axios.post(`${API_BASE_URL}/api/agreements/upload`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setSuccess(t('agreement_upload_success') || 'Agreement uploaded successfully!');
@@ -170,7 +172,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         setSuccess('');
 
         try {
-            await axios.post('http://localhost:5000/api/agreements/digital', {
+            await axios.post(`${API_BASE_URL}/api/agreements/digital`, {
                 projectName: digitalProjectName,
                 uploadedByRole,
                 uploadedByName: digitalClientName || uploadedByName || 'Unknown',
@@ -211,7 +213,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         if (!selectedContract) return;
         setLoading(true);
         try {
-            await axios.put(`http://localhost:5000/api/agreements/${selectedContract._id}`, {
+            await axios.put(`${API_BASE_URL}/api/agreements/${selectedContract._id}`, {
                 content: editedContent,
                 lastEditedBy: uploadedByName
             });
@@ -231,7 +233,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
     const handleSign = async (id, e) => {
         if (e) e.stopPropagation();
         try {
-            await axios.put(`http://localhost:5000/api/agreements/${id}/sign`, {
+            await axios.put(`${API_BASE_URL}/api/agreements/${id}/sign`, {
                 role: uploadedByRole // 'admin' or 'client'
             });
             alert("Signed successfully!");
@@ -247,7 +249,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         if (e) e.stopPropagation();
         if (!window.confirm("Are you sure you want to delete this agreement?")) return;
         try {
-            await axios.delete(`http://localhost:5000/api/agreements/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/agreements/${id}`);
             fetchAgreements();
         } catch (err) {
             console.error('Delete Error', err);
@@ -270,7 +272,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         if (contract.type === 'manual' && isWord && isLocal && contract.fileUrl) {
             setWordPreviewLoading(true);
             try {
-                const fileUrl = `http://localhost:5000${contract.fileUrl}`;
+                const fileUrl = `${API_BASE_URL}${contract.fileUrl}`;
                 const response = await axios.get(fileUrl, { responseType: 'arraybuffer' });
                 const result = await mammoth.convertToHtml({ arrayBuffer: response.data });
                 setWordPreviewHtml(result.value);
@@ -623,7 +625,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                                 <div style={{ display: 'flex', gap: '10px' }}>
                                                     <button onClick={() => openEditModal(agr)} style={{ padding: '6px 12px', background: 'rgba(255, 255, 255, 0.05)', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}><Eye size={14} /> View</button>
                                                     {agr.fileUrl && (
-                                                        <a href={`http://localhost:5000${agr.fileUrl}`} target="_blank" rel="noreferrer" download style={{ textDecoration: 'none' }}>
+                                                        <a href={`${API_BASE_URL}${agr.fileUrl}`} target="_blank" rel="noreferrer" download style={{ textDecoration: 'none' }}>
                                                             <button style={{ padding: '6px 12px', background: 'rgba(255, 255, 255, 0.05)', color: '#60a5fa', border: '1px solid rgba(96, 165, 250, 0.2)', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}><Download size={14} /> Download</button>
                                                         </a>
                                                     )}
@@ -734,7 +736,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                             selectedContract.type === 'manual' ? (
                                 (() => {
                                     const mime = selectedContract.mimetype || '';
-                                    const fileUrl = `http://localhost:5000${selectedContract.fileUrl}`;
+                                    const fileUrl = `${API_BASE_URL}${selectedContract.fileUrl}`;
                                     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
                                     
                                     if (mime.startsWith('image/')) {
@@ -830,7 +832,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
 
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 {selectedContract.fileUrl && !isEditing && (
-                                    <a href={`http://localhost:5000${selectedContract.fileUrl}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }} download>
+                                    <a href={`${API_BASE_URL}${selectedContract.fileUrl}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }} download>
                                         <button style={{ padding: '8px 16px', background: 'rgba(96, 165, 250, 0.1)', color: '#60a5fa', border: '1px solid rgba(96, 165, 250, 0.2)', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600 }}>
                                             <Download size={16} /> Download
                                         </button>

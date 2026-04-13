@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Lock, Phone, UserPlus, Eye, EyeOff } from "lucide-react";
+import { API_BASE_URL } from "../../config";
+
 
 export default function ClientSignup() {
     const navigate = useNavigate();
@@ -26,7 +28,7 @@ export default function ClientSignup() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:5000/api/client/signup", {
+            const response = await fetch(`${API_BASE_URL}/api/client/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),

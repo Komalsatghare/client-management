@@ -5,6 +5,8 @@ import ProjectsGrid from "./ProjectsGrid";
 import ProjectDetails from "./ProjectDetails";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
+import { API_BASE_URL } from "../../config";
+
 
 function Projects() {
   const [category, setCategory] = useState("All");
@@ -18,7 +20,7 @@ function Projects() {
     const fetchProjects = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:5000/api/public-projects");
+        const res = await fetch(`${API_BASE_URL}/api/public-projects`);
         if (!res.ok) throw new Error("Failed to fetch projects");
         const data = await res.json();
         setProjectsData(data);

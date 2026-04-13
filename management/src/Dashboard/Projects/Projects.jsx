@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Folder, Calendar, DollarSign, FileText, Image as ImageIcon, Eye, Edit2, Trash2 } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 import '../dashboard.css';
+
 
 const Projects = ({ initialFilter = 'All' }) => {
     const [projects, setProjects] = useState([]);
@@ -43,7 +45,7 @@ const Projects = ({ initialFilter = 'All' }) => {
     const fetchProjects = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get('http://localhost:5000/api/projects');
+            const response = await axios.get(`${API_BASE_URL}/api/projects`);
             setProjects(response.data);
             setIsLoading(false);
         } catch (err) {
@@ -175,11 +177,11 @@ const Projects = ({ initialFilter = 'All' }) => {
 
         try {
             if (isEditing) {
-                await axios.put(`http://localhost:5000/api/projects/${currentProject._id}`, formData, {
+                await axios.put(`${API_BASE_URL}/api/projects/${currentProject._id}`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             } else {
-                await axios.post('http://localhost:5000/api/projects', formData, {
+                await axios.post(`${API_BASE_URL}/api/projects`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             }
@@ -194,7 +196,7 @@ const Projects = ({ initialFilter = 'All' }) => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this project?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/projects/${id}`);
+                await axios.delete(`${API_BASE_URL}/api/projects/${id}`);
                 fetchProjects();
             } catch (err) {
                 console.error('Error deleting project:', err);
@@ -220,7 +222,7 @@ const Projects = ({ initialFilter = 'All' }) => {
                 currentProject.images.forEach(img => formData.append('existingImages', img));
             }
 
-            await axios.put(`http://localhost:5000/api/projects/${currentProject._id}`, formData);
+            await axios.put(`${API_BASE_URL}/api/projects/${currentProject._id}`, formData);
             fetchProjects();
             alert('Quick updates saved!');
         } catch (err) {
@@ -440,10 +442,10 @@ const Projects = ({ initialFilter = 'All' }) => {
                                                     {currentProject.images.map((img, index) => (
                                                         <div key={`existing-${index}`} style={{ position: 'relative' }}>
                                                             <img
-                                                                src={`http://localhost:5000${img}`}
+                                                                src={`${API_BASE_URL}${img}`}
                                                                 alt="Existing"
                                                                 style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', cursor: 'pointer' }}
-                                                                onClick={() => openImageViewer(`http://localhost:5000${img}`)}
+                                                                onClick={() => openImageViewer(`${API_BASE_URL}${img}`)}
                                                             />
                                                             <button
                                                                 type="button"
@@ -575,10 +577,10 @@ const Projects = ({ initialFilter = 'All' }) => {
                                             currentProject.images.map((img, index) => (
                                                 <img
                                                     key={index}
-                                                    src={`http://localhost:5000${img}`}
+                                                    src={`${API_BASE_URL}${img}`}
                                                     alt={`Project ${index + 1}`}
                                                     style={{ width: '100%', borderRadius: '8px', border: '1px solid #eee', cursor: 'pointer' }}
-                                                    onClick={() => openImageViewer(`http://localhost:5000${img}`)}
+                                                    onClick={() => openImageViewer(`${API_BASE_URL}${img}`)}
                                                 />
                                             ))
                                         ) : (

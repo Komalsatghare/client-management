@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 import { Search, MapPin, Calendar, Clock, DollarSign, CheckCircle, Hourglass, TrendingUp, ChevronRight, Layout, Zap, ArrowRight, ShieldCheck, FileText, CheckCircle2, Circle, Building2, Activity } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -155,7 +156,7 @@ export default function TrackProject() {
             try {
                 if (!clientId) { setError("Client ID not found. Please log in again."); setLoading(false); return; }
                 const token = localStorage.getItem("authToken");
-                const res = await axios.get(`http://localhost:5000/api/clients/${clientId}/projects`, {
+                const res = await axios.get(`${API_BASE_URL}/api/clients/${clientId}/projects`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setProjects(res.data);

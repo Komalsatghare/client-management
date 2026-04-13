@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronDown, ChevronUp, Plus, CheckCircle, Clock, AlertCircle, Activity } from 'lucide-react';
+import { API_BASE_URL } from '../../config';
+
 
 /* ─── Inline Styles ─────────────────────────────────────────────────────────── */
 const css = `
@@ -222,7 +224,7 @@ const TrackProject = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('authToken');
-            const res = await axios.get('http://localhost:5000/api/projects', {
+            const res = await axios.get(`${API_BASE_URL}/api/projects`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setProjects(res.data);
@@ -246,7 +248,8 @@ const TrackProject = () => {
         try {
             const token = localStorage.getItem('authToken');
             await axios.put(
-                `http://localhost:5000/api/projects/${selectedProject._id}/progress`,
+                `${API_BASE_URL}/api/projects/${selectedProject._id}/progress`,
+
                 milestoneForm,
                 { headers: { Authorization: `Bearer ${token}` } }
             );

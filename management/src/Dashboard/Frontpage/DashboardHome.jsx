@@ -6,7 +6,9 @@ import {
   BarChart2, RefreshCw, ChevronRight, Mail
 } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 import './DashboardHome.css';
+
 
 /* ── animated counter hook ───────────────────────────── */
 const useCounter = (target, duration = 1400) => {
@@ -125,12 +127,13 @@ const DashboardHome = ({ onStatClick }) => {
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
       const [clientsRes, projectsRes, inquiriesRes, paymentsRes, requestsRes, feedbackRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/clients', config).catch(() => ({ data: [] })),
-        axios.get('http://localhost:5000/api/projects', config).catch(() => ({ data: [] })),
-        axios.get('http://localhost:5000/api/inquiries', config).catch(() => ({ data: [] })),
-        axios.get('http://localhost:5000/api/payments', config).catch(() => ({ data: [] })),
-        axios.get('http://localhost:5000/api/project-requests', config).catch(() => ({ data: [] })),
-        axios.get('http://localhost:5000/api/feedback', config).catch(() => ({ data: [] })),
+        axios.get(`${API_BASE_URL}/api/clients`, config).catch(() => ({ data: [] })),
+        axios.get(`${API_BASE_URL}/api/projects`, config).catch(() => ({ data: [] })),
+        axios.get(`${API_BASE_URL}/api/inquiries`, config).catch(() => ({ data: [] })),
+        axios.get(`${API_BASE_URL}/api/payments`, config).catch(() => ({ data: [] })),
+        axios.get(`${API_BASE_URL}/api/project-requests`, config).catch(() => ({ data: [] })),
+        axios.get(`${API_BASE_URL}/api/feedback`, config).catch(() => ({ data: [] })),
+
       ]);
 
       const clients = clientsRes.data || [];

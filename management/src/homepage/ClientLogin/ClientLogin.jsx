@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { User, Eye, EyeOff, Lock, LogIn } from "lucide-react";
 import ForgotPasswordModal from "../../components/ForgotPasswordModal";
+import { API_BASE_URL } from "../../config";
+
 
 export default function ClientLogin() {
     const navigate = useNavigate();
@@ -22,7 +24,7 @@ export default function ClientLogin() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:5000/api/client/login", {
+            const response = await fetch(`${API_BASE_URL}/api/client/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ identifier: identifier.trim(), password }),
@@ -317,7 +319,7 @@ export default function ClientLogin() {
             <ForgotPasswordModal
                 isOpen={showForgot}
                 onClose={() => setShowForgot(false)}
-                apiBase="http://localhost:5000/api/client"
+                apiBase={`${API_BASE_URL}/api/client`}
                 accentColor="#3b82f6"
             />
         </>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config';
+
 
 const Payments = () => {
     const [payments, setPayments] = useState([]);
@@ -9,7 +11,7 @@ const Payments = () => {
     const fetchPayments = async () => {
         try {
             const token = localStorage.getItem('authToken');
-            const res = await axios.get('http://localhost:5000/api/payments', {
+            const res = await axios.get(`${API_BASE_URL}/api/payments`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPayments(res.data);
@@ -26,7 +28,7 @@ const Payments = () => {
         if (!window.confirm("Are you sure you want to delete this payment? This will alter project budgets.")) return;
         try {
             const token = localStorage.getItem('authToken');
-            await axios.delete(`http://localhost:5000/api/payments/${id}`, {
+            await axios.delete(`${API_BASE_URL}/api/payments/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchPayments();
@@ -50,7 +52,7 @@ const Payments = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('authToken');
-            await axios.put(`http://localhost:5000/api/payments/${editData.id}`, {
+            await axios.put(`${API_BASE_URL}/api/payments/${editData.id}`, {
                 amount: editData.amount,
                 paymentMode: editData.paymentMode,
                 notes: editData.notes
@@ -102,7 +104,7 @@ const Payments = () => {
                                     <td style={{ padding: '12px' }}>{payment.paymentMode}</td>
                                     <td style={{ padding: '12px', textAlign: 'center' }}>
                                         <a
-                                            href={`http://localhost:5000${payment.billFile}`}
+                                            href={`${API_BASE_URL}${payment.billFile}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             style={{

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { CreditCard, Search, Download, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
+
 
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -110,7 +112,7 @@ export default function PaymentHistory() {
                 const clientDataStr = localStorage.getItem("clientData");
                 if (clientDataStr) {
                     const clientData = JSON.parse(clientDataStr);
-                    const res = await axios.get(`http://localhost:5000/api/payments/client/${clientData.id}`, {
+                    const res = await axios.get(`${API_BASE_URL}/api/payments/client/${clientData.id}`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     setPayments(res.data.payments);
@@ -200,7 +202,7 @@ export default function PaymentHistory() {
                                                 </span>
                                             </td>
                                             <td style={{ textAlign:"center" }}>
-                                                <a href={`http://localhost:5000${req.billFile}`} target="_blank" rel="noopener noreferrer" className="ph-dl-btn">
+                                                <a href={`${API_BASE_URL}${req.billFile}`} target="_blank" rel="noopener noreferrer" className="ph-dl-btn">
                                                     <Download size={13} /> PDF
                                                 </a>
                                             </td>

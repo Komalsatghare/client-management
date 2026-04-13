@@ -9,6 +9,7 @@ import UserProfile from "./profile/UserProfile";
 import ProjectRequests from "./ProjectRequests";
 import TrackProject from "./Projects/TrackProject";
 import Inquiries from "./Inquiries/Inquiries";
+import { API_BASE_URL } from "./config";
 import "./dashboard.css";
 import axios from 'axios';
 import UploadAgreement from '../components/UploadAgreement';
@@ -34,7 +35,7 @@ const DashboardLayout = () => {
     try {
       const token = localStorage.getItem("authToken");
       if (!token) return;
-      const res = await axios.get('http://localhost:5000/api/auth/me', {
+      const res = await axios.get(`${API_BASE_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data && res.data.user) {
@@ -191,7 +192,7 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/projects');
+      const res = await axios.get(`${API_BASE_URL}/api/projects`);
       setProjectsData(res.data);
     } catch (err) {
       console.error("Failed to fetch projects", err);
@@ -200,7 +201,7 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
 
   const fetchClients = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/clients');
+      const res = await axios.get(`${API_BASE_URL}/api/clients`);
       setClients(res.data);
     } catch (err) {
       console.error("Failed to fetch clients", err);
@@ -251,7 +252,7 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
   const handleDeleteProject = async (id) => {
     if (!window.confirm("Are you sure you want to delete this project?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/projects/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/projects/${id}`);
       fetchProjects();
     } catch (err) {
       console.error("Failed to delete project", err);
@@ -275,11 +276,11 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
         existingImagesList.forEach(imgUrl => {
           submitData.append('existingImages', imgUrl);
         });
-        await axios.put(`http://localhost:5000/api/projects/${editProjectId}`, submitData, {
+        await axios.put(`${API_BASE_URL}/api/projects/${editProjectId}`, submitData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       } else {
-        await axios.post('http://localhost:5000/api/projects', submitData, {
+        await axios.post(`${API_BASE_URL}/api/projects`, submitData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       }
@@ -473,7 +474,7 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
                     <div style={{ display:'flex', flexWrap:'wrap', gap:'8px' }}>
                       {existingImagesList.map((img,idx)=>(
                         <div key={`e-${idx}`} style={{ width:'56px', height:'56px', borderRadius:'6px', overflow:'hidden', border:'1px solid rgba(255,255,255,0.1)' }}>
-                          <img src={`http://localhost:5000${img}`} alt="existing" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                          <img src={`${API_BASE_URL}${img}`} alt="existing" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                         </div>
                       ))}
                     </div>
@@ -520,7 +521,7 @@ const ProjectDetails = ({ project, goBack }) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("authToken");
-      await axios.post('http://localhost:5000/api/payments', {
+      await axios.post(`${API_BASE_URL}/api/payments`, {
         projectId: project._id,
         clientId: project.clientId,
         amount: Number(paymentData.amount),
@@ -627,7 +628,7 @@ const ProjectDetails = ({ project, goBack }) => {
             <div style={{ display:'flex', flexWrap:'wrap', gap:'14px' }}>
               {project.images.map((img,index)=>(
                 <div key={index} style={{ width:'200px', height:'140px', borderRadius:'10px', overflow:'hidden', border:'1px solid rgba(255,255,255,0.08)', boxShadow:'0 4px 14px rgba(0,0,0,0.3)' }}>
-                  <img src={`http://localhost:5000${img}`} alt={`Project Img ${index+1}`} style={{ width:'100%', height:'100%', objectFit:'cover' }} onError={e=>{e.target.onerror=null;e.target.src='https://via.placeholder.com/200x140?text=No+Image'}} />
+                  <img src={`${API_BASE_URL}${img}`} alt={`Project Img ${index+1}`} style={{ width:'100%', height:'100%', objectFit:'cover' }} onError={e=>{e.target.onerror=null;e.target.src='https://via.placeholder.com/200x140?text=No+Image'}} />
                 </div>
               ))}
             </div>
@@ -707,7 +708,7 @@ const PublicProjectsManager = () => {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/public-projects');
+      const res = await axios.get(`${API_BASE_URL}/api/public-projects`);
       setProjects(res.data);
     } catch (err) {
       console.error('Failed to fetch public projects:', err);
@@ -746,7 +747,7 @@ const PublicProjectsManager = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to remove this project from the public showcase?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/public-projects/${id}`, authHeader);
+      await axios.delete(`${API_BASE_URL}/api/public-projects/${id}`, authHeader);
       fetchProjects();
     } catch (err) {
       console.error('Delete failed:', err);
@@ -760,9 +761,9 @@ const PublicProjectsManager = () => {
     setSaveFeedback('');
     try {
       if (isEditMode) {
-        await axios.put(`http://localhost:5000/api/public-projects/${editId}`, form, authHeader);
+        await axios.put(`${API_BASE_URL}/api/public-projects/${editId}`, form, authHeader);
       } else {
-        await axios.post('http://localhost:5000/api/public-projects', form, authHeader);
+        await axios.post(`${API_BASE_URL}/api/public-projects`, form, authHeader);
       }
       setSaveFeedback('✅ Saved successfully!');
       setTimeout(() => {

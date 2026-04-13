@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "./config";
+
 
 const ProtectedRoute = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -18,7 +20,7 @@ const ProtectedRoute = ({ children }) => {
 
             try {
                 // Verify the token by calling the actual protected dashboard route
-                const response = await fetch("http://localhost:5000/api/admin/dashboard", {
+                const response = await fetch(`${API_BASE_URL}/api/admin/dashboard`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

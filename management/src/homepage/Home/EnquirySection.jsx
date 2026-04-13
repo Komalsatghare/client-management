@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import bgImage from "../../assets/construction-bg.png";
+import { API_BASE_URL } from "../../config";
+
 
 const services = [
   "Residential Construction",
@@ -35,7 +37,7 @@ function EnquirySection() {
     setIsSubmitting(true);
     setSubmitStatus(null);
     try {
-      const response = await fetch("http://localhost:5000/api/inquiries", {
+      const response = await fetch(`${API_BASE_URL}/api/inquiries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -4,6 +4,8 @@ import {
     Mic, MicOff, Video, VideoOff, PhoneOff, Users, MessageSquare,
     Clock, Wifi, Shield, ExternalLink, CheckCircle
 } from "lucide-react";
+import { API_BASE_URL } from "../config";
+
 
 /* ─────────────────────────────────────
    Video Room — Zoom Meeting Launcher
@@ -83,7 +85,7 @@ export default function VideoRoom() {
     const handleJoinZoom = () => {
         // Redirect to the enhanced EJS join hub which handles 'OS not supported' issues
         // and provides direct App vs Browser options.
-        const hubUrl = `http://localhost:5000/api/zoom/join/${roomId.replace('req-', '')}`;
+        const hubUrl = `${API_BASE_URL}/api/zoom/join/${roomId.replace('req-', '')}`;
         window.open(hubUrl, "_blank");
         setJoinedZoom(true);
     };

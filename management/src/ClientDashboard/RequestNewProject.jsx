@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { FolderGit2, DollarSign, Clock, Plus, AlertCircle, Video,
          Trash2, CheckCircle, Hourglass, CalendarCheck, Zap, XCircle } from "lucide-react";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
+
 import { useNavigate } from "react-router-dom";
 import RequestProjectModal from "./RequestProjectModal";
 import { useLanguage } from "../context/LanguageContext";
@@ -257,7 +259,7 @@ export default function RequestNewProject() {
     const fetchRequests = async () => {
         try {
             const token = localStorage.getItem("clientAuthToken");
-            const res = await axios.get("http://localhost:5000/api/project-requests/my-requests", {
+            const res = await axios.get(`${API_BASE_URL}/api/project-requests/my-requests`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setRequests(res.data);
@@ -274,7 +276,7 @@ export default function RequestNewProject() {
         setActionLoading(id);
         try {
             const token = localStorage.getItem("clientAuthToken");
-            await axios.put(`http://localhost:5000/api/project-requests/${id}/request-meeting`, {}, {
+            await axios.put(`${API_BASE_URL}/api/project-requests/${id}/request-meeting`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchRequests();
@@ -290,7 +292,7 @@ export default function RequestNewProject() {
         setActionLoading(id + "-del");
         try {
             const token = localStorage.getItem("clientAuthToken");
-            await axios.delete(`http://localhost:5000/api/project-requests/${id}/my-request`, {
+            await axios.delete(`${API_BASE_URL}/api/project-requests/${id}/my-request`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchRequests();

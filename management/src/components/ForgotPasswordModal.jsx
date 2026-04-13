@@ -6,7 +6,7 @@ import { Mail, ShieldCheck, Lock, Eye, EyeOff, X, ArrowLeft, RefreshCw } from "l
  * Props:
  *   isOpen       {boolean}  - controls visibility
  *   onClose      {function} - called to close the modal
- *   apiBase      {string}   - e.g. "http://localhost:5000/api/auth" or "http://localhost:5000/api/client"
+ *   apiBase      {string}   - e.g. "https://client-management-p4be.onrender.com/api/auth" or "https://client-management-p4be.onrender.com/api/client"
  *   accentColor  {string}   - e.g. "#10b981" (admin green) or "#3b82f6" (client blue)
  */
 export default function ForgotPasswordModal({ isOpen, onClose, apiBase, accentColor = "#10b981" }) {

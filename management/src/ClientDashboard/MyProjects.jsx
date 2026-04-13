@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
+
 import { FolderGit2, Calendar, DollarSign, Clock, AlertCircle } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { useStatusCfg } from "./RequestNewProject";
@@ -17,7 +19,7 @@ export default function MyProjects() {
     const fetchProjects = async () => {
         try {
             const token = localStorage.getItem('authToken');
-            const res = await axios.get('http://localhost:5000/api/projects/my-projects', {
+            const res = await axios.get(`${API_BASE_URL}/api/projects/my-projects`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setProjects(res.data);

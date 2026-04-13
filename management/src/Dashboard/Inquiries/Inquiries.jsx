@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../../config";
+
 import { Search, MessageSquare, Trash2, CheckCircle, Clock, Mail, Phone, Tag, Send, X, Inbox } from "lucide-react";
 
 /* ─── CSS ───────────────────────────────────────────────────────────────────── */
@@ -140,7 +142,7 @@ const Inquiries = () => {
 
     const fetchInquiries = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/inquiries");
+            const res = await axios.get(`${API_BASE_URL}/api/inquiries`);
             setInquiries(res.data);
         } catch (err) {
             console.error("Failed to fetch inquiries:", err);
@@ -152,7 +154,7 @@ const Inquiries = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Delete this inquiry?")) return;
         try {
-            await axios.delete(`http://localhost:5000/api/inquiries/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/inquiries/${id}`);
             fetchInquiries();
         } catch {
             alert("Failed to delete inquiry.");
@@ -169,7 +171,7 @@ const Inquiries = () => {
         if (!text) { alert("Please enter a reply message."); return; }
         setSending(inquiry._id);
         try {
-            await axios.put(`http://localhost:5000/api/inquiries/${inquiry._id}/reply`, { reply: text });
+            await axios.put(`${API_BASE_URL}/api/inquiries/${inquiry._id}/reply`, { reply: text });
             fetchInquiries();
             setReplyOpen(prev => ({ ...prev, [inquiry._id]: false }));
         } catch {

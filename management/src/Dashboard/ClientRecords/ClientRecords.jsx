@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Plus, Edit2, Trash2, X } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 import '../dashboard.css';
+
 
 const ClientRecords = () => {
     const [clients, setClients] = useState([]);
@@ -22,7 +24,7 @@ const ClientRecords = () => {
     const fetchClients = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get('http://localhost:5000/api/clients');
+            const response = await axios.get(`${API_BASE_URL}/api/clients`);
             setClients(response.data);
             setIsLoading(false);
         } catch (err) {
@@ -62,11 +64,11 @@ const ClientRecords = () => {
                     throw new Error("Client ID is missing for update");
                 }
                 const { _id, createdAt, updatedAt, __v, ...updateData } = currentClient; // Remove immutable fields
-                const response = await axios.put(`http://localhost:5000/api/clients/${currentClient._id}`, updateData);
+                const response = await axios.put(`${API_BASE_URL}/api/clients/${currentClient._id}`, updateData);
                 setClients(clients.map(c => c._id === currentClient._id ? response.data : c));
             } else {
                 // Add new client
-                const response = await axios.post('http://localhost:5000/api/clients', currentClient);
+                const response = await axios.post(`${API_BASE_URL}/api/clients`, currentClient);
                 setClients([...clients, response.data]);
             }
             closeModal();
@@ -83,7 +85,7 @@ const ClientRecords = () => {
         }
         if (window.confirm('Are you sure you want to delete this client?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/clients/${id}`);
+                await axios.delete(`${API_BASE_URL}/api/clients/${id}`);
                 setClients(clients.filter(c => c._id !== id));
             } catch (err) {
                 console.error('Error deleting client:', err);

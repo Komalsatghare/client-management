@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
+
 import { useLanguage } from "../context/LanguageContext";
 
 export default function RescheduleModal({ isOpen, onClose, requestId, onSuccess }) {
@@ -16,7 +18,7 @@ export default function RescheduleModal({ isOpen, onClose, requestId, onSuccess 
         setError("");
         try {
             const token = localStorage.getItem("clientAuthToken");
-            await axios.put(`http://localhost:5000/api/project-requests/${requestId}/reschedule-request`,
+            await axios.put(`${API_BASE_URL}/api/project-requests/${requestId}/reschedule-request`,
                 { rescheduleReason: reason },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

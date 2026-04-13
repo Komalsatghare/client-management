@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
+import { API_BASE_URL } from "../../config";
+
 
 const ACCENT = "#d62b1b";
-const API = "http://localhost:5000/api/feedback";
+const API = `${API_BASE_URL}/api/feedback`;
 
 function StarRating({ value, onChange, readonly = false, size = 22 }) {
   const [hovered, setHovered] = useState(0);
