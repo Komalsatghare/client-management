@@ -264,7 +264,7 @@ const ProjectDetailsView = ({ project, goBack, onImageClick }) => {
                     src={`http://localhost:5000${img}`}
                     alt={`Project Img ${index + 1}`}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/200x150?text=Image+Not+Found' }}
+                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x300/1e293b/94a3b8?text=Image+Not+Found'; }}
                   />
                   <style>{`
                     .project-img-thumb:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
