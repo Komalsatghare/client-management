@@ -9,6 +9,7 @@ import {
     User, FileText, Video, Trash2, Clock, DollarSign, Edit3,
     Briefcase, Bell, ChevronDown, ChevronUp, Zap, PenTool
 } from "lucide-react";
+import AgreementModal from "./components/AgreementModal";
 
 /* ─── Inline CSS ─────────────────────────────────────────────────────────────── */
 const styles = `
@@ -502,6 +503,7 @@ export default function ProjectRequests() {
 
     const [rejectState, setRejectState] = useState({ id: null, message: '' });
     const [scheduleForm, setScheduleForm] = useState({ id: null, date: '', time: '', location: '', message: '', dateTime: '' });
+    const [agreementModal, setAgreementModal] = useState({ isOpen: false, req: null });
 
     const fetchRequests = async () => {
         try {
@@ -665,20 +667,13 @@ export default function ProjectRequests() {
         }
     };
 
-    const handleGenerateAgreement = async (req) => {
-        if (!window.confirm(`Generate digital agreement for "${req.title}"?`)) return;
-        
-        const agreementNumber = window.prompt("Enter Agreement Number:", "");
-        if (agreementNumber === null) return; // User cancelled
-        
-        const clientAddress = window.prompt("Enter Client Address:", "");
-        if (clientAddress === null) return; // User cancelled
-        
-        const meetingPlace = window.prompt("Enter Place of Meeting:", "");
-        if (meetingPlace === null) return; // User cancelled
-        
-        const plotDetails = window.prompt("Enter Plot Survey Number:", "");
-        if (plotDetails === null) return; // User cancelled
+    const handleGenerateAgreement = (req) => {
+        setAgreementModal({ isOpen: true, req });
+    };
+
+    const confirmGenerateAgreement = async (formData) => {
+        const req = agreementModal.req;
+        if (!req) return;
 
         try {
             await axios.post(`${API_BASE_URL}/api/agreements/digital`, {
@@ -689,11 +684,13 @@ export default function ProjectRequests() {
                 totalCost: `₹${req.budget}`,
                 location: req.location || 'Wardha',
                 area: '800 Sq.Ft (Approx)',
-                agreementNumber: agreementNumber || "TBD",
-                clientAddress: clientAddress || "",
-                meetingPlace: meetingPlace || "Office",
-                plotDetails: plotDetails || "181"
+                agreementNumber: formData.agreementNumber || "TBD",
+                clientAddress: formData.clientAddress || "",
+                meetingPlace: formData.meetingPlace || "Office",
+                plotDetails: formData.plotDetails || "181"
             }, { headers: { Authorization: `Bearer ${getToken()}` } });
+            
+            setAgreementModal({ isOpen: false, req: null });
             alert('Agreement generated safely! Please navigate to your Agreements tab to review and sign.');
         } catch (e) {
             console.error('Error generating agreement', e);
@@ -1031,6 +1028,12 @@ export default function ProjectRequests() {
                         })}
                     </div>
                 )}
+                <AgreementModal 
+                    isOpen={agreementModal.isOpen}
+                    onClose={() => setAgreementModal({ isOpen: false, req: null })}
+                    onConfirm={confirmGenerateAgreement}
+                    projectTitle={agreementModal.req?.title}
+                />
             </div>
         </>
     );

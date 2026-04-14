@@ -14,10 +14,17 @@ export default function ClientDashboardLayout() {
     const clientEmail = localStorage.getItem("clientEmail") || "";
     const clientPhone = localStorage.getItem("clientPhone") || "";
 
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Default open on desktop
     const [activeSection, setActiveSection] = useState("Request New Project");
     const [profileOpen, setProfileOpen] = useState(false);
     const profileRef = useRef(null);
+
+    // Initial responsive check
+    useEffect(() => {
+        if (window.innerWidth < 768) {
+            setIsSidebarOpen(false);
+        }
+    }, []);
 
     /* Close on outside click */
     useEffect(() => {
@@ -49,17 +56,20 @@ export default function ClientDashboardLayout() {
     };
 
     return (
-        <div style={{ minHeight: "100vh", background: "#070d1a", fontFamily: "'Inter', sans-serif", display: "flex" }}>
+        <div style={{ minHeight: "100vh", background: "#070d1a", fontFamily: "'Inter', sans-serif", display: "flex", overflowX: "hidden" }}>
             
-            <ClientSidebar 
-                activeSection={activeSection} 
-                setActiveSection={(section) => {
-                    setActiveSection(section);
-                    setIsSidebarOpen(false);
-                }} 
-            />
+            <aside className={`client-sidebar-container ${isSidebarOpen ? 'open' : ''}`}>
+                <ClientSidebar 
+                    activeSection={activeSection} 
+                    setActiveSection={(section) => {
+                        setActiveSection(section);
+                        if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                    }} 
+                    onClose={() => setIsSidebarOpen(false)}
+                />
+            </aside>
 
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+            <div className={`client-main-wrapper ${isSidebarOpen ? 'with-sidebar' : 'full-width'}`}>
                 {/* ── Ambient background glow ── */}
                 <style>{`
                     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -119,7 +129,12 @@ export default function ClientDashboardLayout() {
                     }}>
                         {/* Brand + Hamburger */}
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                            <button className="cdl-hamburger" onClick={() => setIsSidebarOpen(true)}>
+                            {(window.innerWidth >= 768 && !isSidebarOpen) && (
+                                <button className="cdl-hamburger" onClick={() => setIsSidebarOpen(true)} style={{ display:"flex", marginRight:"8px" }}>
+                                    <Menu size={20} />
+                                </button>
+                            )}
+                            <button className="cdl-hamburger" onClick={() => setIsSidebarOpen(true)} style={window.innerWidth >= 768 ? {display:"none"} : {display:"flex"}}>
                                 <Menu size={20} />
                             </button>
                             <div style={{
@@ -134,7 +149,7 @@ export default function ClientDashboardLayout() {
                                 <p style={{ margin: 0, fontWeight: 800, fontSize: "15px", lineHeight: 1, background: "linear-gradient(135deg,#60a5fa,#a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                                     {t('client_portal')}
                                 </p>
-                                <p className="hidden-mobile" style={{ margin: 0, fontSize: "11px", color: "#475569", marginTop: "2px" }}>
+                                <p className="hidden-mobile" style={{ margin: 0, fontSize: "11px", color: "#64748b", marginTop: "2px", fontWeight: 600 }}>
                                     Civil Engineering Services
                                 </p>
                             </div>
@@ -226,13 +241,13 @@ export default function ClientDashboardLayout() {
                             {activeSection}
                         </div>
 
-                        <p style={{ margin: "0 0 6px", fontSize: "14px", color: "rgba(255,255,255,0.6)", fontWeight: 500 }}>
-                            {t('welcome_back')}, <strong style={{ color: "rgba(255,255,255,0.9)" }}>{clientName}</strong> 👋
+                        <p style={{ margin: "0 0 6px", fontSize: "14px", color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
+                            {t('welcome_back')}, <strong style={{ color: "rgba(255,255,255,0.95)" }}>{clientName}</strong> 👋
                         </p>
                         <h1 className="cdl-hero-title" style={{ margin: "0 0 10px", fontSize: "30px", fontWeight: 900, color: "white", letterSpacing: "-.02em" }}>
                             {t(activeSection.toLowerCase().replace(/\s+/g, '_')) || activeSection}
                         </h1>
-                        <p style={{ margin: 0, fontSize: "15px", color: "rgba(255,255,255,0.6)", maxWidth: "480px", lineHeight: 1.65 }}>
+                        <p style={{ margin: 0, fontSize: "15px", color: "#cbd5e1", maxWidth: "480px", lineHeight: 1.65, fontWeight: 500 }}>
                             {t('submit_proposal_desc')}
                         </p>
 

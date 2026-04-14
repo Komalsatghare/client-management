@@ -3,6 +3,7 @@ const router = express.Router();
 const Project = require('../models/Project');
 const multer = require('multer');
 const path = require('path');
+const { verifyToken, authorizeRoles } = require('../middleware/authMiddleware');
 
 // Configure Multer for image uploads
 const storage = multer.diskStorage({
@@ -26,6 +27,20 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET /api/projects/my-projects (Client-specific)
+router.get('/my-projects', verifyToken, async (req, res) => {
+    try {
+        if (!req.user || req.user.role !== 'client') {
+            return res.status(403).json({ message: "Access denied." });
+        }
+        const projects = await Project.find({ clientId: req.user.id }).sort({ createdAt: -1 });
+        res.json(projects);
+    } catch (err) {
+        console.error("My Projects Fetch Error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Get single project
 router.get('/:id', async (req, res) => {
     try {
@@ -38,7 +53,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Add new project with images
-router.post('/', upload.array('images', 20), async (req, res) => { // Limit increased to 20
+router.post('/', verifyToken, authorizeRoles('admin'), upload.array('images', 20), async (req, res) => { // Limit increased to 20
     try {
         const { name, clientId, status, startDate, endDate, deadline, budget, paymentDetails, services, notes, locationLink } = req.body;
 
@@ -93,7 +108,7 @@ router.post('/', upload.array('images', 20), async (req, res) => { // Limit incr
 });
 
 // Update project
-router.put('/:id', upload.array('images', 20), async (req, res) => { // Limit increased to 20
+router.put('/:id', verifyToken, authorizeRoles('admin'), upload.array('images', 20), async (req, res) => { // Limit increased to 20
     try {
         const { 
             name, clientId, status, startDate, endDate, deadline, 
@@ -123,6 +138,15 @@ router.put('/:id', upload.array('images', 20), async (req, res) => { // Limit in
             }
         }
 
+        // Helper to safely parse strings to numbers (removing currency, commas, etc)
+        const safeParseNumber = (val) => {
+            if (typeof val === 'number') return val;
+            if (!val) return 0;
+            const clean = val.toString().replace(/[^0-9.]/g, '');
+            const num = parseFloat(clean);
+            return isNaN(num) ? 0 : num;
+        };
+
         const updateData = {
             name,
             clientId: clientId || null,
@@ -135,9 +159,9 @@ router.put('/:id', upload.array('images', 20), async (req, res) => { // Limit in
             services: parsedServices,
             notes,
             images: finalImages,
-            totalBudget: Number(totalBudget),
-            totalPaid: Number(totalPaid),
-            remainingAmount: Number(remainingAmount),
+            totalBudget: safeParseNumber(totalBudget || budget),
+            totalPaid: safeParseNumber(totalPaid),
+            remainingAmount: safeParseNumber(remainingAmount),
             locationLink
         };
 
@@ -151,7 +175,7 @@ router.put('/:id', upload.array('images', 20), async (req, res) => { // Limit in
 });
 
 // Delete project
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyToken, authorizeRoles('admin'), async (req, res) => {
     try {
         const project = await Project.findByIdAndDelete(req.params.id);
         if (!project) return res.status(404).json({ error: 'Project not found' });
@@ -162,7 +186,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Add Progress Milestone
-router.put('/:id/progress', async (req, res) => {
+router.put('/:id/progress', verifyToken, authorizeRoles('admin'), async (req, res) => {
     try {
         const { title, description, status } = req.body;
 

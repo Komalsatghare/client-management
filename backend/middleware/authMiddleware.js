@@ -13,11 +13,13 @@ const verifyToken = async (req, res, next) => {
 
             // Validate token exists and isn't a stringified 'null' or 'undefined'
             if (!token || token === 'null' || token === 'undefined' || token === '') {
+                console.warn('Auth Failure: Token is null, undefined, or empty');
                 return res.status(401).json({ message: 'Not authorized, malformed token' });
             }
 
             // Simple JWT structure check (header.payload.signature)
             if (token.split('.').length !== 3) {
+                console.warn('Auth Failure: Invalid token structure (not 3 parts)');
                 return res.status(401).json({ message: 'Not authorized, invalid token structure' });
             }
 
@@ -28,17 +30,19 @@ const verifyToken = async (req, res, next) => {
             req.user = decoded.user;
 
             if (!req.user || !req.user.role) {
+                console.warn('Auth Failure: Decoded user or role is missing');
                 return res.status(401).json({ message: 'Not authorized, invalid token structure' });
             }
 
             next();
         } catch (error) {
-            console.error('Auth Middleware Error:', error);
+            console.error('JWT Verification Failed:', error.message);
             res.status(401).json({ message: 'Not authorized, token failed' });
         }
     }
 
     if (!token) {
+        console.warn('Auth Failure: No authorization header found');
         return res.status(401).json({ message: 'Not authorized, no token' });
     }
 };

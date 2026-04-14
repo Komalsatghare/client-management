@@ -1,27 +1,50 @@
 const express = require('express');
 const router = express.Router();
-const Client = require('../models/Client'); // 👈 VERY IMPORTANT
+const Client = require('../models/Client');
+const Project = require('../models/Project');
 const multer = require('multer');
+const { verifyToken, authorizeRoles } = require('../middleware/authMiddleware');
 
 // Configure multer for form-data parsing
 const upload = multer();
 
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, authorizeRoles('admin'), async (req, res) => {
   try {
     const client = new Client(req.body);
     await client.save();
+
+    // If a project name was provided during client creation, auto-create a Project entry
+    if (req.body.project) {
+        try {
+            await Project.create({
+                name: req.body.project,
+                clientId: client._id,
+                status: 'Pending',
+                notes: req.body.notes || ""
+            });
+        } catch (projErr) {
+            console.error("Auto-project creation failed:", projErr.message);
+            // We don't fail the whole request because the client WAS created successfully
+        }
+    }
+
     return res.status(201).json(client);
 
   } catch (err) {
+    console.error("Client creation error:", err);
+
+    if (err.name === 'ValidationError') {
+        return res.status(400).json({ error: err.message });
+    }
 
     if (err.code === 11000) {
       return res.status(409).json({
-        error: "Email already exists"
+        error: "Email or Username already exists"
       });
     }
 
     return res.status(500).json({
-      error: "Server error"
+      error: err.message || "Server error"
     });
   }
 });
@@ -37,7 +60,7 @@ router.get('/', async (req, res) => {
 });
 
 // Update a client
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyToken, authorizeRoles('admin'), async (req, res) => {
   try {
     const client = await Client.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
     if (!client) {
@@ -50,7 +73,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a client
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyToken, authorizeRoles('admin'), async (req, res) => {
   try {
     const client = await Client.findByIdAndDelete(req.params.id);
     if (!client) {

@@ -34,12 +34,23 @@ function EnquirySection() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check if user is logged in
+    const token = localStorage.getItem('clientAuthToken');
+    if (!token) {
+        setSubmitStatus("unauthorized");
+        return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus(null);
     try {
       const response = await fetch(`${API_BASE_URL}/api/inquiries`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}` 
+        },
         body: JSON.stringify(formData),
       });
       const data = await response.json();
@@ -209,6 +220,10 @@ function EnquirySection() {
           background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
           color: #f87171;
         }
+        .enq-alert.warning {
+          background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);
+          color: #fbbf24;
+        }
 
         @media (max-width: 900px) {
           .enq-inner { grid-template-columns: 1fr; gap: 48px; padding: 70px 20px; }
@@ -318,6 +333,12 @@ function EnquirySection() {
                 <div className="enq-alert error">
                   <span>⚠️</span>
                   <span>Something went wrong. Please try again or call us directly.</span>
+                </div>
+              )}
+              {submitStatus === "unauthorized" && (
+                <div className="enq-alert warning">
+                  <span>🔑</span>
+                  <span>Please login first to send an enquiry.</span>
                 </div>
               )}
 

@@ -77,14 +77,14 @@ const QuickAction = ({ icon, label, color, onClick }) => (
 );
 
 /* ── activity item ───────────────────────────────────── */
-const ActivityItem = ({ icon, title, sub, time, type }) => (
-  <div className={`dhome-activity-item dhome-activity-item--${type}`}>
+const ActivityItem = ({ icon, title, sub, time, type, onClick }) => (
+  <div className={`dhome-activity-item dhome-activity-item--${type}`} onClick={onClick} style={onClick ? { cursor: 'pointer' } : {}}>
     <div className="dhome-activity-dot">{icon}</div>
     <div className="dhome-activity-info">
       <p className="dhome-activity-title">{title}</p>
       <p className="dhome-activity-sub">{sub}</p>
     </div>
-    <span className="dhome-activity-time">{time}</span>
+    {time && <span className="dhome-activity-time">{time}</span>}
   </div>
 );
 
@@ -343,7 +343,11 @@ const DashboardHome = ({ onStatClick }) => {
           </div>
           <div className="dhome-activity-list">
             {recentActivities.map((item, i) => (
-              <ActivityItem key={i} {...item} />
+              <ActivityItem key={i} {...item} onClick={() => {
+                if (item.title.includes('inquiries')) onStatClick('Inquiries');
+                else if (item.title.includes('Payment')) onStatClick('Payments');
+                else if (item.title.includes('Project Requests')) onStatClick('Project Requests');
+              }} />
             ))}
           </div>
         </div>
@@ -381,13 +385,15 @@ const DashboardHome = ({ onStatClick }) => {
           <div className="dhome-activity-list">
             {notifications.length > 0 ? (
               notifications.map((note) => (
-                <div key={note.id} className={`dhome-activity-item dhome-activity-item--${note.type}`}>
-                  <div className="dhome-activity-dot">{note.icon}</div>
-                  <div className="dhome-activity-info">
-                    <p className="dhome-activity-title">{note.title}</p>
-                    <p className="dhome-activity-sub">{note.sub}</p>
-                  </div>
-                </div>
+                <ActivityItem 
+                    key={note.id} 
+                    {...note} 
+                    onClick={() => {
+                        if (note.id.startsWith('inq-')) onStatClick('Inquiries');
+                        else if (note.id.startsWith('req-')) onStatClick('Project Requests');
+                        else if (note.id.startsWith('zoom-')) onStatClick('Project Requests');
+                    }}
+                />
               ))
             ) : (
               <p style={{ padding: '20px', color: '#64748b', fontSize: '13px', textAlign: 'center' }}>No new notifications.</p>

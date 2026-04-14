@@ -90,6 +90,23 @@ export default function VideoRoom() {
         setJoinedZoom(true);
     };
 
+    const handleComplete = async () => {
+        if (!window.confirm("Mark this meeting as ended? This will update your dashboard status.")) return;
+        try {
+            const isClient = searchParams.get("role") !== "admin";
+            const token = isClient ? localStorage.getItem("clientAuthToken") : localStorage.getItem("authToken");
+            const requestId = roomId.replace('req-', '');
+            await fetch(`${API_BASE_URL}/api/project-requests/${requestId}/complete`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            handleLeave();
+        } catch (err) {
+            console.error("Failed to complete meeting", err);
+            handleLeave();
+        }
+    };
+
     const handleLeave = () => {
         if (localStream) localStream.getTracks().forEach(t => t.stop());
         clearInterval(timerRef.current);
@@ -233,7 +250,11 @@ export default function VideoRoom() {
                     )}
 
                     <button style={S.cancelBtn} onClick={handleLeave}>
-                        ← Leave / Go Back
+                        ← Leave Lobby
+                    </button>
+
+                    <button className="join-btn" onClick={handleComplete} style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)", boxShadow: "none", color: "#10b981", marginTop: "10px" }}>
+                        <CheckCircle size={16} /> Mark Meeting as Ended
                     </button>
                 </div>
             </div>

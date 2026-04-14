@@ -128,7 +128,7 @@ const DashboardLayout = () => {
       case "My Profile":
         return <UserProfile onProfileUpdate={fetchProfile} />;
       case "Agreements":
-        return <UploadAgreement uploadedByRole="admin" uploadedByName="Admin" />;
+        return <UploadAgreement uploadedByRole="admin" uploadedByName={adminData.name} />;
       default:
         return <DashboardHome />;
     }
@@ -333,6 +333,11 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
         .proj-form-inp:focus { border-color:rgba(96,165,250,0.4); background:rgba(96,165,250,0.06); box-shadow:0 0 0 3px rgba(96,165,250,0.1); }
         .proj-form-inp option { background:#1e293b; }
         .proj-empty { text-align:center; padding:60px; color:#475569; background:rgba(15,23,42,0.6); border-radius:14px; border:1px solid rgba(255,255,255,0.06); }
+        
+        @media (max-width: 600px) {
+          .proj-dark-modal { padding: 20px; }
+          .modal-row-flex { flex-direction: column; gap: 14px !important; }
+        }
       `}</style>
 
       {/* Header */}
@@ -382,46 +387,48 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
         </div>
       ) : (
         <div className="table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Project Name</th>
-                <th>Client</th>
-                <th>Status</th>
-                <th>Start Date</th>
-                <th>Budget</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProjects.map((project, index) => {
-                const sc = project.status==='Active' ? {c:'#10b981',b:'rgba(16,185,129,0.12)',bdr:'rgba(16,185,129,0.25)'}
-                         : project.status==='Completed' ? {c:'#60a5fa',b:'rgba(96,165,250,0.12)',bdr:'rgba(96,165,250,0.25)'}
-                         : project.status==='On Hold' ? {c:'#94a3b8',b:'rgba(148,163,184,0.12)',bdr:'rgba(148,163,184,0.25)'}
-                         : {c:'#f59e0b',b:'rgba(245,158,11,0.12)',bdr:'rgba(245,158,11,0.25)'};
-                return (
-                  <tr key={index}>
-                    <td><span className="cell-primary">{project.name}</span></td>
-                    <td><span className="cell-secondary">{project.client || '—'}</span></td>
-                    <td>
-                      <span style={{ padding:'4px 12px', borderRadius:'999px', fontSize:'11px', fontWeight:700, color:sc.c, background:sc.b, border:`1px solid ${sc.bdr}` }}>
-                        {project.status}
-                      </span>
-                    </td>
-                    <td><span className="cell-secondary">{project.startDate ? new Date(project.startDate).toLocaleDateString() : '—'}</span></td>
-                    <td><span className="cell-primary">₹{project.budget || '—'}</span></td>
-                    <td>
-                      <div style={{ display:'flex', gap:'6px' }}>
-                        <button className="proj-act-btn" onClick={()=>setSelectedProject(project)} style={{ background:'rgba(96,165,250,0.12)',color:'#60a5fa',border:'1px solid rgba(96,165,250,0.25)' }}>View</button>
-                        <button className="proj-act-btn" onClick={()=>openEditModal(project)} style={{ background:'rgba(167,139,250,0.12)',color:'#a78bfa',border:'1px solid rgba(167,139,250,0.25)' }}>Edit</button>
-                        <button className="proj-act-btn" onClick={()=>handleDeleteProject(project._id)} style={{ background:'rgba(239,68,68,0.1)',color:'#f87171',border:'1px solid rgba(239,68,68,0.2)' }}>Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="table-wrapper">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Project Name</th>
+                  <th>Client</th>
+                  <th>Status</th>
+                  <th>Start Date</th>
+                  <th>Budget</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProjects.map((project, index) => {
+                  const sc = project.status==='Active' ? {c:'#10b981',b:'rgba(16,185,129,0.12)',bdr:'rgba(16,185,129,0.25)'}
+                           : project.status==='Completed' ? {c:'#60a5fa',b:'rgba(96,165,250,0.12)',bdr:'rgba(96,165,250,0.25)'}
+                           : project.status==='On Hold' ? {c:'#94a3b8',b:'rgba(148,163,184,0.12)',bdr:'rgba(148,163,184,0.25)'}
+                           : {c:'#f59e0b',b:'rgba(245,158,11,0.12)',bdr:'rgba(245,158,11,0.25)'};
+                  return (
+                    <tr key={index}>
+                      <td><span className="cell-primary">{project.name}</span></td>
+                      <td><span className="cell-secondary">{project.client || '—'}</span></td>
+                      <td>
+                        <span style={{ padding:'4px 12px', borderRadius:'999px', fontSize:'11px', fontWeight:700, color:sc.c, background:sc.b, border:`1px solid ${sc.bdr}` }}>
+                          {project.status}
+                        </span>
+                      </td>
+                      <td><span className="cell-secondary">{project.startDate ? new Date(project.startDate).toLocaleDateString() : '—'}</span></td>
+                      <td><span className="cell-primary">₹{project.budget || '—'}</span></td>
+                      <td>
+                        <div style={{ display:'flex', gap:'6px', flexWrap:'wrap' }}>
+                          <button className="proj-act-btn" onClick={()=>setSelectedProject(project)} style={{ background:'rgba(96,165,250,0.12)',color:'#60a5fa',border:'1px solid rgba(96,165,250,0.25)' }}>View</button>
+                          <button className="proj-act-btn" onClick={()=>openEditModal(project)} style={{ background:'rgba(167,139,250,0.12)',color:'#a78bfa',border:'1px solid rgba(167,139,250,0.25)' }}>Edit</button>
+                          <button className="proj-act-btn" onClick={()=>handleDeleteProject(project._id)} style={{ background:'rgba(239,68,68,0.1)',color:'#f87171',border:'1px solid rgba(239,68,68,0.2)' }}>Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
@@ -447,7 +454,7 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
                   {clients.map(c=><option key={c._id} value={c._id}>{c.name} ({c.email})</option>)}
                 </select>
               </div>
-              <div style={{ display:'flex', gap:'10px', marginBottom:14 }}>
+              <div className="modal-row-flex" style={{ display:'flex', gap:'10px', marginBottom:14 }}>
                 <div style={{ flex:1 }}>
                   <label className="proj-form-lbl">Status</label>
                   <select name="status" value={formData.status} onChange={handleInputChange} className="proj-form-inp">
@@ -460,7 +467,7 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
                   <input type="text" name="budget" placeholder="e.g. ₹5,00,000" value={formData.budget} onChange={handleInputChange} className="proj-form-inp" />
                 </div>
               </div>
-              <div style={{ display:'flex', gap:'10px', marginBottom:14 }}>
+              <div className="modal-row-flex" style={{ display:'flex', gap:'10px', marginBottom:14 }}>
                 <div style={{ flex:1 }}>
                   <label className="proj-form-lbl">Start Date</label>
                   <input type="date" name="startDate" value={formData.startDate} onChange={handleInputChange} className="proj-form-inp" />
@@ -694,6 +701,8 @@ const PublicProjectsManager = () => {
   const [editId, setEditId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saveFeedback, setSaveFeedback] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
 
   const blankForm = {
     title: '',
@@ -728,6 +737,8 @@ const PublicProjectsManager = () => {
     setIsEditMode(false);
     setEditId(null);
     setForm(blankForm);
+    setSelectedFile(null);
+    setPreviewUrl('');
     setSaveFeedback('');
     setIsModalOpen(true);
   };
@@ -745,6 +756,8 @@ const PublicProjectsManager = () => {
       mapLink: project.mapLink || '',
       order: project.order || 0
     });
+    setSelectedFile(null);
+    setPreviewUrl(project.image ? `${API_BASE_URL}${project.image}` : '');
     setSaveFeedback('');
     setIsModalOpen(true);
   };
@@ -765,10 +778,30 @@ const PublicProjectsManager = () => {
     setSaving(true);
     setSaveFeedback('');
     try {
+      const formData = new FormData();
+      Object.keys(form).forEach(key => {
+        if (key !== 'image') formData.append(key, form[key]);
+      });
+      if (selectedFile) {
+        formData.append('imageFile', selectedFile);
+      } else if (form.image) {
+        formData.append('image', form.image);
+      }
+
       if (isEditMode) {
-        await axios.put(`${API_BASE_URL}/api/public-projects/${editId}`, form, authHeader);
+        await axios.put(`${API_BASE_URL}/api/public-projects/${editId}`, formData, {
+            headers: { 
+                ...authHeader.headers,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
       } else {
-        await axios.post(`${API_BASE_URL}/api/public-projects`, form, authHeader);
+        await axios.post(`${API_BASE_URL}/api/public-projects`, formData, {
+            headers: { 
+                ...authHeader.headers,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
       }
       setSaveFeedback('✅ Saved successfully!');
       setTimeout(() => {
@@ -778,9 +811,17 @@ const PublicProjectsManager = () => {
       }, 800);
     } catch (err) {
       console.error('Save failed:', err);
-      setSaveFeedback(err.response?.data?.message || '❌ Failed to save. Make sure you are logged in as admin.');
+      setSaveFeedback(err.response?.data?.message || '❌ Failed to save.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -915,21 +956,24 @@ const PublicProjectsManager = () => {
                   </select>
                 </div>
                 <div style={{ flex:1 }}>
-                  <label style={ppLbl}>Status *</label>
-                  <select style={ppInp} value={form.status} onChange={e=>setForm({...form,status:e.target.value})}>
-                    <option value="Completed">Completed</option><option value="Ongoing">Ongoing</option><option value="Upcoming">Upcoming</option>
+                  <label style={ppLbl}>Status</label>
+                  <select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} style={ppInp}>
+                    <option value="Completed">Completed</option><option value="Ongoing">Ongoing</option><option value="Planning">Planning</option>
                   </select>
                 </div>
               </div>
               <div style={{ marginBottom:14 }}>
-                <label style={ppLbl}>Image URL *</label>
-                <input style={ppInp} required value={form.image} onChange={e=>setForm({...form,image:e.target.value})} placeholder="e.g. /images/image1.jpeg or https://..." />
-                <p style={{ fontSize:'11px', color:'#475569', margin:'5px 0 0' }}>Relative path or full URL.</p>
+                <label style={ppLbl}>Project Showcase Image</label>
+                <input type="file" accept="image/*" onChange={handleFileChange} style={ppInp} />
+                {previewUrl && (
+                  <div style={{ marginTop:10, borderRadius:8, overflow:'hidden', border:'1px solid rgba(255,255,255,0.1)', width:'fit-content' }}>
+                    <img src={previewUrl} alt="preview" style={{ maxHeight:100, display:'block' }} />
+                  </div>
+                )}
               </div>
               <div style={{ marginBottom:14 }}>
-                <label style={ppLbl}>Short Description *</label>
-                <textarea style={{ ...ppInp, resize:'vertical', minHeight:'80px' }} required value={form.shortDescription}
-                  onChange={e=>setForm({...form,shortDescription:e.target.value})} placeholder="Brief description visible on the homepage..." />
+                <label style={ppLbl}>Short Description</label>
+                <textarea rows="3" value={form.shortDescription} onChange={e=>setForm({...form,shortDescription:e.target.value})} style={{ ...ppInp, resize:'vertical' }} />
               </div>
               <div style={{ display:'flex', gap:'12px', marginBottom:14 }}>
                 <div style={{ flex:1 }}>

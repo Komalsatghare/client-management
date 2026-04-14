@@ -35,6 +35,8 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [clients, setClients] = useState([]);
+    const [selectedClientId, setSelectedClientId] = useState('');
 
     // Modal/Editor State
     const [viewMode, setViewMode] = useState('pipeline'); // 'pipeline' or 'finalized'
@@ -54,20 +56,46 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         if (editor) setEditedContent(editor.innerHTML);
     };
 
-    const getToken = () => localStorage.getItem('authToken') || localStorage.getItem('clientAuthToken');
+    const getToken = () => {
+        const token = localStorage.getItem('authToken') || localStorage.getItem('clientAuthToken');
+        if (!token || token === 'null' || token === 'undefined') return null;
+        return token;
+    };
 
     useEffect(() => {
         fetchAgreements();
+        if (uploadedByRole === 'admin') {
+            fetchClients();
+        }
     }, []);
 
+    const fetchClients = async () => {
+        try {
+            const res = await axios.get(`${API_BASE_URL}/api/clients`, {
+                headers: { Authorization: `Bearer ${getToken()}` }
+            });
+            setClients(res.data);
+        } catch (err) {
+            console.error('Error fetching clients', err);
+        }
+    };
+
     const fetchAgreements = async () => {
+        const token = getToken();
+        if (!token) {
+            console.warn('No authentication token found. Redirecting or skipping fetch.');
+            return;
+        }
         try {
             const res = await axios.get(`${API_BASE_URL}/api/agreements`, {
-                headers: { Authorization: `Bearer ${getToken()}` }
+                headers: { Authorization: `Bearer ${token}` }
             });
             setAgreements(res.data);
         } catch (err) {
             console.error('Error fetching agreements', err);
+            if (err.response?.status === 401) {
+                setError('Session expired. Please log in again.');
+            }
         }
     };
 
@@ -87,6 +115,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         formData.append('agreementFile', agreementFile);
         formData.append('uploadedByRole', uploadedByRole);
         formData.append('uploadedByName', uploadedByName || 'Unknown');
+        if (selectedClientId) formData.append('clientId', selectedClientId);
 
         try {
             await axios.post(`${API_BASE_URL}/api/agreements/upload`, formData, {
@@ -147,17 +176,17 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
             const words = textBeforeCursor.split(/\s/);
             const lastWord = words[words.length - 1];
 
-            if (lastWord && /^[a-zA-Z]+$/.test(lastWord)) {
-                // Prevent default temporarily? 
-                // Better: we'll replace the word after it's typed
-                const marathiWord = await transliterateWord(lastWord);
-                if (marathiWord && marathiWord !== lastWord) {
-                    // Replace the word in the text node
-                    const startPos = cursorTitle - lastWord.length;
+            if (lastWord && /[a-zA-Z]+$/.test(lastWord)) {
+                // Find start of the actual alphabet-only part to transliterate
+                const match = lastWord.match(/[a-zA-Z]+$/);
+                const actualWord = match[0];
+                
+                const marathiWord = await transliterateWord(actualWord);
+                if (marathiWord && marathiWord !== actualWord) {
+                    const startPos = cursorTitle - actualWord.length;
                     const newContent = content.substring(0, startPos) + marathiWord + content.substring(cursorTitle);
                     textNode.textContent = newContent;
                     
-                    // Restore cursor position
                     const newRange = document.createRange();
                     newRange.setStart(textNode, startPos + marathiWord.length);
                     newRange.setEnd(textNode, startPos + marathiWord.length);
@@ -191,7 +220,8 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                 totalCost: digitalTotalCost,
                 area: digitalArea,
                 meetingPlace: digitalMeetingPlace,
-                plotDetails: digitalPlotDetails
+                plotDetails: digitalPlotDetails,
+                clientId: selectedClientId
             }, {
                 headers: { Authorization: `Bearer ${getToken()}` }
             });
@@ -322,6 +352,15 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                 
                 .ua-modal-overlay { position: fixed; inset: 0; background: rgba(5, 10, 24, 0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
                 .ua-modal { background: #0f172a; width: 100%; max-width: 900px; height: 100vh; max-height: 100vh; overflow-y: hidden; padding: 20px 40px; position: relative; display: flex; flex-direction: column; border-radius: 0; box-shadow: 0 0 100px rgba(0,0,0,0.9); }
+                
+                @media (max-width: 768px) {
+                    .ua-modal { padding: 20px 15px; }
+                    .ua-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+                    .ua-item > div:last-child { width: 100%; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.05); pt: 10px; }
+                    .ua-card { padding: 15px !important; }
+                    .ua-tabs { flex-direction: column; }
+                    .ua-tabs .ua-tab { width: 100%; border-radius: 8px !important; text-align: left; }
+                }
                 .ua-modal-close { position: absolute; top: 24px; right: 24px; background: rgba(255, 255, 255, 0.08); border: none; padding: 12px; border-radius: 50%; color: #f8fafc; cursor: pointer; transition: all 0.2s; z-index: 100; display: flex; align-items: center; justify-content: center; }
                 .ua-modal-close:hover { background: #ef4444; color: white; transform: rotate(90deg); }
 
@@ -332,7 +371,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                 .ql-snow .ql-fill { fill: #94a3b8 !important; }
                 .ql-snow .ql-picker { color: #94a3b8 !important; }
                 
-                .agreement-preview { background: white; color: #1e293b; padding: 60px; border-radius: 4px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); line-height: 1.6; font-family: 'Inter', 'Noto Sans Marathi', sans-serif; overflow-x: hidden; }
+                .agreement-preview { background: white; color: #1e293b; padding: 60px; border-radius: 4px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); line-height: 1.6; font-family: 'Inter', 'Noto Sans Marathi', sans-serif; overflow-x: auto; width: 100%; box-sizing: border-box; }
                 .agreement-preview h1, .agreement-preview h2, .agreement-preview h3 { color: #0f172a; margin: 0 0 20px 0; }
                 .agreement-preview p { margin-bottom: 1.2em; }
                 .agreement-preview table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 13px; border: 1px solid #cbd5e1; }
@@ -462,77 +501,95 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', width: '100%', marginBottom: '20px' }}>
                                     <TransliteratedInput 
                                         label={t('project_title_label')}
-                                        placeholder={t('project_title_placeholder') || "e.g. Skyline Apartments"}
+                                        placeholder={t('project_title_placeholder')}
                                         value={digitalProjectName}
                                         onChange={(val) => setDigitalProjectName(val)}
                                         required
                                     />
                                     <TransliteratedInput 
                                         label={t('client_party1_name')}
-                                        placeholder="Mr. Gajanan Ajab Chimane"
+                                        placeholder={t('client_name_placeholder')}
                                         value={digitalClientName}
                                         onChange={(val) => setDigitalClientName(val)}
                                         required
                                     />
                                     <TransliteratedInput 
                                         label={t('contractor_name_label')}
-                                        placeholder=""
+                                        placeholder={t('contractor_name_placeholder')}
                                         value={digitalContractorName}
                                         onChange={(val) => setDigitalContractorName(val)}
                                         required
                                     />
+
+                                    {uploadedByRole === 'admin' && (
+                                        <div className="ua-input-grp">
+                                            <label className="ua-label">Assign to Client (Account) *</label>
+                                            <select 
+                                                className="ua-input" 
+                                                value={selectedClientId} 
+                                                onChange={(e) => setSelectedClientId(e.target.value)}
+                                                required
+                                            >
+                                                <option value="">-- Select Client Account --</option>
+                                                {clients.map(c => (
+                                                    <option key={c._id} value={c._id}>{c.name} ({c.email})</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
                                     <TransliteratedInput 
                                         label={t('agreement_number')}
-                                        placeholder="DB_MH_W_002"
+                                        placeholder={t('agreement_no_placeholder')}
                                         value={digitalAgreementNo}
                                         onChange={(val) => setDigitalAgreementNo(val)}
                                     />
                                     <TransliteratedInput 
                                         label={t('phone')}
-                                        placeholder="+91 9890517597"
+                                        placeholder={t('phone_placeholder')}
                                         value={digitalContactNo}
                                         onChange={(val) => setDigitalContactNo(val)}
                                     />
                                     <TransliteratedInput 
                                         label={t('site_location')}
-                                        placeholder="Sindi Meghe, Wardha"
+                                        placeholder={t('location_placeholder')}
                                         value={digitalLocation}
                                         onChange={(val) => setDigitalLocation(val)}
                                     />
                                     <TransliteratedInput 
                                         label={t('total_cost')}
-                                        placeholder=""
+                                        placeholder={t('total_cost_placeholder')}
                                         value={digitalTotalCost}
                                         onChange={(val) => setDigitalTotalCost(val)}
                                     />
                                     <TransliteratedInput 
                                         label={t('total_area')}
-                                        placeholder=""
+                                        placeholder={t('total_area_placeholder')}
                                         value={digitalArea}
                                         onChange={(val) => setDigitalArea(val)}
                                     />
                                     <TransliteratedInput 
                                         label={t('meeting_place')}
-                                        placeholder=""
+                                        placeholder={t('meeting_place_placeholder')}
                                         value={digitalMeetingPlace}
                                         onChange={(val) => setDigitalMeetingPlace(val)}
                                     />
-                                    <div style={{ gridColumn: 'span 2' }}>
+                                    <div style={{ gridColumn: '1 / -1' }}>
                                         <TransliteratedInput 
                                             label={t('client_bio')}
                                             isTextArea={true}
                                             rows={2}
-                                            placeholder=""
+                                            placeholder={t('client_details_placeholder')}
                                             value={digitalClientDetails}
                                             onChange={(val) => setDigitalClientDetails(val)}
                                         />
                                     </div>
-                                    <div style={{ gridColumn: 'span 2' }}>
+                                    <div style={{ gridColumn: '1 / -1' }}>
                                         <TransliteratedInput 
                                             label={t('plot_details')}
                                             isTextArea={true}
                                             rows={2}
-                                            placeholder=""
+                                            placeholder={t('plot_details_placeholder')}
                                             value={digitalPlotDetails}
                                             onChange={(val) => setDigitalPlotDetails(val)}
                                         />
@@ -553,7 +610,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                         <input 
                                             type="text" 
                                             className="ua-input" 
-                                            placeholder={t('project_title_placeholder') || ""}
+                                            placeholder={t('project_title_placeholder')}
                                             value={projectName}
                                             onChange={(e) => setProjectName(e.target.value)}
                                         />
@@ -566,6 +623,23 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                             onChange={(e) => setAgreementFile(e.target.files[0])}
                                         />
                                     </div>
+
+                                    {uploadedByRole === 'admin' && (
+                                        <div className="ua-input-grp" style={{ flex: 1 }}>
+                                            <label className="ua-label">Assign to Client *</label>
+                                            <select 
+                                                className="ua-input" 
+                                                value={selectedClientId} 
+                                                onChange={(e) => setSelectedClientId(e.target.value)}
+                                                required
+                                            >
+                                                <option value="">-- Select Client --</option>
+                                                {clients.map(c => (
+                                                    <option key={c._id} value={c._id}>{c.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
                                     <button type="submit" className="ua-btn" disabled={loading}>
                                         <UploadCloud size={16} />
                                         {loading ? t('submitting') : t('upload_btn')}
@@ -743,7 +817,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                         dangerouslySetInnerHTML={{ __html: editedContent }}
                                         onBlur={(e) => setEditedContent(e.target.innerHTML)}
                                         onKeyDown={handleEditorKeyDown}
-                                        style={{ flex: 1, overflowY: 'auto' }}
+                                        style={{ flex: 1, overflowY: 'auto', minHeight: '300px' }}
                                     ></div>
                                 </div>
                         ) : (
@@ -768,8 +842,8 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                             />
                                         );
                                     } else if (mime.includes('word') || mime.includes('officedocument') || selectedContract.originalName?.endsWith('.docx') || selectedContract.originalName?.endsWith('.doc')) {
-                                        // NEW: High-fidelity Localhost Preview using Mammoth
-                                        if (isLocalhost) {
+                                        // High-fidelity Preview using Mammoth (Works in all environments)
+                                        if (true) {
                                             if (wordPreviewLoading) {
                                                 return (
                                                     <div style={{ flex: 1, minHeight: '500px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -780,22 +854,31 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                                 );
                                             }
                                             if (wordPreviewHtml) {
-                                                return <div className="agreement-preview" dangerouslySetInnerHTML={{ __html: wordPreviewHtml }} style={{ marginBottom: '24px', overflowY: 'auto', flex: 1 }} />;
+                                                if (wordPreviewHtml.includes('Failed to render')) {
+                                                    return (
+                                                        <div style={{ flex: 1, minHeight: '500px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px dashed rgba(255,255,255,0.1)', marginBottom: '24px', padding: '40px', textAlign: 'center' }}>
+                                                            <div dangerouslySetInnerHTML={{ __html: wordPreviewHtml }} />
+                                                            <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+                                                                <button onClick={() => window.open(fileUrl, '_blank')} className="ua-btn" style={{ background: '#2563eb' }}>Open in New Tab</button>
+                                                                <a href={fileUrl} download className="ua-btn" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}>Download File</a>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+                                                return <div className="agreement-preview" dangerouslySetInnerHTML={{ __html: wordPreviewHtml }} style={{ marginBottom: '24px', overflow: 'auto', flex: 1, border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }} />;
                                             }
-                                            // Fallback if no HTML but not loading
+                                            // Fallback if no HTML but not loading (Google Viewer Fallback)
                                             return (
                                                 <div style={{ flex: 1, minHeight: '500px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px dashed rgba(255,255,255,0.1)', marginBottom: '24px', padding: '40px', textAlign: 'center' }}>
                                                     <FileText size={60} style={{ color: '#334155', marginBottom: '20px' }} />
-                                                    <h3 style={{ color: 'white', marginBottom: '10px' }}>Word Document Detail</h3>
+                                                    <h3 style={{ color: 'white', marginBottom: '10px' }}>Document Preview</h3>
                                                     <p style={{ color: '#94a3b8', maxWidth: '400px', marginBottom: '24px', fontSize: '14px' }}>
-                                                        High-fidelity online preview is unavailable for this specific file on localhost. 
+                                                        High-fidelity online preview is unavailable. You can open the file in a new tab or download it to view.
                                                     </p>
-                                                    <button 
-                                                        onClick={() => window.open(fileUrl, '_blank')}
-                                                        style={{ padding: '10px 20px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
-                                                    >
-                                                        Open File
-                                                    </button>
+                                                    <div style={{ display: 'flex', gap: '12px' }}>
+                                                        <button onClick={() => window.open(fileUrl, '_blank')} className="ua-btn" style={{ background: '#2563eb' }}>Open in New Tab</button>
+                                                        <a href={fileUrl} download className="ua-btn" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}>Download File</a>
+                                                    </div>
                                                 </div>
                                             );
                                         }
@@ -808,7 +891,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                             />
                                         );
                                     } else if (selectedContract.content) {
-                                        return <div className="agreement-preview" dangerouslySetInnerHTML={{ __html: selectedContract.content }} style={{ marginBottom: '24px', overflowY: 'auto', flex: 1 }} />;
+                                        return <div className="agreement-preview" dangerouslySetInnerHTML={{ __html: selectedContract.content }} style={{ marginBottom: '24px', overflow: 'auto', flex: 1, border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }} />;
                                     } else {
                                         return (
                                             <iframe 
@@ -820,7 +903,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                     }
                                 })()
                             ) : (
-                                <div className="agreement-preview" dangerouslySetInnerHTML={{ __html: selectedContract.content }} style={{ marginBottom: '24px', overflowY: 'auto', flex: 1 }} />
+                                <div className="agreement-preview" dangerouslySetInnerHTML={{ __html: selectedContract.content }} style={{ marginBottom: '24px', overflow: 'auto', flex: 1, border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }} />
                             )
                         )}
 

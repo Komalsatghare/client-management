@@ -45,7 +45,10 @@ const Projects = ({ initialFilter = 'All' }) => {
     const fetchProjects = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/api/projects`);
+            const token = localStorage.getItem("authToken");
+            const response = await axios.get(`${API_BASE_URL}/api/projects`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setProjects(response.data);
             setIsLoading(false);
         } catch (err) {
@@ -175,31 +178,42 @@ const Projects = ({ initialFilter = 'All' }) => {
             formData.append('images', image);
         });
 
+        const token = localStorage.getItem("authToken");
         try {
             if (isEditing) {
                 await axios.put(`${API_BASE_URL}/api/projects/${currentProject._id}`, formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
+                    headers: { 
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
             } else {
                 await axios.post(`${API_BASE_URL}/api/projects`, formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
+                    headers: { 
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
             }
             fetchProjects();
             closeModal();
         } catch (err) {
             console.error('Error saving project:', err);
-            alert('Failed to save project.');
+            alert('Failed to save project. Status: ' + (err.response?.status || 'Unknown'));
         }
     };
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this project?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/api/projects/${id}`);
+                const token = localStorage.getItem("authToken");
+                await axios.delete(`${API_BASE_URL}/api/projects/${id}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 fetchProjects();
             } catch (err) {
                 console.error('Error deleting project:', err);
+                alert('Failed to delete project.');
             }
         }
     };
@@ -222,7 +236,13 @@ const Projects = ({ initialFilter = 'All' }) => {
                 currentProject.images.forEach(img => formData.append('existingImages', img));
             }
 
-            await axios.put(`${API_BASE_URL}/api/projects/${currentProject._id}`, formData);
+            const token = localStorage.getItem("authToken");
+            await axios.put(`${API_BASE_URL}/api/projects/${currentProject._id}`, formData, {
+                headers: { 
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             fetchProjects();
             alert('Quick updates saved!');
         } catch (err) {

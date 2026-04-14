@@ -15,7 +15,7 @@ export const useStatusCfg = () => {
         'approved': { color: '#10b981', icon: <CheckCircle size={14} />, label: t('status_approved') || "Approved" },
         'rejected': { color: '#ef4444', icon: <XCircle size={14} />, label: t('status_rejected') || "Rejected" },
         'meeting_scheduled': { color: '#3b82f6', icon: <CalendarCheck size={14} />, label: t('status_meeting_scheduled') || "Meeting Scheduled" },
-        'completed': { color: '#10b981', icon: <CheckCircle size={14} />, label: t('status_completed') || "Completed" }
+        'completed': { color: '#10b981', icon: <CheckCircle size={15} />, label: t('status_completed') || "Meeting Ended" }
     };
 };
 
@@ -353,18 +353,21 @@ export default function RequestNewProject() {
 
                 {/* ── Meeting Status Banner ── */}
                 {!loading && meetingStatusText && (
-                    <div className="rnp-meeting-banner">
+                    <div className="rnp-meeting-banner" style={{ 
+                        background: meetingRequest?.status === "completed" ? "rgba(16,185,129,0.1)" : "rgba(15,23,42,0.7)",
+                        borderColor: meetingRequest?.status === "completed" ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.07)"
+                    }}>
                         <div className="rnp-meeting-dot" style={{
                             background: meetingRequest?.status === "completed" ? "#10b981"
                                       : meetingRequest?.status === "meeting_scheduled" ? "#60a5fa" : "#a78bfa",
-                            boxShadow: `0 0 8px ${meetingRequest?.status === "completed" ? "#10b981"
+                            boxShadow: `0 0 12px ${meetingRequest?.status === "completed" ? "#10b981"
                                       : meetingRequest?.status === "meeting_scheduled" ? "#60a5fa" : "#a78bfa"}`
                         }} />
                         <div>
-                            <p style={{ margin:0, fontSize:"11px", fontWeight:700, color:"#475569", textTransform:"uppercase", letterSpacing:".06em" }}>Meeting Status</p>
-                            <p style={{ margin:"3px 0 0", fontSize:"14px", fontWeight:700, color:"#e2e8f0" }}>{meetingStatusText}</p>
+                            <p style={{ margin:0, fontSize:"11px", fontWeight:700, color:"#cbd5e1", textTransform:"uppercase", letterSpacing:".08em" }}>Current Meeting Status</p>
+                            <p style={{ margin:"3px 0 0", fontSize:"15px", fontWeight:800, color: meetingRequest?.status === "completed" ? "#10b981" : "#f1f5f9" }}>{meetingStatusText}</p>
                         </div>
-                        <Zap size={18} color="#f59e0b" style={{ marginLeft:"auto", flexShrink:0 }} />
+                        {meetingRequest?.status === "completed" ? <CheckCircle size={20} color="#10b981" style={{ marginLeft:"auto" }} /> : <Zap size={18} color="#f59e0b" style={{ marginLeft:"auto" }} />}
                     </div>
                 )}
 
@@ -478,6 +481,16 @@ export default function RequestNewProject() {
                                                         style={{ marginTop:"10px", display:"flex", alignItems:"center", justifyContent:"center", gap:"6px", padding:"10px", background:"rgba(96,165,250,0.1)", color:"#60a5fa", border:"1px solid rgba(96,165,250,0.25)", borderRadius:"10px", fontWeight:600, fontSize:"13px", textDecoration:"none" }}>
                                                         <Video size={14} /> Open Meeting Link
                                                     </a>
+                                                )}
+                                                {isDone && (
+                                                    <div style={{ 
+                                                        marginTop:"10px", display:"flex", alignItems:"center", justifyContent:"center", 
+                                                        gap:"8px", padding:"12px", background:"rgba(16,185,129,0.08)", 
+                                                        color:"#10b981", border:"1px solid rgba(16,185,129,0.2)", 
+                                                        borderRadius:"10px", fontWeight:700, fontSize:"14px" 
+                                                    }}>
+                                                        <CheckCircle size={18} /> Zoom meeting ended
+                                                    </div>
                                                 )}
                                             </div>
                                         );

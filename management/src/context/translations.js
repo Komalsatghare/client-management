@@ -267,7 +267,20 @@ const translations = {
     my_finalized_agreements: "My Finalized Agreements",
     view_agreement: "View Agreement",
     sign_now: "Sign Now",
-    download_agreement: "Download Agreement"
+    download_agreement: "Download Agreement",
+    
+    // Agreement Form Placeholders
+    project_title_placeholder: "e.g. Skyline Apartments",
+    client_name_placeholder: "e.g. Komal Satghare",
+    contractor_name_placeholder: "e.g. swapnil dhanvij",
+    agreement_no_placeholder: "e.g. DB/2026/001",
+    phone_placeholder: "e.g. +91 9890xxxxxx",
+    location_placeholder: "e.g. Wardha, Maharashtra",
+    meeting_place_placeholder: "e.g. Site Office",
+    total_cost_placeholder: "e.g. 5,00,000",
+    total_area_placeholder: "e.g. 1200",
+    client_details_placeholder: "Enter party details...",
+    plot_details_placeholder: "e.g. Survey No. 42/1"
   },
   mr: {
     // Marathi Translations
@@ -527,7 +540,20 @@ const translations = {
     no_account_msg: "खाते नाही?",
     sign_up: "साइन अप करा",
     invalid_credentials: "अवैध क्रेडेंशियल",
-    server_error_login: "सर्व्हर त्रुटी. कृपया नंतर पुन्हा प्रयत्न करा."
+    server_error_login: "सर्व्हर त्रुटी. कृपया नंतर पुन्हा प्रयत्न करा.",
+    
+    // Agreement Form Placeholders (Marathi)
+    project_title_placeholder: "उदा. स्कायलाइन अपार्टमेंट",
+    client_name_placeholder: "उदा. कोमल सातघरे",
+    contractor_name_placeholder: "उदा. स्वप्नील धनविज",
+    agreement_no_placeholder: "उदा. DB/2026/001",
+    phone_placeholder: "उदा. +९१ ९८९०xxxxxx",
+    location_placeholder: "उदा. वर्धा, महाराष्ट्र",
+    meeting_place_placeholder: "उदा. साइट कार्यालय",
+    total_cost_placeholder: "उदा. ५,००,०००",
+    total_area_placeholder: "उदा. १२००",
+    client_details_placeholder: "पक्षाचा तपशील प्रविष्ट करा...",
+    plot_details_placeholder: "उदा. सर्व्हे क्र. ४२/१"
   },
   hi: {
     // Hindi Translations
@@ -790,7 +816,20 @@ const translations = {
     no_account_msg: "खाता नहीं है?",
     sign_up: "साइन अप करें",
     invalid_credentials: "अवैध क्रेडेंशियल",
-    server_error_login: "सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।"
+    server_error_login: "सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।",
+    
+    // Agreement Form Placeholders (Hindi)
+    project_title_placeholder: "उदा. स्काईलाइन अपार्टमेंट",
+    client_name_placeholder: "उदा. कोमल सातघरे",
+    contractor_name_placeholder: "उदा. स्वप्निल धनविज",
+    agreement_no_placeholder: "उदा. DB/2026/001",
+    phone_placeholder: "उदा. +91 9890xxxxxx",
+    location_placeholder: "उदा. वर्धा, महाराष्ट्र",
+    meeting_place_placeholder: "उदा. साइट कार्यालय",
+    total_cost_placeholder: "उदा. 5,00,000",
+    total_area_placeholder: "उदा. 1200",
+    client_details_placeholder: "पार्टी का विवरण दर्ज करें...",
+    plot_details_placeholder: "उदा. सर्वे नंबर 42/1"
   }
 };
 

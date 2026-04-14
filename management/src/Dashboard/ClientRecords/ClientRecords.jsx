@@ -24,12 +24,15 @@ const ClientRecords = () => {
     const fetchClients = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/api/clients`);
+            const token = localStorage.getItem("authToken");
+            const response = await axios.get(`${API_BASE_URL}/api/clients`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setClients(response.data);
             setIsLoading(false);
         } catch (err) {
             console.error('Error fetching clients:', err);
-            setError('Failed to load clients.');
+            setError('Failed to load clients. Status: ' + (err.response?.status || 'Unknown'));
             setIsLoading(false);
         }
     };
@@ -58,23 +61,28 @@ const ClientRecords = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const token = localStorage.getItem("authToken");
+            const config = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
+
             if (isEditing) {
                 // Update existing client
                 if (!currentClient._id) {
                     throw new Error("Client ID is missing for update");
                 }
                 const { _id, createdAt, updatedAt, __v, ...updateData } = currentClient; // Remove immutable fields
-                const response = await axios.put(`${API_BASE_URL}/api/clients/${currentClient._id}`, updateData);
+                const response = await axios.put(`${API_BASE_URL}/api/clients/${currentClient._id}`, updateData, config);
                 setClients(clients.map(c => c._id === currentClient._id ? response.data : c));
             } else {
                 // Add new client
-                const response = await axios.post(`${API_BASE_URL}/api/clients`, currentClient);
+                const response = await axios.post(`${API_BASE_URL}/api/clients`, currentClient, config);
                 setClients([...clients, response.data]);
             }
             closeModal();
         } catch (err) {
             console.error('Error saving client:', err);
-            setError(err.response?.data?.error || err.message || 'Failed to save client');
+            setError(err.response?.data?.error || err.response?.data?.message || err.message || 'Failed to save client');
         }
     };
 
@@ -85,11 +93,14 @@ const ClientRecords = () => {
         }
         if (window.confirm('Are you sure you want to delete this client?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/api/clients/${id}`);
+                const token = localStorage.getItem("authToken");
+                await axios.delete(`${API_BASE_URL}/api/clients/${id}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 setClients(clients.filter(c => c._id !== id));
             } catch (err) {
                 console.error('Error deleting client:', err);
-                setError(err.response?.data?.error || err.message || 'Failed to delete client');
+                setError(err.response?.data?.error || err.response?.data?.message || err.message || 'Failed to delete client');
             }
         }
     };

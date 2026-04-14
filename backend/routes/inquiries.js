@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Inquiry = require('../models/Inquiry');
 const { sendInquiryReplyEmail } = require('../utils/emailService');
+const { sendSMS } = require('../utils/smsService');
 
 // CREATE an inquiry (from homepage)
 router.post('/', async (req, res) => {
@@ -77,9 +78,17 @@ router.put('/:id/reply', async (req, res) => {
                 replyText:       reply,
             });
             console.log(`Reply email sent to ${inquiry.email}`);
-        } catch (emailErr) {
+
+            // Send SMS notification if phone is available
+            if (inquiry.phone) {
+                await sendSMS(
+                    inquiry.phone, 
+                    `Hello ${inquiry.firstName}, your inquiry about ${inquiry.service} has been replied to. Message: "${reply.substring(0, 50)}..."`
+                );
+            }
+        } catch (commErr) {
             // Log but don't fail the request — reply is already saved
-            console.error('Email sending failed (reply still saved):', emailErr.message);
+            console.error('Communication sending failed (reply still saved):', commErr.message);
         }
 
         res.status(200).json({ message: 'Reply sent successfully.', inquiry });

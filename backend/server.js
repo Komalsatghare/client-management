@@ -4,6 +4,12 @@ const cors = require('cors');
 require('dotenv').config();
 
 const path = require('path');
+const fs = require('fs');
+const uploadDir = path.resolve(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -22,7 +28,13 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
+    
+    const isAllowed = allowedOrigins.indexOf(origin) !== -1 || 
+                     origin.endsWith('.netlify.app') || 
+                     origin.endsWith('.render.com');
+
+    if (!isAllowed) {
+      console.warn(`CORS blocked for origin: ${origin}`);
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
@@ -72,7 +84,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/inquiries', inquiryRoutes);
 app.use('/api/zoom', zoomRoutes);
 app.use('/api/agreements', agreementRoutes);
-app.use('/uploads', express.static('uploads')); // Serve uploaded images statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded images statically
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");

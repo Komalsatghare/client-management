@@ -207,15 +207,22 @@ const deleteOwnRequest = async (req, res) => {
     }
 };
 
-// @desc    Admin marks meeting as completed
+// @desc    Admin or Client marks meeting as completed
 // @route   PUT /api/project-requests/:id/complete
-// @access  Private (Admin only)
+// @access  Private (Admin or Client)
 const completeMeeting = async (req, res) => {
     try {
         const { id } = req.params;
+        const userId = req.user.id;
+        const userRole = req.user.role;
 
         const projectRequest = await ProjectRequest.findById(id);
         if (!projectRequest) return res.status(404).json({ message: 'Project request not found' });
+
+        // Authorization check
+        if (userRole !== 'admin' && projectRequest.clientId.toString() !== userId) {
+            return res.status(403).json({ message: 'Not authorized to complete this meeting' });
+        }
 
         if (projectRequest.status !== 'meeting_scheduled') {
             return res.status(400).json({ message: 'Only scheduled meetings can be marked as done' });

@@ -65,7 +65,7 @@ const generatePDF = async (agreement) => {
             fs.writeFileSync(filepath, pdfBuffer);
             resolve(`/uploads/${filename}`);
         }).catch(err => {
-            console.error("PDF Generate Error:", err);
+            console.error("PDF Generate Error Detail:", err);
             reject(err);
         });
     });
@@ -97,6 +97,7 @@ router.post('/upload', verifyToken, upload.single('agreementFile'), async (req, 
             uploadedByRole: uploadedByRole || (req.user.role === 'client' ? 'client' : 'admin'),
             uploadedByName: uploadedByName || 'Unknown',
             clientId: clientId || (req.user.role === 'client' ? req.user.id : null),
+            adminId: req.user.role === 'admin' ? req.user.id : null,
             clientSigned: true, 
             adminSigned: true
         });
@@ -134,6 +135,7 @@ router.post('/digital', verifyToken, async (req, res) => {
             uploadedByRole: uploadedByRole || (req.user.role === 'client' ? 'client' : 'admin'),
             uploadedByName: uploadedByName || 'Unknown',
             clientId: clientId || (req.user.role === 'client' ? req.user.id : null),
+            adminId: req.user.role === 'admin' ? req.user.id : (clientId ? null : null), // Can be improved
             contractorName: contractorName || '',
             location,
             contactNumber,
@@ -226,6 +228,9 @@ router.get('/', verifyToken, async (req, res) => {
         // If client, only show their own agreements
         if (req.user.role === 'client') {
             query = { clientId: req.user.id };
+        } else if (req.user.role === 'admin') {
+            // Admin only sees agreements they initiated/uploaded
+            query = { adminId: req.user.id };
         }
         const agreements = await Agreement.find(query).sort({ updatedAt: -1 });
         res.status(200).json(agreements);

@@ -25,6 +25,7 @@ const agreementSchema = new mongoose.Schema({
     uploadedByRole: { type: String, enum: ['admin', 'client'], default: 'client' },
     uploadedByName: { type: String },
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
+    adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     contractorName: { type: String, default: '' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }

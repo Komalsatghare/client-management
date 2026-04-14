@@ -61,8 +61,8 @@ router.put('/:id/schedule-meeting', verifyToken, authorizeRoles('admin'), schedu
 // Admin can request/re-request meeting
 router.put('/:id/admin-request-meeting', verifyToken, authorizeRoles('admin'), adminRequestMeeting);
 
-// Mark meeting as completed (Admin only)
-router.put('/:id/complete', verifyToken, authorizeRoles('admin'), completeMeeting);
+// Mark meeting as completed (Admin or Client)
+router.put('/:id/complete', verifyToken, completeMeeting);
 
 // Delete a project request (Admin only)
 router.delete('/:id', verifyToken, authorizeRoles('admin'), deleteRequest);
