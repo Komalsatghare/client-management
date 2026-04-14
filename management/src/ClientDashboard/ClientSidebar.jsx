@@ -1,5 +1,5 @@
 import React from "react";
-import { FileText, LogOut, LayoutDashboard, Building2 } from "lucide-react";
+import { FileText, LogOut, LayoutDashboard, Building2, X } from "lucide-react";
 
 export default function ClientSidebar({ activeSection, setActiveSection, onClose }) {
     const clientName = localStorage.getItem("clientName") || "Client";

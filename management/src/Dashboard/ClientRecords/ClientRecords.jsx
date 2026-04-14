@@ -14,7 +14,7 @@ const ClientRecords = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [currentClient, setCurrentClient] = useState({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started', password: '' });
+    const [currentClient, setCurrentClient] = useState({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started' });
 
     // Fetch clients on mount
     useEffect(() => {
@@ -43,14 +43,14 @@ const ClientRecords = () => {
             setCurrentClient(client);
         } else {
             setIsEditing(false);
-            setCurrentClient({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started', password: '' });
+            setCurrentClient({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started' });
         }
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setCurrentClient({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started', password: '' });
+        setCurrentClient({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started' });
     };
 
     const handleInputChange = (e) => {
@@ -245,18 +245,7 @@ const ClientRecords = () => {
                                         className="form-input"
                                     />
                                 </div>
-                                <div className="form-group">
-                                    <label className="form-label">Password</label>
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        value={currentClient.password}
-                                        onChange={handleInputChange}
-                                        className="form-input"
-                                        placeholder=""
-                                        required={!isEditing}
-                                    />
-                                </div>
+
                                 <div className="form-group">
                                     <label className="form-label">Project Name/Type</label>
                                     <input

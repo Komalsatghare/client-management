@@ -197,7 +197,11 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/api/projects`);
+      const token = localStorage.getItem("authToken");
+      if (!token) return;
+      const res = await axios.get(`${API_BASE_URL}/api/projects`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setProjectsData(res.data);
     } catch (err) {
       console.error("Failed to fetch projects", err);
@@ -206,7 +210,11 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
 
   const fetchClients = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/api/clients`);
+      const token = localStorage.getItem("authToken");
+      if (!token) return;
+      const res = await axios.get(`${API_BASE_URL}/api/clients`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setClients(res.data);
     } catch (err) {
       console.error("Failed to fetch clients", err);
@@ -257,7 +265,11 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
   const handleDeleteProject = async (id) => {
     if (!window.confirm("Are you sure you want to delete this project?")) return;
     try {
-      await axios.delete(`${API_BASE_URL}/api/projects/${id}`);
+      const token = localStorage.getItem("authToken");
+      if (!token) return;
+      await axios.delete(`${API_BASE_URL}/api/projects/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       fetchProjects();
     } catch (err) {
       console.error("Failed to delete project", err);
@@ -276,18 +288,22 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
         submitData.append('images', img);
       });
 
+      const token = localStorage.getItem("authToken");
+      const config = {
+        headers: { 
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      };
+
       if (isEditMode) {
         // Append existing images so they aren't lost
         existingImagesList.forEach(imgUrl => {
           submitData.append('existingImages', imgUrl);
         });
-        await axios.put(`${API_BASE_URL}/api/projects/${editProjectId}`, submitData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        await axios.put(`${API_BASE_URL}/api/projects/${editProjectId}`, submitData, config);
       } else {
-        await axios.post(`${API_BASE_URL}/api/projects`, submitData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        await axios.post(`${API_BASE_URL}/api/projects`, submitData, config);
       }
 
       setIsAddModalOpen(false);

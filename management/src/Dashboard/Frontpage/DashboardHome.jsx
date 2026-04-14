@@ -205,7 +205,10 @@ const DashboardHome = ({ onStatClick }) => {
 
       // Zoom Meetings (Upcoming or Requested)
       requests.filter(r => r.zoomJoinUrl || r.status === 'meeting_requested').slice(0, 5).forEach(r => {
-        const client = clients.find(c => c._id.toString() === r.clientId?.toString());
+        // Robust lookup: handles both ID strings and populated objects
+        const targetId = (r.clientId?._id || r.clientId)?.toString();
+        const client = clients.find(c => (c._id || c.id)?.toString() === targetId);
+        
         const isRequested = r.status === 'meeting_requested';
         newNotes.push({
           id: `zoom-${r._id}`,
