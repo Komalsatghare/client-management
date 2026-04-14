@@ -14,7 +14,7 @@ const clientSchema = new mongoose.Schema({
     notes: String,
     password: {
         type: String,
-        required: [true, 'Password is required to log into the Client Dashboard']
+        required: [false, 'Password is optional']
     },
     role: {
         type: String,

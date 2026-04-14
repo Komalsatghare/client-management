@@ -688,7 +688,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                                     <button onClick={() => openEditModal(agr)} style={{ padding: '6px 12px', background: 'rgba(255, 255, 255, 0.05)', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                                         <Eye size={14} /> Open Workspace
                                                     </button>
-                                                    {uploadedByRole === 'admin' && <button onClick={(e) => handleDelete(agr._id, e)} style={{ padding: '6px 10px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '6px', cursor: 'pointer' }}><Trash2 size={14} /></button>}
+                                                    <button onClick={(e) => handleDelete(agr._id, e)} style={{ padding: '6px 10px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '6px', cursor: 'pointer' }}><Trash2 size={14} /></button>
                                                 </div>
                                             </div>
                                         ))}

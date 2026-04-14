@@ -245,11 +245,20 @@ router.get('/', verifyToken, async (req, res) => {
 });
 
 // @route   DELETE /api/agreements/:id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyToken, async (req, res) => {
     try {
+        const agreement = await Agreement.findById(req.params.id);
+        if (!agreement) return res.status(404).json({ message: 'Agreement not found' });
+
+        // Check permission: Admin can delete anything, Client can only delete their own
+        if (req.user.role !== 'admin' && agreement.clientId?.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Forbidden: You can only delete your own agreements.' });
+        }
+
         await Agreement.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: 'Agreement deleted' });
     } catch (error) {
+        console.error('Delete Agreement Error:', error);
         res.status(500).json({ message: 'Server error during deletion' });
     }
 });

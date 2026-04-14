@@ -10,7 +10,12 @@ const upload = multer();
 
 router.post('/', verifyToken, authorizeRoles('admin'), async (req, res) => {
   try {
-    const client = new Client(req.body);
+    const clientData = { ...req.body };
+    // If no password provided, use a default fallback to prevent empty passwords
+    if (!clientData.password) {
+      clientData.password = "Client@123"; 
+    }
+    const client = new Client(clientData);
     await client.save();
 
     // If a project name was provided during client creation, auto-create a Project entry
