@@ -75,8 +75,19 @@ const generatePDF = async (agreement) => {
     });
 };
 
+
 // @route   POST /api/agreements/upload (Manual)
-router.post('/upload', verifyToken, upload.single('agreementFile'), async (req, res) => {
+router.post('/upload', verifyToken, (req, res, next) => {
+    upload.single('agreementFile')(req, res, (err) => {
+        if (err) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ message: 'File is too large. Max limit is 10MB.' });
+            }
+            return res.status(400).json({ message: err.message || 'Error during file upload middleware' });
+        }
+        next();
+    });
+}, async (req, res) => {
     try {
         const { projectName, uploadedByRole, uploadedByName, clientId } = req.body;
 
@@ -100,7 +111,7 @@ router.post('/upload', verifyToken, upload.single('agreementFile'), async (req, 
             size: req.file.size,
             uploadedByRole: uploadedByRole || (req.user.role === 'client' ? 'client' : 'admin'),
             uploadedByName: uploadedByName || 'Unknown',
-            clientId: clientId || (req.user.role === 'client' ? req.user.id : null),
+            clientId: req.user.role === 'client' ? req.user.id : (clientId || null),
             adminId: req.user.role === 'admin' ? req.user.id : null,
             clientSigned: true, 
             adminSigned: true
@@ -109,7 +120,7 @@ router.post('/upload', verifyToken, upload.single('agreementFile'), async (req, 
         res.status(201).json({ message: 'Agreement uploaded successfully', agreement: newAgreement });
     } catch (error) {
         console.error('Agreement Upload Error:', error);
-        res.status(500).json({ message: 'Server error during upload' });
+        res.status(500).json({ message: 'Server error during upload: ' + error.message });
     }
 });
 

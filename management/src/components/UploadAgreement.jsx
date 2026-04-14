@@ -124,13 +124,20 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                     Authorization: `Bearer ${getToken()}`
                 }
             });
+
             setSuccess(t('agreement_upload_success') || 'Agreement uploaded successfully!');
             setProjectName('');
             setAgreementFile(null);
+            // Reset the native file input
+            const fileInput = document.getElementById('agreementFile');
+            if (fileInput) fileInput.value = '';
+            
             fetchAgreements();
+            setTimeout(() => setSuccess(''), 5000);
         } catch (err) {
-            console.error('Upload Error', err);
-            setError(t('fail_upload_agreement') || 'Failed to upload agreement.');
+            console.error('Upload Error:', err);
+            const serverMsg = err.response?.data?.message || err.message;
+            setError(serverMsg || t('fail_upload_agreement') || 'Failed to upload agreement.');
         } finally {
             setLoading(false);
         }

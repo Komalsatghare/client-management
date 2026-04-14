@@ -13,6 +13,7 @@ import { API_BASE_URL, resolveUrl } from "../config";
 import "./dashboard.css";
 import axios from 'axios';
 import UploadAgreement from '../components/UploadAgreement';
+import AdminReviews from './Reviews/AdminReviews';
 
 const DashboardLayout = () => {
   const [activeSection, setActiveSection] = useState("Dashboard");
@@ -131,6 +132,8 @@ const DashboardLayout = () => {
         return <UserProfile onProfileUpdate={fetchProfile} />;
       case "Agreements":
         return <UploadAgreement uploadedByRole="admin" uploadedByName={adminData.name} />;
+      case "Reviews":
+        return <AdminReviews />;
       default:
         return <DashboardHome />;
     }

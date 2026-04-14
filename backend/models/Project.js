@@ -41,7 +41,8 @@ const projectSchema = new mongoose.Schema({
             type: String,
             enum: ['Pending', 'In Progress', 'Completed'],
             default: 'Pending'
-        }
+        },
+        images: [String]
     }],
 
     notes: String,

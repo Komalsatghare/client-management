@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Users, FolderKanban, FileText, Mail, Globe, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, Users, FolderKanban, FileText, Mail, Globe, LogOut, X, Star } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 const Sidebar = ({ activeSection, setActiveSection, adminData, isOpen, setIsOpen }) => {
@@ -14,6 +14,7 @@ const Sidebar = ({ activeSection, setActiveSection, adminData, isOpen, setIsOpen
         { id: 'Public Projects', name: t('public_projects'), icon: <Globe size={20} /> },
         { id: 'Inquiries', name: t('inquiries'), icon: <Mail size={20} /> },
         { id: 'Agreements', name: t('agreements'), icon: <FileText size={20} /> },
+        { id: 'Reviews', name: t('reviews') || "Reviews", icon: <Star size={20} /> },
     ];
 
     const handleLogout = () => {

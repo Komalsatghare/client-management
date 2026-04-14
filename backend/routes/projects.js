@@ -177,16 +177,21 @@ router.delete('/:id', verifyToken, authorizeRoles('admin'), async (req, res) => 
     }
 });
 
-// Add Progress Milestone
-router.put('/:id/progress', verifyToken, authorizeRoles('admin'), async (req, res) => {
+// Add Progress Milestone with images
+router.put('/:id/progress', verifyToken, authorizeRoles('admin'), upload.array('images', 10), async (req, res) => {
     try {
         const { title, description, status } = req.body;
+        
+        let imageUrls = [];
+        if (req.files) {
+            imageUrls = req.files.map(file => file.path); // Cloudinary URL
+        }
 
         const project = await Project.findByIdAndUpdate(
             req.params.id,
             {
                 $push: {
-                    progress: { title, description, status }
+                    progress: { title, description, status, images: imageUrls }
                 }
             },
             { returnDocument: 'after' }

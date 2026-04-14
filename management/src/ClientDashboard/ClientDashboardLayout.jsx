@@ -3,6 +3,8 @@ import RequestNewProject from "./RequestNewProject";
 import { Building2, LogOut, Mail, Phone, X, Shield, Sparkles, Home, Globe, Menu } from "lucide-react";
 import "./ClientDashboard.css";
 import UploadAgreement from "../components/UploadAgreement";
+import ClientReview from "./ClientReview";
+import ClientTrackProject from "./ClientTrackProject";
 import { useLanguage } from "../context/LanguageContext";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import ClientSidebar from "./ClientSidebar";
@@ -50,6 +52,10 @@ export default function ClientDashboardLayout() {
                 return <RequestNewProject />;
             case "Agreements":
                 return <UploadAgreement uploadedByRole="client" uploadedByName={clientName} />;
+            case "Review":
+                return <ClientReview />;
+            case "Track My Project":
+                return <ClientTrackProject />;
             default:
                 return <RequestNewProject />;
         }
@@ -100,11 +106,11 @@ export default function ClientDashboardLayout() {
                     }
 
                     /* Sidebar Mobile Handling */
-                    .cdl-sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99; backdrop-filter:blur(4px); }
+                    .cdl-sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1100; backdrop-filter:blur(4px); }
                     .cdl-sidebar-overlay.show { display:block; }
                     @media (max-width: 768px) {
-                        .client-sidebar { position:fixed !important; left:-256px !important; z-index:100 !important; }
-                        .client-sidebar.open { left:0 !important; }
+                        .client-sidebar-container { position:fixed !important; left:-280px !important; z-index:1200 !important; transition: left 0.3s ease !important; }
+                        .client-sidebar-container.open { left:0 !important; }
                         .client-main-area { margin-left:0 !important; }
                     }
                 `}</style>
@@ -129,13 +135,18 @@ export default function ClientDashboardLayout() {
                     }}>
                         {/* Brand + Hamburger */}
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                            {(window.innerWidth >= 768 && !isSidebarOpen) && (
-                                <button className="cdl-hamburger" onClick={() => setIsSidebarOpen(true)} style={{ display:"flex", marginRight:"8px" }}>
-                                    <Menu size={20} />
-                                </button>
-                            )}
-                            <button className="cdl-hamburger" onClick={() => setIsSidebarOpen(true)} style={window.innerWidth >= 768 ? {display:"none"} : {display:"flex"}}>
-                                <Menu size={20} />
+                            <button 
+                                className="cdl-hamburger" 
+                                onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+                                style={{ 
+                                    display: (window.innerWidth < 768 || !isSidebarOpen) ? "flex" : "none",
+                                    marginRight: "8px",
+                                    background: isSidebarOpen ? "rgba(239, 68, 68, 0.1)" : "rgba(255, 255, 255, 0.05)",
+                                    borderColor: isSidebarOpen ? "rgba(239, 68, 68, 0.2)" : "rgba(255, 255, 255, 0.1)",
+                                    color: isSidebarOpen ? "#f87171" : "white"
+                                }}
+                            >
+                                {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
                             </button>
                             <div style={{
                                 width: "40px", height: "40px", borderRadius: "12px",

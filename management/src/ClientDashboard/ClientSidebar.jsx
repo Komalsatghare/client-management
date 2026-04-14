@@ -1,5 +1,5 @@
 import React from "react";
-import { FileText, LogOut, LayoutDashboard, Building2, X } from "lucide-react";
+import { FileText, LogOut, LayoutDashboard, Building2, X, Star } from "lucide-react";
 
 export default function ClientSidebar({ activeSection, setActiveSection, onClose }) {
     const clientName = localStorage.getItem("clientName") || "Client";
@@ -12,7 +12,9 @@ export default function ClientSidebar({ activeSection, setActiveSection, onClose
 
     const menuItems = [
         { name: "Request New Project", icon: <FileText size={18} />, desc: "Submit proposals" },
+        { name: "Track My Project", icon: <FileText size={18} />, desc: "Milestones & Progress" },
         { name: "Agreements", icon: <FileText size={18} />, desc: "View and sign contracts" },
+        { name: "Review", icon: <Star size={18} />, desc: "Give your feedback" },
     ];
 
     return (

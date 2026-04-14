@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ChevronDown, ChevronUp, Plus, CheckCircle, Clock, AlertCircle, Activity } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus, CheckCircle, Clock, AlertCircle, Activity, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
 
 
@@ -217,6 +217,8 @@ const TrackProject = () => {
     const [modalOpen, setModalOpen]         = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
     const [milestoneForm, setMilestoneForm] = useState({ title:'', description:'', status:'Pending' });
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [actionLoading, setActionLoading] = useState(false);
 
     useEffect(() => { fetchProjects(); }, []);
 
@@ -245,18 +247,36 @@ const TrackProject = () => {
 
     const handleMilestoneSubmit = async (e) => {
         e.preventDefault();
+        setActionLoading(true);
         try {
             const token = localStorage.getItem('authToken');
+            const fData = new FormData();
+            fData.append('title', milestoneForm.title);
+            fData.append('description', milestoneForm.description);
+            fData.append('status', milestoneForm.status);
+            
+            if (selectedFiles.length > 0) {
+                Array.from(selectedFiles).forEach(file => {
+                    fData.append('images', file);
+                });
+            }
+
             await axios.put(
                 `${API_BASE_URL}/api/projects/${selectedProject._id}/progress`,
-
-                milestoneForm,
-                { headers: { Authorization: `Bearer ${token}` } }
+                fData,
+                { headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                } }
             );
             setModalOpen(false);
+            setSelectedFiles([]);
             fetchProjects();
         } catch (err) {
+            console.error("Error adding milestone:", err);
             alert('Failed to add milestone.');
+        } finally {
+            setActionLoading(false);
         }
     };
 
@@ -364,6 +384,15 @@ const TrackProject = () => {
                                                                 {ms.title}
                                                             </p>
                                                             <p className="tp-ms-desc">{ms.description}</p>
+                                                            {ms.images && ms.images.length > 0 && (
+                                                                <div style={{ display:'flex', gap:'8px', margin:'12px 0', flexWrap:'wrap' }}>
+                                                                    {ms.images.map((img, i) => (
+                                                                        <div key={i} style={{ width:'80px', height:'80px', borderRadius:'8px', overflow:'hidden', border:'1px solid rgba(255,255,255,0.1)' }}>
+                                                                            <img src={img} alt={`Milestone ${i}`} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            )}
                                                             <div className="tp-ms-meta">
                                                                 {ms.date && (
                                                                     <span className="tp-ms-date">
@@ -426,6 +455,27 @@ const TrackProject = () => {
                                         <option value="Completed">Completed</option>
                                     </select>
                                 </div>
+                                
+                                <div style={{ marginBottom:22 }}>
+                                    <label className="tp-lbl">Progress Photos</label>
+                                    <div style={{ position:'relative' }}>
+                                        <input 
+                                            type="file" 
+                                            multiple 
+                                            accept="image/*"
+                                            onChange={e => setSelectedFiles(e.target.files)}
+                                            style={{ display:'none' }}
+                                            id="milestone-images"
+                                        />
+                                        <label htmlFor="milestone-images" style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 14px', background:'rgba(255,255,255,0.03)', border:'1px dashed rgba(255,255,255,0.1)', borderRadius:'10px', cursor:'pointer' }}>
+                                            <ImageIcon size={18} color="#64748b" />
+                                            <span style={{ fontSize:'13px', color: selectedFiles.length > 0 ? '#60a5fa' : '#475569' }}>
+                                                {selectedFiles.length > 0 ? `${selectedFiles.length} files selected` : 'Click to upload photos...'}
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+
                                 {/* Preview dot */}
                                 <div style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 13px', background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'9px', marginBottom:20 }}>
                                     <div style={{ width:10, height:10, borderRadius:'50%', background: MS_STATUS[milestoneForm.status]?.dot || '#334155', boxShadow:`0 0 8px ${MS_STATUS[milestoneForm.status]?.dot || '#334155'}99`, flexShrink:0 }} />
@@ -434,7 +484,10 @@ const TrackProject = () => {
                                 </div>
                                 <div style={{ display:'flex', justifyContent:'flex-end', gap:'10px', paddingTop:'16px', borderTop:'1px solid rgba(255,255,255,0.07)' }}>
                                     <button type="button" className="tp-btn-ghost" onClick={() => setModalOpen(false)}>Cancel</button>
-                                    <button type="submit" className="tp-btn-primary">Save Milestone</button>
+                                    <button type="submit" className="tp-btn-primary" disabled={actionLoading}>
+                                        {actionLoading ? <Loader2 className="animate-spin" size={16} /> : null}
+                                        {actionLoading ? 'Saving...' : 'Save Milestone'}
+                                    </button>
                                 </div>
                             </form>
                         </div>

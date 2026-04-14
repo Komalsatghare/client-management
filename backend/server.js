@@ -71,6 +71,7 @@ const zoomRoutes = require('./routes/zoomRoutes');
 const publicProjectRoutes = require('./routes/publicProjects');
 const feedbackRoutes = require('./routes/feedback');
 const agreementRoutes = require('./routes/agreementRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 app.use('/api/clients', clientRoutes);
 app.use('/api/projects', projectRoutes);
@@ -84,7 +85,28 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/inquiries', inquiryRoutes);
 app.use('/api/zoom', zoomRoutes);
 app.use('/api/agreements', agreementRoutes);
+app.use('/api/reviews', reviewRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded images statically
+
+
+// Global Error Handler (Crucial for Multer/Middleware errors)
+app.use((err, req, res, next) => {
+  console.error('Global Error Handler:', err);
+  
+  // Handle Multer errors specifically
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({ message: 'File is too large. Max limit is 10MB.' });
+  }
+  
+  if (err.message === 'Invalid file type') {
+    return res.status(400).json({ message: 'Invalid file type. Only PDF, Word Documents, and Images are allowed.' });
+  }
+
+  res.status(err.status || 500).json({
+    message: err.message || 'Internal Server Error',
+    error: process.env.NODE_ENV === 'development' ? err : {}
+  });
+});
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");
