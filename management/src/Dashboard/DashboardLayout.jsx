@@ -9,7 +9,7 @@ import UserProfile from "./profile/UserProfile";
 import ProjectRequests from "./ProjectRequests";
 import TrackProject from "./Projects/TrackProject";
 import Inquiries from "./Inquiries/Inquiries";
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL, resolveUrl } from "../config";
 import "./dashboard.css";
 import axios from 'axios';
 import UploadAgreement from '../components/UploadAgreement';

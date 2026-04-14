@@ -462,10 +462,10 @@ const Projects = ({ initialFilter = 'All' }) => {
                                                     {currentProject.images.map((img, index) => (
                                                         <div key={`existing-${index}`} style={{ position: 'relative' }}>
                                                             <img
-                                                                src={img?.startsWith('http') ? img : `${API_BASE_URL}${img}`}
+                                                                src={resolveUrl(img)}
                                                                 alt="Existing"
                                                                 style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', cursor: 'pointer' }}
-                                                                onClick={() => openImageViewer(img?.startsWith('http') ? img : `${API_BASE_URL}${img}`)}
+                                                                onClick={() => openImageViewer(resolveUrl(img))}
                                                             />
                                                             <button
                                                                 type="button"
