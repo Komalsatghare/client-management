@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from 'axios';
 import { Download, X, Maximize2, Save } from 'lucide-react';
+import { API_BASE_URL, resolveUrl } from "../../config";
 
 const ProjectDetailsView = ({ project, goBack, onImageClick }) => {
   const downloadImage = async (url) => {
@@ -56,7 +57,7 @@ const ProjectDetailsView = ({ project, goBack, onImageClick }) => {
     try {
       setIsSavingFin(true);
       const token = localStorage.getItem("authToken");
-      await axios.put(`http://localhost:5000/api/projects/${project._id}`, finData, {
+      await axios.put(`${API_BASE_URL}/api/projects/${project._id}`, finData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("Financial details updated successfully!");
@@ -79,7 +80,7 @@ const ProjectDetailsView = ({ project, goBack, onImageClick }) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("authToken");
-      await axios.post('http://localhost:5000/api/payments', {
+      await axios.post(`${API_BASE_URL}/api/payments`, {
         projectId: project._id,
         clientId: project.clientId,
         amount: Number(paymentData.amount),
@@ -248,7 +249,7 @@ const ProjectDetailsView = ({ project, goBack, onImageClick }) => {
               {project.images.map((img, index) => (
                 <div
                   key={index}
-                  onClick={() => onImageClick(`http://localhost:5000${img}`)}
+                  onClick={() => onImageClick(resolveUrl(img))}
                   style={{
                     width: '200px', height: '150px', borderRadius: '8px', overflow: 'hidden',
                     boxShadow: '0 2px 5px rgba(0,0,0,0.1)', border: '1px solid #ddd',
@@ -257,11 +258,11 @@ const ProjectDetailsView = ({ project, goBack, onImageClick }) => {
                   className="project-img-thumb"
                 >
                   <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0, background: 'rgba(0,0,0,0)', transition: 'background 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', opacity: 0, gap: '15px' }} className="img-overlay">
-                    <Maximize2 size={24} style={{ cursor: 'pointer', pointerEvents: 'auto' }} onClick={(e) => { e.stopPropagation(); onImageClick(`http://localhost:5000${img}`); }} />
-                    <Download size={24} style={{ cursor: 'pointer', pointerEvents: 'auto' }} onClick={(e) => { e.stopPropagation(); downloadImage(`http://localhost:5000${img}`); }} />
+                    <Maximize2 size={24} style={{ cursor: 'pointer', pointerEvents: 'auto' }} onClick={(e) => { e.stopPropagation(); onImageClick(resolveUrl(img)); }} />
+                    <Download size={24} style={{ cursor: 'pointer', pointerEvents: 'auto' }} onClick={(e) => { e.stopPropagation(); downloadImage(resolveUrl(img)); }} />
                   </div>
                   <img
-                    src={`http://localhost:5000${img}`}
+                    src={resolveUrl(img)}
                     alt={`Project Img ${index + 1}`}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x300/1e293b/94a3b8?text=Image+Not+Found'; }}

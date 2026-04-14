@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { User, Mail, Phone, Shield, Save, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from "../../config";
 import '../dashboard.css';
 
 const UserProfile = ({ onProfileUpdate }) => {
@@ -21,7 +22,7 @@ const UserProfile = ({ onProfileUpdate }) => {
         const fetchUserData = async () => {
             try {
                 const token = localStorage.getItem("authToken");
-                const res = await axios.get('http://localhost:5000/api/auth/me', {
+                const res = await axios.get(`${API_BASE_URL}/api/auth/me`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (res.data && res.data.user) {
@@ -54,7 +55,7 @@ const UserProfile = ({ onProfileUpdate }) => {
 
         try {
             const token = localStorage.getItem("authToken");
-            const res = await axios.patch('http://localhost:5000/api/auth/me', formData, {
+            const res = await axios.patch(`${API_BASE_URL}/api/auth/me`, formData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

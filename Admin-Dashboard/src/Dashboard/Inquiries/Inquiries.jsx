@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLanguage } from "../../context/LanguageContext";
+import { API_BASE_URL } from "../../config";
 
 const Inquiries = () => {
     const { t } = useLanguage();
@@ -13,7 +14,7 @@ const Inquiries = () => {
 
     const fetchInquiries = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/inquiries");
+            const response = await axios.get(`${API_BASE_URL}/api/inquiries`);
             setInquiries(response.data);
         } catch (error) {
             console.error("Failed to fetch inquiries:", error);
@@ -25,7 +26,7 @@ const Inquiries = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this inquiry?")) return;
         try {
-            await axios.delete(`http://localhost:5000/api/inquiries/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/inquiries/${id}`);
             fetchInquiries();
         } catch (error) {
             console.error("Failed to delete inquiry:", error);
@@ -98,3 +99,4 @@ const Inquiries = () => {
 };
 
 export default Inquiries;
+

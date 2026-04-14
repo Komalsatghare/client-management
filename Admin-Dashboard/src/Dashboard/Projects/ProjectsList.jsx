@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useLanguage } from "../../context/LanguageContext";
+import { API_BASE_URL, resolveUrl } from "../../config";
 
 const ProjectsList = ({ setSelectedProject, initialFilter }) => {
   const { t } = useLanguage();
@@ -35,7 +36,7 @@ const ProjectsList = ({ setSelectedProject, initialFilter }) => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/projects');
+      const res = await axios.get(`${API_BASE_URL}/api/projects`);
       setProjectsData(res.data);
     } catch (err) {
       console.error("Failed to fetch projects", err);
@@ -44,7 +45,7 @@ const ProjectsList = ({ setSelectedProject, initialFilter }) => {
 
   const fetchClients = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/clients');
+      const res = await axios.get(`${API_BASE_URL}/api/clients`);
       setClients(res.data);
     } catch (err) {
       console.error("Failed to fetch clients", err);
@@ -96,7 +97,7 @@ const ProjectsList = ({ setSelectedProject, initialFilter }) => {
   const handleDeleteProject = async (id) => {
     if (!window.confirm("Are you sure you want to delete this project?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/projects/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/projects/${id}`);
       fetchProjects();
     } catch (err) {
       console.error("Failed to delete project", err);
@@ -106,7 +107,7 @@ const ProjectsList = ({ setSelectedProject, initialFilter }) => {
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/projects/${id}`, { status: newStatus });
+      await axios.put(`${API_BASE_URL}/api/projects/${id}`, { status: newStatus });
       setStatusEditId(null);
       setStatusDraft("");
       fetchProjects();
@@ -132,11 +133,11 @@ const ProjectsList = ({ setSelectedProject, initialFilter }) => {
         existingImagesList.forEach(imgUrl => {
           submitData.append('existingImages', imgUrl);
         });
-        await axios.put(`http://localhost:5000/api/projects/${editProjectId}`, submitData, {
+        await axios.put(`${API_BASE_URL}/api/projects/${editProjectId}`, submitData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       } else {
-        await axios.post('http://localhost:5000/api/projects', submitData, {
+        await axios.post(`${API_BASE_URL}/api/projects`, submitData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       }
@@ -333,7 +334,7 @@ const ProjectsList = ({ setSelectedProject, initialFilter }) => {
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                       {existingImagesList.map((img, idx) => (
                         <div key={`existing-${idx}`} style={{ width: 60, height: 60, borderRadius: 6, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
-                          <img src={`http://localhost:5000${img}`} alt="existing" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          <img src={resolveUrl(img)} alt="existing" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
                       ))}
                     </div>

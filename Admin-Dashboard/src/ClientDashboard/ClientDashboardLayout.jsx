@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import React, { useState, useEffect } from "react";
 import ClientSidebar from "./ClientSidebar";
 import MyProjects from "./MyProjects";
@@ -32,7 +33,7 @@ export default function ClientDashboardLayout() {
     const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem('authToken');
-            const res = await axios.get(`http://localhost:5000/api/clients/${clientId}/notifications`, {
+            const res = await axios.get(`${API_BASE_URL}/api/clients/${clientId}/notifications`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setNotifications(res.data);
@@ -48,7 +49,7 @@ export default function ClientDashboardLayout() {
         if (!isDropdownOpen && notifications.some(n => !n.read)) {
             try {
                 const token = localStorage.getItem('authToken');
-                await axios.put(`http://localhost:5000/api/clients/${clientId}/notifications/mark-read`, {}, {
+                await axios.put(`${API_BASE_URL}/api/clients/${clientId}/notifications/mark-read`, {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 // Optimistically update local state
@@ -165,3 +166,5 @@ export default function ClientDashboardLayout() {
         </div>
     );
 }
+
+

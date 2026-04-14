@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import React, { useState } from "react";
 import bgImage from "../../assets/construction-bg.png";
 
@@ -24,7 +25,7 @@ function EnquirySection() {
     setSubmitMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/inquiries", {
+      const response = await fetch("${API_BASE_URL}/api/inquiries", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -256,3 +257,5 @@ function EnquirySection() {
 }
 
 export default EnquirySection;
+
+

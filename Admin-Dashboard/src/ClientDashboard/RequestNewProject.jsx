@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { FolderGit2, DollarSign, Clock, Plus, AlertCircle, Video, CheckCircle, XCircle, Calendar, Hourglass, CalendarCheck } from "lucide-react";
 import axios from "axios";
 import RequestProjectModal from "./RequestProjectModal";
@@ -27,7 +28,7 @@ export default function RequestNewProject() {
     const fetchRequests = async () => {
         try {
             const token = localStorage.getItem("clientAuthToken");
-            const res = await axios.get("http://localhost:5000/api/project-requests/my-requests", {
+            const res = await axios.get("${API_BASE_URL}/api/project-requests/my-requests", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setRequests(res.data);
@@ -44,7 +45,7 @@ export default function RequestNewProject() {
         setActionLoading(id);
         try {
             const token = localStorage.getItem("clientAuthToken");
-            await axios.put(`http://localhost:5000/api/project-requests/${id}/request-meeting`, {}, {
+            await axios.put(`${API_BASE_URL}/api/project-requests/${id}/request-meeting`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchRequests();
@@ -211,3 +212,5 @@ export default function RequestNewProject() {
         </div>
     );
 }
+
+

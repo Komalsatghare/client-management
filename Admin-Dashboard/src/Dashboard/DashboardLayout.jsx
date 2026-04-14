@@ -37,7 +37,7 @@ const DashboardLayout = () => {
     const token = localStorage.getItem("authToken");
     if (token) {
       try {
-        const response = await fetch("http://localhost:5000/api/auth/me", {
+        const response = await fetch("${API_BASE_URL}/api/auth/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -225,3 +225,4 @@ const DashboardLayout = () => {
 };
 
 export default DashboardLayout;
+

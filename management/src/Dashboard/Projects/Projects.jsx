@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Folder, Calendar, DollarSign, FileText, Image as ImageIcon, Eye, Edit2, Trash2 } from 'lucide-react';
 import axios from 'axios';
-import { API_BASE_URL } from '../../config';
+import { API_BASE_URL, resolveUrl } from '../../config';
 import '../dashboard.css';
 
 
@@ -462,10 +462,10 @@ const Projects = ({ initialFilter = 'All' }) => {
                                                     {currentProject.images.map((img, index) => (
                                                         <div key={`existing-${index}`} style={{ position: 'relative' }}>
                                                             <img
-                                                                src={`${API_BASE_URL}${img}`}
+                                                                src={img?.startsWith('http') ? img : `${API_BASE_URL}${img}`}
                                                                 alt="Existing"
                                                                 style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', cursor: 'pointer' }}
-                                                                onClick={() => openImageViewer(`${API_BASE_URL}${img}`)}
+                                                                onClick={() => openImageViewer(img?.startsWith('http') ? img : `${API_BASE_URL}${img}`)}
                                                             />
                                                             <button
                                                                 type="button"
@@ -597,10 +597,10 @@ const Projects = ({ initialFilter = 'All' }) => {
                                             currentProject.images.map((img, index) => (
                                                 <img
                                                     key={index}
-                                                    src={`${API_BASE_URL}${img}`}
+                                                    src={resolveUrl(img)}
                                                     alt={`Project ${index + 1}`}
                                                     style={{ width: '100%', borderRadius: '8px', border: '1px solid #eee', cursor: 'pointer' }}
-                                                    onClick={() => openImageViewer(`${API_BASE_URL}${img}`)}
+                                                    onClick={() => openImageViewer(resolveUrl(img))}
                                                 />
                                             ))
                                         ) : (

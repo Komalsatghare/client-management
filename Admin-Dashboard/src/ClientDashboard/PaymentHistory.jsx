@@ -1,6 +1,8 @@
+import React, { useState, useEffect } from "react";
 import { CheckCircle2, Search, Download, AlertCircle, CheckCircle } from "lucide-react";
 import axios from "axios";
 import { useLanguage } from "../context/LanguageContext";
+import { API_BASE_URL } from "../config";
 
 export default function PaymentHistory() {
     const { t } = useLanguage();
@@ -16,7 +18,7 @@ export default function PaymentHistory() {
                 const clientDataStr = localStorage.getItem("clientData");
                 if (clientDataStr) {
                     const clientData = JSON.parse(clientDataStr);
-                    const res = await axios.get(`http://localhost:5000/api/payments/client/${clientData.id}`, {
+                    const res = await axios.get(`${API_BASE_URL}/api/payments/client/${clientData.id}`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     setPayments(res.data.payments);
@@ -105,7 +107,7 @@ export default function PaymentHistory() {
                                     <td style={{ fontWeight: '600', color: '#10b981' }}>₹{req.amount}</td>
                                     <td>{req.paymentMode}</td>
                                     <td style={{ textAlign: "center" }}>
-                                        <a href={`http://localhost:5000${req.billFile}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#3b82f6', textDecoration: 'none', fontSize: '14px', fontWeight: '500' }}>
+                                        <a href={req.billFile?.startsWith('http') ? req.billFile : `${API_BASE_URL}${req.billFile}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#3b82f6', textDecoration: 'none', fontSize: '14px', fontWeight: '500' }}>
                                             <Download size={16} /> PDF
                                         </a>
                                     </td>

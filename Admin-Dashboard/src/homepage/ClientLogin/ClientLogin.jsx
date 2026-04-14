@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Eye, EyeOff, Lock, LogIn } from "lucide-react";
@@ -16,7 +17,7 @@ export default function ClientLogin() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:5000/api/client/login", {
+            const response = await fetch("${API_BASE_URL}/api/client/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
@@ -290,3 +291,5 @@ export default function ClientLogin() {
         </>
     );
 }
+
+

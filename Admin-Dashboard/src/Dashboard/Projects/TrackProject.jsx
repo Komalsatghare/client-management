@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import { ChevronDown, ChevronUp, Plus, Edit2, Trash2, CheckCircle, Clock } from 'lucide-react';
 import './../dashboard.css';
 import { useLanguage } from '../../context/LanguageContext';
@@ -26,7 +27,7 @@ const TrackProject = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('authToken');
-            const response = await axios.get('http://localhost:5000/api/projects', {
+            const response = await axios.get('${API_BASE_URL}/api/projects', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setProjects(response.data);
@@ -50,7 +51,7 @@ const TrackProject = () => {
         try {
             const token = localStorage.getItem('authToken');
             await axios.put(
-                `http://localhost:5000/api/projects/${selectedProjectForMilestone._id}/progress`,
+                `${API_BASE_URL}/api/projects/${selectedProjectForMilestone._id}/progress`,
                 milestoneForm,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -217,3 +218,5 @@ const TrackProject = () => {
 };
 
 export default TrackProject;
+
+

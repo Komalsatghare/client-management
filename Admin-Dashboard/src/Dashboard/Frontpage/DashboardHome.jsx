@@ -1,5 +1,7 @@
+import React, { useState, useEffect } from "react";
 import { Users, DollarSign, Activity, Mail, FolderKanban, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { API_BASE_URL } from "../../config";
 import '../dashboard.css';
 
 const StatCard = ({ title, value, icon, colorClass, trend, onClick }) => (
@@ -30,9 +32,9 @@ const DashboardHome = ({ onStatClick }) => {
     const fetchStats = async () => {
       try {
         const [clientsRes, projectsRes, inquiriesRes] = await Promise.allSettled([
-          fetch('http://localhost:5000/api/clients').then(r => r.json()),
-          fetch('http://localhost:5000/api/projects').then(r => r.json()),
-          fetch('http://localhost:5000/api/inquiries').then(r => r.json()),
+          fetch(`${API_BASE_URL}/api/clients`).then(r => r.json()),
+          fetch(`${API_BASE_URL}/api/projects`).then(r => r.json()),
+          fetch(`${API_BASE_URL}/api/inquiries`).then(r => r.json()),
         ]);
 
         const clients  = clientsRes.status  === 'fulfilled' ? clientsRes.value  : [];

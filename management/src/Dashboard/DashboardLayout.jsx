@@ -656,7 +656,7 @@ const ProjectDetails = ({ project, goBack }) => {
             <div style={{ display:'flex', flexWrap:'wrap', gap:'14px' }}>
               {project.images.map((img,index)=>(
                 <div key={index} style={{ width:'200px', height:'140px', borderRadius:'10px', overflow:'hidden', border:'1px solid rgba(255,255,255,0.08)', boxShadow:'0 4px 14px rgba(0,0,0,0.3)' }}>
-                  <img src={`${API_BASE_URL}${img}`} alt={`Project Img ${index+1}`} style={{ width:'100%', height:'100%', objectFit:'cover' }} onError={e=>{e.target.onerror=null;e.target.src='https://placehold.co/400x300/1e293b/94a3b8?text=No+Image'}} />
+                  <img src={resolveUrl(img)} alt={`Project Img ${index+1}`} style={{ width:'100%', height:'100%', objectFit:'cover' }} onError={e=>{e.target.onerror=null;e.target.src='https://placehold.co/400x300/1e293b/94a3b8?text=No+Image'}} />
                 </div>
               ))}
             </div>

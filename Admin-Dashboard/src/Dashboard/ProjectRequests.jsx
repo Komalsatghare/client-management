@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLanguage } from "../../context/LanguageContext";
+import { API_BASE_URL } from "../config";
 import {
     Search, CheckCircle, XCircle, AlertCircle, Calendar,
     User, FileText, Video, Trash2, Clock, DollarSign, Edit3
@@ -29,7 +30,7 @@ export default function ProjectRequests() {
     const fetchRequests = async () => {
         try {
             const token = localStorage.getItem('authToken');
-            const res = await axios.get('http://localhost:5000/api/project-requests', {
+            const res = await axios.get(`${API_BASE_URL}/api/project-requests`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setRequests(res.data);
@@ -47,7 +48,7 @@ export default function ProjectRequests() {
     const handleApprove = async (id) => {
         setActionLoading(id + '-approve');
         try {
-            await axios.put(`http://localhost:5000/api/project-requests/${id}/status`,
+            await axios.put(`${API_BASE_URL}/api/project-requests/${id}/status`,
                 { status: 'approved', adminMessage: 'Your project request has been approved.' },
                 { headers: { Authorization: `Bearer ${getToken()}` } }
             );
@@ -60,7 +61,7 @@ export default function ProjectRequests() {
         const { id, message } = rejectState;
         setActionLoading(id + '-reject');
         try {
-            await axios.put(`http://localhost:5000/api/project-requests/${id}/status`,
+            await axios.put(`${API_BASE_URL}/api/project-requests/${id}/status`,
                 { status: 'rejected', adminMessage: message },
                 { headers: { Authorization: `Bearer ${getToken()}` } }
             );
@@ -75,14 +76,14 @@ export default function ProjectRequests() {
         const { id, date, time, message } = scheduleForm;
         try {
             setActionLoading(id + '-sched');
-            await axios.put(`http://localhost:5000/api/project-requests/${id}/schedule-meeting`,
+            await axios.put(`${API_BASE_URL}/api/project-requests/${id}/schedule-meeting`,
                 { meetingDate: date, meetingTime: time, meetingLocation: 'Online / Zoom', meetingMessage: message },
                 { headers: { Authorization: `Bearer ${getToken()}` } }
             );
 
             try {
                 const startTimeISO = new Date(`${date}T${time}:00`).toISOString();
-                await axios.post(`http://localhost:5000/api/zoom/create-meeting`, {
+                await axios.post(`${API_BASE_URL}/api/zoom/create-meeting`, {
                     requestId: id,
                     topic: `Project Discussion: ${requests.find(r => r._id === id)?.title || 'Discussion'}`,
                     startTime: startTimeISO,
@@ -107,7 +108,7 @@ export default function ProjectRequests() {
     const handleComplete = async (id) => {
         setActionLoading(id + '-done');
         try {
-            await axios.put(`http://localhost:5000/api/project-requests/${id}/complete`, {},
+            await axios.put(`${API_BASE_URL}/api/project-requests/${id}/complete`, {},
                 { headers: { Authorization: `Bearer ${getToken()}` } }
             );
             fetchRequests();
@@ -119,7 +120,7 @@ export default function ProjectRequests() {
         if (!window.confirm('Delete this request permanently?')) return;
         setActionLoading(id + '-del');
         try {
-            await axios.delete(`http://localhost:5000/api/project-requests/${id}`,
+            await axios.delete(`${API_BASE_URL}/api/project-requests/${id}`,
                 { headers: { Authorization: `Bearer ${getToken()}` } }
             );
             fetchRequests();
@@ -387,7 +388,7 @@ export default function ProjectRequests() {
                                                 
                                                 <div style={{ display: "flex", gap: "8px" }}>
                                                     {req.zoomMeetingId && (
-                                                        <a href={`http://localhost:5000/api/zoom/join/${req._id}`} target="_blank" rel="noreferrer" style={{ flex: 1, textDecoration: "none" }}>
+                                                        <a href={`${API_BASE_URL}/api/zoom/join/${req._id}`} target="_blank" rel="noreferrer" style={{ flex: 1, textDecoration: "none" }}>
                                                             <button style={{ ...primaryBtn, background: "#7c3aed", width: "100%" }}>
                                                                 <Video size={16} /> {t('meeting_hub')}
                                                             </button>
@@ -478,3 +479,4 @@ const ghostBtn = {
     border: "1px solid #e2e8f0", borderRadius: "9px", fontWeight: "700",
     fontSize: "13px", cursor: "pointer"
 };
+

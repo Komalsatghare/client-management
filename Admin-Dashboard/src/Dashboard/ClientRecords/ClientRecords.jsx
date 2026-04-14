@@ -1,5 +1,7 @@
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLanguage } from "../../context/LanguageContext";
+import { API_BASE_URL } from "../../config";
 
 const AdminDashboard = () => {
   const { t } = useLanguage();
@@ -13,7 +15,7 @@ const AdminDashboard = () => {
   // Fetch clients from backend
   const fetchClients = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/clients");
+      const response = await axios.get("${API_BASE_URL}/api/clients");
       setClients(response.data);
     } catch (err) {
       console.error(err);
@@ -29,7 +31,7 @@ const AdminDashboard = () => {
   const handleAddClient = async () => {
     const newClient = { name, email, phone, company, notes, status: "Active" };
     try {
-      await axios.post("http://localhost:5000/api/clients", newClient);
+      await axios.post("${API_BASE_URL}/api/clients", newClient);
       fetchClients(); // refresh table
       // Clear form
       setName(""); setEmail(""); setPhone(""); setCompany(""); setNotes("");
@@ -61,3 +63,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

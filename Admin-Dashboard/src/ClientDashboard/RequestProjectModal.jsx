@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { X, Upload, Calendar, IndianRupee, ListChecks } from 'lucide-react';
 import axios from 'axios';
 import "./ClientDashboard.css";
@@ -27,7 +28,7 @@ export default function RequestProjectModal({ isOpen, onClose, onSuccess }) {
         setLoading(true);
         try {
             const token = localStorage.getItem('clientAuthToken');
-            await axios.post('http://localhost:5000/api/project-requests', formData, {
+            await axios.post('${API_BASE_URL}/api/project-requests', formData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             onSuccess();
@@ -156,3 +157,5 @@ export default function RequestProjectModal({ isOpen, onClose, onSuccess }) {
         </div>
     );
 }
+
+

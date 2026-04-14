@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { CheckCircle2, Circle, Clock, Building2 } from "lucide-react";
 import "./ClientDashboard.css";
 import { useLanguage } from "../context/LanguageContext";
@@ -23,7 +24,7 @@ export default function TrackProject() {
                     return;
                 }
                 const token = localStorage.getItem("authToken");
-                const res = await axios.get(`http://localhost:5000/api/clients/${clientId}/projects`, {
+                const res = await axios.get(`${API_BASE_URL}/api/clients/${clientId}/projects`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setProjects(res.data);
@@ -133,3 +134,5 @@ export default function TrackProject() {
         </div>
     );
 }
+
+

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import React, { useState } from 'react';
 import axios from 'axios';
 import './ClientDashboard.css';
@@ -26,7 +27,7 @@ export default function ChangePassword() {
         try {
             const token = localStorage.getItem('clientAuthToken');
             await axios.post(
-                'http://localhost:5000/api/client/change-password',
+                '${API_BASE_URL}/api/client/change-password',
                 { oldPassword: form.oldPassword, newPassword: form.newPassword },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -178,3 +179,5 @@ export default function ChangePassword() {
         </div>
     );
 }
+
+

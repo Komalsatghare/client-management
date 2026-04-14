@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "./config";
 
 const ClientProtectedRoute = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -17,7 +18,7 @@ const ClientProtectedRoute = ({ children }) => {
 
             try {
                 // Verify the token by calling the actual protected client route
-                const response = await fetch("http://localhost:5000/api/client/verify", {
+                const response = await fetch(`${API_BASE_URL}/api/client/verify`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
