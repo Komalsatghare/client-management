@@ -7,8 +7,6 @@ const fs = require('fs');
 const htmlToPdf = require('html-pdf-node');
 const ejs = require('ejs');
 const Agreement = require('../models/Agreement');
-
-const Agreement = require('../models/Agreement');
 const { cloudinary, storage } = require('../config/cloudinary');
 
 const upload = multer({ 
