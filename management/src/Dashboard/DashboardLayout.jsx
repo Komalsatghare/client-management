@@ -17,6 +17,7 @@ import UploadAgreement from '../components/UploadAgreement';
 const DashboardLayout = () => {
   const [activeSection, setActiveSection] = useState("Dashboard");
   const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // Full-screen Lightbox State
   const [projectFilter, setProjectFilter] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -107,6 +108,7 @@ const DashboardLayout = () => {
           <ProjectDetails
             project={selectedProject}
             goBack={() => setSelectedProject(null)}
+            onImageClick={(url) => setSelectedImage(url)}
           />
         ) : (
           <Projects
@@ -134,6 +136,24 @@ const DashboardLayout = () => {
     }
   };
 
+  const downloadImage = async (url) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = url.split('/').pop() || 'project-image.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("Download failed", err);
+      alert("Failed to download image.");
+    }
+  };
+
   return (
     <div className="dashboard-layout">
       <Sidebar 
@@ -158,6 +178,56 @@ const DashboardLayout = () => {
           {renderContent()}
         </main>
       </div>
+      {/* GLOBAL IMAGE LIGHTBOX MODAL */}
+      {selectedImage && (
+        <div 
+          onClick={() => setSelectedImage(null)}
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)', zIndex: 99999,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px',
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            style={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh' }}
+          >
+            {/* CLOSE BUTTON */}
+            <button 
+              onClick={() => setSelectedImage(null)}
+              style={{
+                position: 'absolute', top: '-45px', right: 0, background: 'rgba(255,255,255,0.1)',
+                border: '1px solid rgba(255,255,255,0.2)', color: 'white', cursor: 'pointer', 
+                padding: '8px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center'
+              }}
+            >
+              ✕
+            </button>
+
+            {/* DOWNLOAD BUTTON */}
+            <button 
+              onClick={() => downloadImage(selectedImage)}
+              style={{
+                position: 'absolute', top: '-45px', left: 0, background: 'rgba(255,255,255,0.15)',
+                color: 'white', padding: '8px 16px', border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px', 
+                fontSize: '13px', cursor: 'pointer', fontWeight: 600, backdropFilter: 'blur(10px)'
+              }}
+            >
+              ⬇️ Download Full Photo
+            </button>
+
+            <img 
+              src={selectedImage} 
+              alt="Project Full Size" 
+              style={{ 
+                maxWidth: '100%', maxHeight: '80vh', borderRadius: '12px', 
+                boxShadow: '0 20px 50px rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)' 
+              }} 
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -180,7 +250,8 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
   // Form State
   const initialFormState = {
     name: '', clientId: '', status: 'Pending', startDate: '', endDate: '',
-    deadline: '', budget: '', paymentDetails: '', notes: ''
+    deadline: '', budget: '', totalBudget: 0, totalPaid: 0, remainingAmount: 0, 
+    paymentDetails: '', notes: ''
   };
   const [formData, setFormData] = useState(initialFormState);
   const [images, setImages] = useState([]);
@@ -254,6 +325,9 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
       endDate: formatDate(project.endDate),
       deadline: project.deadline || '',
       budget: project.budget || '',
+      totalBudget: project.totalBudget || project.budget || 0,
+      totalPaid: project.totalPaid || 0,
+      remainingAmount: project.remainingAmount || 0,
       paymentDetails: project.paymentDetails || '',
       notes: project.notes || ''
     });
@@ -479,8 +553,19 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
                   </select>
                 </div>
                 <div style={{ flex:1 }}>
-                  <label className="proj-form-lbl">Budget</label>
-                  <input type="text" name="budget" placeholder="e.g. ₹5,00,000" value={formData.budget} onChange={handleInputChange} className="proj-form-inp" />
+                  <label className="proj-form-lbl">Total Budget</label>
+                  <input type="number" name="totalBudget" placeholder="Total Budget" value={formData.totalBudget} onChange={handleInputChange} className="proj-form-inp" />
+                </div>
+              </div>
+
+              <div className="modal-row-flex" style={{ display:'flex', gap:'10px', marginBottom:14 }}>
+                <div style={{ flex:1 }}>
+                  <label className="proj-form-lbl">Amount Paid</label>
+                  <input type="number" name="totalPaid" placeholder="Amount Paid" value={formData.totalPaid} onChange={handleInputChange} className="proj-form-inp" />
+                </div>
+                <div style={{ flex:1 }}>
+                  <label className="proj-form-lbl">Remaining Balance</label>
+                  <input type="number" name="remainingAmount" placeholder="Balance" value={formData.remainingAmount} onChange={handleInputChange} className="proj-form-inp" />
                 </div>
               </div>
               <div className="modal-row-flex" style={{ display:'flex', gap:'10px', marginBottom:14 }}>
@@ -537,7 +622,7 @@ const Projects = ({ setSelectedProject, initialFilter }) => {
 // -----------------------------
 // Project Details Component
 // -----------------------------
-const ProjectDetails = ({ project, goBack }) => {
+const ProjectDetails = ({ project, goBack, onImageClick }) => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [paymentData, setPaymentData] = useState({
     amount: '',
@@ -603,7 +688,7 @@ const ProjectDetails = ({ project, goBack }) => {
           <div style={{ display:'flex', flexDirection:'column', gap:'14px' }}>
             <div>
               <p style={{ margin:'0 0 4px', fontSize:'11px', fontWeight:700, color:'#475569', textTransform:'uppercase', letterSpacing:'.06em' }}>Client</p>
-              <p style={{ margin:0, fontSize:'14px', fontWeight:600, color:'#e2e8f0' }}>{project.clientId || project.client || 'N/A'}</p>
+              <p style={{ margin:0, fontSize:'14px', fontWeight:600, color:'#e2e8f0' }}>{project.clientId?.name || project.client || 'N/A'}</p>
             </div>
             <div>
               <p style={{ margin:'0 0 6px', fontSize:'11px', fontWeight:700, color:'#475569', textTransform:'uppercase', letterSpacing:'.06em' }}>Project Status</p>
@@ -655,7 +740,13 @@ const ProjectDetails = ({ project, goBack }) => {
           {project.images && project.images.length > 0 ? (
             <div style={{ display:'flex', flexWrap:'wrap', gap:'14px' }}>
               {project.images.map((img,index)=>(
-                <div key={index} style={{ width:'200px', height:'140px', borderRadius:'10px', overflow:'hidden', border:'1px solid rgba(255,255,255,0.08)', boxShadow:'0 4px 14px rgba(0,0,0,0.3)' }}>
+                <div 
+                  key={index} 
+                  onClick={() => onImageClick(resolveUrl(img))}
+                  style={{ width:'200px', height:'140px', borderRadius:'10px', overflow:'hidden', border:'1px solid rgba(255,255,255,0.08)', boxShadow:'0 4px 14px rgba(0,0,0,0.3)', cursor:'zoom-in', transition:'transform .2s' }}
+                  onMouseEnter={e=>e.currentTarget.style.transform='scale(1.02)'}
+                  onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}
+                >
                   <img src={resolveUrl(img)} alt={`Project Img ${index+1}`} style={{ width:'100%', height:'100%', objectFit:'cover' }} onError={e=>{e.target.onerror=null;e.target.src='https://placehold.co/400x300/1e293b/94a3b8?text=No+Image'}} />
                 </div>
               ))}
