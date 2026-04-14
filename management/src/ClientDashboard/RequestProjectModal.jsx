@@ -133,6 +133,7 @@ export default function RequestProjectModal({ isOpen, onClose, onSuccess }) {
     const [formData, setFormData] = useState({
         title: '', description: '', budget: '', deadline: '', requirements: ''
     });
+    const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError]     = useState('');
 
@@ -146,12 +147,22 @@ export default function RequestProjectModal({ isOpen, onClose, onSuccess }) {
         setLoading(true);
         try {
             const token = localStorage.getItem('clientAuthToken');
-            await axios.post(`${API_BASE_URL}/api/project-requests`, formData, {
-                headers: { Authorization: `Bearer ${token}` }
+            const data = new FormData();
+            Object.keys(formData).forEach(key => data.append(key, formData[key]));
+            if (selectedFile) {
+                data.append('agreementFile', selectedFile);
+            }
+
+            await axios.post(`${API_BASE_URL}/api/project-requests`, data, {
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
             });
             onSuccess();
             onClose();
             setFormData({ title:'', description:'', budget:'', deadline:'', requirements:'' });
+            setSelectedFile(null);
         } catch (err) {
             setError(err.response?.data?.message || t('fail_submit_request') || 'Failed to submit request');
         } finally {
@@ -182,7 +193,7 @@ export default function RequestProjectModal({ isOpen, onClose, onSuccess }) {
                                 <label className="rpm-lbl">{t('project_title_label')}</label>
                                 <input type="text" name="title" required className="rpm-inp"
                                     value={formData.title} onChange={handleChange}
-                                    placeholder={t('project_title_placeholder') || "e.g. Skyline Luxury Apartments"} />
+                                    placeholder={t('project_title_placeholder') || ""} />
                             </div>
 
                             <div className="rpm-group">
@@ -206,7 +217,7 @@ export default function RequestProjectModal({ isOpen, onClose, onSuccess }) {
                                         <IndianRupee size={15} className="rpm-field-icon" />
                                         <input type="number" name="budget" required className="rpm-inp"
                                             value={formData.budget} onChange={handleChange}
-                                            placeholder="5000000" />
+                                            placeholder="" />
                                     </div>
                                 </div>
                                 <div className="rpm-group">
@@ -218,10 +229,18 @@ export default function RequestProjectModal({ isOpen, onClose, onSuccess }) {
 
                             <div className="rpm-group">
                                 <label className="rpm-lbl">{t('supporting_docs')}</label>
-                                <div className="rpm-upload">
+                                <input 
+                                    type="file" 
+                                    id="rpm-file-input" 
+                                    style={{ display: 'none' }} 
+                                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                                />
+                                <div className="rpm-upload" onClick={() => document.getElementById('rpm-file-input').click()}>
                                     <Upload size={28} className="rpm-upload-icon" />
-                                    <p className="rpm-upload-text">{t('click_to_upload')}</p>
-                                    <p className="rpm-upload-sub">{t('file_types')}</p>
+                                    <p className="rpm-upload-text">
+                                        {selectedFile ? selectedFile.name : t('click_to_upload')}
+                                    </p>
+                                    <p className="rpm-upload-sub">{selectedFile ? `${(selectedFile.size / 1024).toFixed(1)} KB` : t('file_types')}</p>
                                 </div>
                             </div>
                         </div>

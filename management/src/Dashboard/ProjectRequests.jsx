@@ -517,7 +517,11 @@ export default function ProjectRequests() {
         }
     };
 
-    useEffect(() => { fetchRequests(); }, []);
+    useEffect(() => {
+        fetchRequests();
+        const interval = setInterval(fetchRequests, 30000); // Poll every 30s
+        return () => clearInterval(interval);
+    }, []);
 
     const getToken = () => localStorage.getItem('authToken');
 
@@ -664,10 +668,17 @@ export default function ProjectRequests() {
     const handleGenerateAgreement = async (req) => {
         if (!window.confirm(`Generate digital agreement for "${req.title}"?`)) return;
         
-        const agreementNumber = window.prompt("Enter Agreement Number (e.g., DB_MH_W_002):", "DB_MH_W_002") || "TBD";
-        const clientAddress = window.prompt("Enter Client Address:", req.location || "At. Parsodi, Po. Pimpalgaon Raja, Tah. Kalamb, Dist. Yavatmal 445401") || "";
-        const meetingPlace = window.prompt("Enter Place of Meeting:", "WARDHA & PARSODI BK") || "Office";
-        const plotDetails = window.prompt("Enter Plot Survey Number:", "181") || "181";
+        const agreementNumber = window.prompt("Enter Agreement Number:", "");
+        if (agreementNumber === null) return; // User cancelled
+        
+        const clientAddress = window.prompt("Enter Client Address:", "");
+        if (clientAddress === null) return; // User cancelled
+        
+        const meetingPlace = window.prompt("Enter Place of Meeting:", "");
+        if (meetingPlace === null) return; // User cancelled
+        
+        const plotDetails = window.prompt("Enter Plot Survey Number:", "");
+        if (plotDetails === null) return; // User cancelled
 
         try {
             await axios.post(`${API_BASE_URL}/api/agreements/digital`, {
@@ -678,10 +689,10 @@ export default function ProjectRequests() {
                 totalCost: `₹${req.budget}`,
                 location: req.location || 'Wardha',
                 area: '800 Sq.Ft (Approx)',
-                agreementNumber,
-                clientAddress,
-                meetingPlace,
-                plotDetails
+                agreementNumber: agreementNumber || "TBD",
+                clientAddress: clientAddress || "",
+                meetingPlace: meetingPlace || "Office",
+                plotDetails: plotDetails || "181"
             }, { headers: { Authorization: `Bearer ${getToken()}` } });
             alert('Agreement generated safely! Please navigate to your Agreements tab to review and sign.');
         } catch (e) {

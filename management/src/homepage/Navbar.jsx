@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 
 const NAV_LINKS = [
   { label: "Home",     key: "home",     path: "/" },
@@ -358,6 +359,9 @@ function Navbar() {
 
           {/* Right section */}
           <div className="nb-right">
+            <div style={{ marginRight: "8px" }}>
+              <LanguageSwitcher />
+            </div>
             {clientToken ? (
               <>
                 <div className="nb-user-chip">

@@ -6,11 +6,16 @@ const Project = require('../models/Project');
 // @access  Private (Client only)
 const createRequest = async (req, res) => {
     try {
-        const { title, description, budget, deadline, fileUrl, requirements } = req.body;
+        const { title, description, budget, deadline, requirements } = req.body;
         const clientId = req.user.id;
 
         if (!title || !description || !budget || !deadline) {
             return res.status(400).json({ message: 'Please provide all required fields' });
+        }
+
+        let fileUrl = req.body.fileUrl; // Fallback to provided URL
+        if (req.file) {
+            fileUrl = `/uploads/${req.file.filename}`;
         }
 
         const projectRequest = await ProjectRequest.create({

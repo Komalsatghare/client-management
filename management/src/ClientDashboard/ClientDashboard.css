@@ -695,3 +695,38 @@ body { margin: 0; background: var(--bg-base); }
 .badge-blue    { background: rgba(59,130,246,0.12);  color:#60a5fa; border:1px solid rgba(59,130,246,0.3); }
 .badge-red     { background: rgba(239,68,68,0.12);   color:#f87171; border:1px solid rgba(239,68,68,0.3); }
 .badge-purple  { background: rgba(139,92,246,0.12);  color:#a78bfa; border:1px solid rgba(139,92,246,0.3); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MOBILE RESPONSIVE OVERRIDES
+   ───────────────────────────────────────────────────────────────────────────── */
+.hidden-mobile {
+  display: flex !important;
+}
+
+@media (max-width: 768px) {
+  .hidden-mobile {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .client-header {
+    padding: 0 16px;
+  }
+  .client-content-wrapper {
+    padding: 16px;
+  }
+  .client-payment-stat-num {
+    font-size: 20px;
+  }
+  .client-modal {
+    padding: 20px;
+    width: 95%;
+  }
+  .client-modal-footer {
+    flex-direction: column;
+  }
+  .client-modal-footer button {
+    width: 100%;
+  }
+}

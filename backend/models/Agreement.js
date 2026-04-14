@@ -24,7 +24,8 @@ const agreementSchema = new mongoose.Schema({
     size: { type: Number },     // NEW: Stores file size in bytes
     uploadedByRole: { type: String, enum: ['admin', 'client'], default: 'client' },
     uploadedByName: { type: String },
-    contractorName: { type: String, default: 'SWAPNIL D. DHANVIJ' },
+    clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
+    contractorName: { type: String, default: '' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

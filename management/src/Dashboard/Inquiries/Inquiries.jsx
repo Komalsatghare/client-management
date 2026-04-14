@@ -138,7 +138,11 @@ const Inquiries = () => {
     const [search, setSearch]       = useState("");
     const [filter, setFilter]       = useState("All");
 
-    useEffect(() => { fetchInquiries(); }, []);
+    useEffect(() => {
+        fetchInquiries();
+        const interval = setInterval(fetchInquiries, 30000); // Poll every 30s
+        return () => clearInterval(interval);
+    }, []);
 
     const fetchInquiries = async () => {
         try {

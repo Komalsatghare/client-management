@@ -20,8 +20,21 @@ const { verifyToken, authorizeRoles } = require('../middleware/authMiddleware');
 // CLIENT ROUTES
 // ==========================================
 
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, 'req-' + Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage });
+
 // Create a new request (Client only)
-router.post('/', verifyToken, authorizeRoles('client'), createRequest);
+router.post('/', verifyToken, authorizeRoles('client'), upload.single('agreementFile'), createRequest);
 
 // Get my requests (Client only)
 router.get('/my-requests', verifyToken, authorizeRoles('client'), getClientRequests);

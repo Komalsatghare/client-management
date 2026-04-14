@@ -18,6 +18,7 @@ const DashboardLayout = () => {
   const [activeSection, setActiveSection] = useState("Dashboard");
   const [selectedProject, setSelectedProject] = useState(null);
   const [projectFilter, setProjectFilter] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [adminData, setAdminData] = useState({
     name: localStorage.getItem("adminName") || "Admin User",
@@ -29,6 +30,7 @@ const DashboardLayout = () => {
     setProjectFilter("");
     setSelectedProject(null);
     setActiveSection(section);
+    setIsSidebarOpen(false);
   };
 
   const fetchProfile = async () => {
@@ -138,6 +140,8 @@ const DashboardLayout = () => {
           activeSection={activeSection} 
           setActiveSection={handleNavClick} 
           adminData={adminData}
+          isOpen={isSidebarOpen}
+          setIsOpen={setIsSidebarOpen}
       />
       {/* Main Content */}
       <div className="dashboard-main-content">
@@ -146,6 +150,7 @@ const DashboardLayout = () => {
             activeSection={activeSection} 
             setActiveSection={handleNavClick} 
             adminData={adminData}
+            toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
 
         {/* Dynamic Content Area */}
@@ -695,7 +700,7 @@ const PublicProjectsManager = () => {
     category: 'Residential',
     image: '',
     shortDescription: '',
-    location: 'Wardha, Maharashtra',
+    location: '',
     status: 'Completed',
     mapLink: '',
     order: 0
@@ -735,7 +740,7 @@ const PublicProjectsManager = () => {
       category: project.category || 'Residential',
       image: project.image || '',
       shortDescription: project.shortDescription || '',
-      location: project.location || 'Wardha, Maharashtra',
+      location: project.location || '',
       status: project.status || 'Completed',
       mapLink: project.mapLink || '',
       order: project.order || 0

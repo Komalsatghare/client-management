@@ -370,11 +370,11 @@ const Projects = ({ initialFilter = 'All' }) => {
 
                                 <div className="form-group">
                                     <label className="form-label">Budget</label>
-                                    <input type="text" name="budget" value={currentProject.budget} onChange={handleInputChange} className="form-input" placeholder="e.g. $5000 + GST" />
+                                    <input type="text" name="budget" value={currentProject.budget} onChange={handleInputChange} className="form-input" placeholder="" />
                                 </div>
                                 <div className="form-group">
                                     <label className="form-label">Deadline / Duration (if no end date)</label>
-                                    <input type="text" name="deadline" value={currentProject.deadline} onChange={handleInputChange} className="form-input" placeholder="e.g. Within 3 months" />
+                                    <input type="text" name="deadline" value={currentProject.deadline} onChange={handleInputChange} className="form-input" placeholder="" />
                                 </div>
                                 <div className="form-group">
                                     <label className="form-label">Amount Paid</label>
@@ -386,7 +386,7 @@ const Projects = ({ initialFilter = 'All' }) => {
                                 </div>
                                 <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                                     <label className="form-label">Project Location Link (Google Maps)</label>
-                                    <input type="text" name="locationLink" value={currentProject.locationLink} onChange={handleInputChange} className="form-input" placeholder="https://goo.gl/maps/..." />
+                                    <input type="text" name="locationLink" value={currentProject.locationLink} onChange={handleInputChange} className="form-input" placeholder="" />
                                 </div>
 
                                 <div className="form-group" style={{ gridColumn: '1 / -1' }}>

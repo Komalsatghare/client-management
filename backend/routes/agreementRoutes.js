@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { verifyToken, authorizeRoles } = require('../middleware/authMiddleware');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -71,9 +72,9 @@ const generatePDF = async (agreement) => {
 };
 
 // @route   POST /api/agreements/upload (Manual)
-router.post('/upload', upload.single('agreementFile'), async (req, res) => {
+router.post('/upload', verifyToken, upload.single('agreementFile'), async (req, res) => {
     try {
-        const { projectName, uploadedByRole, uploadedByName } = req.body;
+        const { projectName, uploadedByRole, uploadedByName, clientId } = req.body;
 
         if (!projectName) {
             return res.status(400).json({ message: 'Project Name is required' });
@@ -91,10 +92,11 @@ router.post('/upload', upload.single('agreementFile'), async (req, res) => {
             status: 'Active',
             fileUrl,
             originalName: req.file.originalname,
-            mimetype: req.file.mimetype, // Store mimetype
-            size: req.file.size,         // Store file size
-            uploadedByRole: uploadedByRole || 'client',
+            mimetype: req.file.mimetype,
+            size: req.file.size,
+            uploadedByRole: uploadedByRole || (req.user.role === 'client' ? 'client' : 'admin'),
             uploadedByName: uploadedByName || 'Unknown',
+            clientId: clientId || (req.user.role === 'client' ? req.user.id : null),
             clientSigned: true, 
             adminSigned: true
         });
@@ -107,9 +109,9 @@ router.post('/upload', upload.single('agreementFile'), async (req, res) => {
 });
 
 // @route   POST /api/agreements/digital
-router.post('/digital', async (req, res) => {
+router.post('/digital', verifyToken, async (req, res) => {
     try {
-        const { projectName, content, uploadedByRole, uploadedByName, contractorName, location, contactNumber, totalCost, area, agreementNumber, meetingPlace, clientAddress, plotDetails } = req.body;
+        const { projectName, content, uploadedByRole, uploadedByName, clientId, contractorName, location, contactNumber, totalCost, area, agreementNumber, meetingPlace, clientAddress, plotDetails } = req.body;
 
         if (!projectName) {
             return res.status(400).json({ message: 'Project Name is required.' });
@@ -129,9 +131,10 @@ router.post('/digital', async (req, res) => {
             type: 'digital',
             content: finalContent,
             status: 'Unsigned',
-            uploadedByRole: uploadedByRole || 'client',
+            uploadedByRole: uploadedByRole || (req.user.role === 'client' ? 'client' : 'admin'),
             uploadedByName: uploadedByName || 'Unknown',
-            contractorName: contractorName || 'SWAPNIL D. DHANVIJ',
+            clientId: clientId || (req.user.role === 'client' ? req.user.id : null),
+            contractorName: contractorName || '',
             location,
             contactNumber,
             totalCost,
@@ -217,9 +220,14 @@ router.put('/:id/sign', async (req, res) => {
 });
 
 // @route   GET /api/agreements
-router.get('/', async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
     try {
-        const agreements = await Agreement.find().sort({ updatedAt: -1 });
+        let query = {};
+        // If client, only show their own agreements
+        if (req.user.role === 'client') {
+            query = { clientId: req.user.id };
+        }
+        const agreements = await Agreement.find(query).sort({ updatedAt: -1 });
         res.status(200).json(agreements);
     } catch (error) {
         console.error('Failed to fetch agreements:', error);

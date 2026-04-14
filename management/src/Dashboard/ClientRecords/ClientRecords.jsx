@@ -14,7 +14,7 @@ const ClientRecords = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [currentClient, setCurrentClient] = useState({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started' });
+    const [currentClient, setCurrentClient] = useState({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started', password: '' });
 
     // Fetch clients on mount
     useEffect(() => {
@@ -40,14 +40,14 @@ const ClientRecords = () => {
             setCurrentClient(client);
         } else {
             setIsEditing(false);
-            setCurrentClient({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started' });
+            setCurrentClient({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started', password: '' });
         }
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setCurrentClient({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started' });
+        setCurrentClient({ id: null, name: '', email: '', phone: '', project: '', projectStatus: 'Not Started', password: '' });
     };
 
     const handleInputChange = (e) => {
@@ -232,6 +232,18 @@ const ClientRecords = () => {
                                         value={currentClient.phone}
                                         onChange={handleInputChange}
                                         className="form-input"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Password</label>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={currentClient.password}
+                                        onChange={handleInputChange}
+                                        className="form-input"
+                                        placeholder=""
+                                        required={!isEditing}
                                     />
                                 </div>
                                 <div className="form-group">

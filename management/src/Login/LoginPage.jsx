@@ -335,12 +335,7 @@ export default function LoginPage() {
             </div>
           </form>
 
-          <p className="login-footer">
-            {t('no_account_msg') || "Don't have an account?"}{" "}
-            <Link to="/admin-signup" className="login-link">
-              {t('sign_up') || "Sign Up"}
-            </Link>
-          </p>
+          {/* Signup removed by user request */}
         </div>
       </div>
 

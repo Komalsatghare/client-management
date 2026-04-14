@@ -681,9 +681,10 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 24px;
-    z-index: 10;
+    z-index: 100;
     box-sizing: border-box;
 }
+.mobile-toggle { display: none; }
 .navbar-title {
     font-size: 18px;
     font-weight: 700;
@@ -737,3 +738,41 @@
     font-size: 13px;
     font-weight: 600;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MOBILE RESPONSIVE OVERRIDES
+   ───────────────────────────────────────────────────────────────────────────── */
+.sidebar-overlay { 
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
+    z-index: 998; backdrop-filter: blur(4px); 
+}
+.sidebar-overlay.show { display: block; }
+.sidebar-mobile-close { display: none; }
+
+@media (max-width: 1024px) {
+    .sidebar {
+        position: fixed; left: -256px; top: 0; bottom: 0;
+        z-index: 1000; box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+    }
+    .sidebar.open { left: 0; }
+    .mobile-toggle { display: flex; }
+    .sidebar-mobile-close {
+        display: flex; background: rgba(255,255,255,0.05); 
+        border: 1px solid rgba(255,255,255,0.1); color: #94a3b8;
+        padding: 5px; border-radius: 6px; cursor: pointer;
+    }
+    .sidebar-header { justify-content: space-between; padding: 0 16px; }
+    .dashboard-content-area { padding: 16px; }
+}
+
+@media (max-width: 640px) {
+    .navbar-actions .LanguageSwitcher, 
+    .navbar-actions .icon-btn[title*="Settings"],
+    .navbar-actions [title*="My Profile"] span {
+        display: none !important;
+    }
+    .navbar-actions { gap: 8px; }
+    .top-navbar { padding: 0 12px; }
+    .dashboard-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+

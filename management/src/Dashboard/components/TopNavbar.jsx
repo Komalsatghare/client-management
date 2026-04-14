@@ -1,11 +1,10 @@
-import React from 'react';
-import { LogOut, User, Settings, Home } from 'lucide-react';
+import { LogOut, User, Settings, Home, Menu } from 'lucide-react';
 import "../dashboard.css";
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 
-const TopNavbar = ({ activeSection, setActiveSection, adminData }) => {
+const TopNavbar = ({ activeSection, setActiveSection, adminData, toggleSidebar }) => {
     const navigate = useNavigate();
     const { t } = useLanguage();
 
@@ -16,6 +15,9 @@ const TopNavbar = ({ activeSection, setActiveSection, adminData }) => {
 
     return (
         <div className="top-navbar">
+            <button className="mobile-toggle icon-btn" onClick={toggleSidebar} style={{ marginRight: '10px' }}>
+                <Menu size={20} />
+            </button>
             <div className="navbar-title">
                 {t(activeSection.toLowerCase().replace(/\s+/g, '_')) || activeSection}
             </div>

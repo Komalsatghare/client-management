@@ -11,11 +11,11 @@ import { useLanguage } from "../context/LanguageContext";
 export const useStatusCfg = () => {
     const { t } = useLanguage();
     return {
-        'Pending': { color: '#f59e0b', icon: <Hourglass size={14} />, label: t('status_pending') || "Pending" },
-        'Approved': { color: '#10b981', icon: <CheckCircle size={14} />, label: t('status_approved') || "Approved" },
-        'Rejected': { color: '#ef4444', icon: <XCircle size={14} />, label: t('status_rejected') || "Rejected" },
-        'Meeting Scheduled': { color: '#3b82f6', icon: <CalendarCheck size={14} />, label: t('status_meeting_scheduled') || "Meeting Scheduled" },
-        'Completed': { color: '#10b981', icon: <CheckCircle size={14} />, label: t('status_completed') || "Completed" }
+        'pending': { color: '#f59e0b', icon: <Hourglass size={14} />, label: t('status_pending') || "Pending" },
+        'approved': { color: '#10b981', icon: <CheckCircle size={14} />, label: t('status_approved') || "Approved" },
+        'rejected': { color: '#ef4444', icon: <XCircle size={14} />, label: t('status_rejected') || "Rejected" },
+        'meeting_scheduled': { color: '#3b82f6', icon: <CalendarCheck size={14} />, label: t('status_meeting_scheduled') || "Meeting Scheduled" },
+        'completed': { color: '#10b981', icon: <CheckCircle size={14} />, label: t('status_completed') || "Completed" }
     };
 };
 
@@ -374,7 +374,7 @@ export default function RequestNewProject() {
                         {requests.map((req, i) => {
                             const sc = STATUS_CFG[req.status] || { label:req.status, color:"#64748b", icon:null };
                             return (
-                                <div key={req._id} className="rnp-card" style={{ animationDelay:`${i*0.06}s`, borderColor: req.status === "Rejected" ? "rgba(239,68,68,0.15)" : undefined }}>
+                                <div key={req._id} className="rnp-card" style={{ animationDelay:`${i*0.06}s`, borderColor: req.status === "rejected" ? "rgba(239,68,68,0.15)" : undefined }}>
                                     {/* Accent bar */}
                                     <div className="rnp-card-accent" />
 
@@ -449,8 +449,8 @@ export default function RequestNewProject() {
                                     )}
 
                                     {/* meeting details panel */}
-                                    {(req.status === "Meeting Scheduled" || req.status === "Completed") && req.meetingDate && (() => {
-                                        const isDone = req.status === "Completed";
+                                    {(req.status === "meeting_scheduled" || req.status === "completed") && req.meetingDate && (() => {
+                                        const isDone = req.status === "completed";
                                         return (
                                             <div className="rnp-meeting-panel" style={{
                                                 borderColor: isDone ? "rgba(16,185,129,0.25)" : "rgba(96,165,250,0.25)",
@@ -466,13 +466,13 @@ export default function RequestNewProject() {
                                                         "{req.meetingMessage}"
                                                     </div>
                                                 )}
-                                                {req.status === "Meeting Scheduled" && req.zoomMeetingId && (
+                                                {req.status === "meeting_scheduled" && req.zoomMeetingId && (
                                                     <button className="rnp-zoom-btn"
                                                         onClick={() => navigate(`/video-room/req-${req._id}?role=client&meetingId=${req.zoomMeetingId}&name=${encodeURIComponent(localStorage.getItem("clientName")||"Client")}&email=${encodeURIComponent(localStorage.getItem("clientEmail")||"")}`)}>
                                                         <Video size={16} /> Join Zoom Meeting
                                                     </button>
                                                 )}
-                                                {req.status === "Meeting Scheduled" && !req.zoomMeetingId && req.meetingLocation && (
+                                                {req.status === "meeting_scheduled" && !req.zoomMeetingId && req.meetingLocation && (
                                                     <a href={req.meetingLocation.startsWith("http") || req.meetingLocation.startsWith("/") ? req.meetingLocation : `https://${req.meetingLocation}`}
                                                         target="_blank" rel="noreferrer"
                                                         style={{ marginTop:"10px", display:"flex", alignItems:"center", justifyContent:"center", gap:"6px", padding:"10px", background:"rgba(96,165,250,0.1)", color:"#60a5fa", border:"1px solid rgba(96,165,250,0.25)", borderRadius:"10px", fontWeight:600, fontSize:"13px", textDecoration:"none" }}>
@@ -486,7 +486,7 @@ export default function RequestNewProject() {
                                     {/* Card footer actions */}
                                     <div className="rnp-card-footer">
                                         {/* Request Meeting */}
-                                        {["Approved","Completed","Meeting Scheduled"].includes(req.status) && (
+                                        {["approved","completed","meeting_scheduled"].includes(req.status) && (
                                             <button className="rnp-meeting-btn"
                                                 onClick={() => handleRequestMeeting(req._id)}
                                                 disabled={actionLoading === req._id}>

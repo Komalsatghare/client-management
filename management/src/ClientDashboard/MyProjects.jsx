@@ -56,7 +56,7 @@ export default function MyProjects() {
                                     </div>
                                 </div>
                                 {(() => {
-                                    const sc = STATUS_CFG[project.status] || { label: project.status, color: '#64748b' };
+                                    const sc = STATUS_CFG[project.status.toLowerCase()] || { label: project.status, color: '#64748b' };
                                     return (
                                         <span className="client-status-badge" style={{ 
                                             background: `${sc.color}20`, 

@@ -19,8 +19,8 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
     const [digitalProjectName, setDigitalProjectName] = useState('');
     const [digitalContent, setDigitalContent] = useState('');
     const [digitalClientName, setDigitalClientName] = useState('');
-    const [digitalClientDetails, setDigitalClientDetails] = useState('वय ४५ वर्षे, व्यवसाय – शेती, रा. परसोडी, पो. पिंपळगाव, त. कळंब, जि. यवतमाळ. ४४५४०१');
-    const [digitalContractorName, setDigitalContractorName] = useState('SWAPNIL D. DHANVIJ');
+    const [digitalClientDetails, setDigitalClientDetails] = useState('');
+    const [digitalContractorName, setDigitalContractorName] = useState('');
     const [digitalAgreementNo, setDigitalAgreementNo] = useState('');
     const [digitalContactNo, setDigitalContactNo] = useState('');
     const [digitalLocation, setDigitalLocation] = useState('');
@@ -54,13 +54,17 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         if (editor) setEditedContent(editor.innerHTML);
     };
 
+    const getToken = () => localStorage.getItem('authToken') || localStorage.getItem('clientAuthToken');
+
     useEffect(() => {
         fetchAgreements();
     }, []);
 
     const fetchAgreements = async () => {
         try {
-            const res = await axios.get(`${API_BASE_URL}/api/agreements`);
+            const res = await axios.get(`${API_BASE_URL}/api/agreements`, {
+                headers: { Authorization: `Bearer ${getToken()}` }
+            });
             setAgreements(res.data);
         } catch (err) {
             console.error('Error fetching agreements', err);
@@ -86,7 +90,10 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
 
         try {
             await axios.post(`${API_BASE_URL}/api/agreements/upload`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+                headers: { 
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${getToken()}`
+                }
             });
             setSuccess(t('agreement_upload_success') || 'Agreement uploaded successfully!');
             setProjectName('');
@@ -177,7 +184,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                 uploadedByRole,
                 uploadedByName: digitalClientName || uploadedByName || 'Unknown',
                 contractorName: digitalContractorName,
-                clientAddress: digitalClientDetails, // Using this for Party 1 bio
+                clientAddress: digitalClientDetails,
                 agreementNumber: digitalAgreementNo,
                 contactNumber: digitalContactNo,
                 location: digitalLocation,
@@ -185,13 +192,15 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                 area: digitalArea,
                 meetingPlace: digitalMeetingPlace,
                 plotDetails: digitalPlotDetails
+            }, {
+                headers: { Authorization: `Bearer ${getToken()}` }
             });
             setSuccess(t('digital_contract_init_success') || 'Digital contract initiated successfully!');
             // Reset fields
             setDigitalProjectName('');
             setDigitalClientName('');
-            setDigitalClientDetails('वय ४५ वर्षे, व्यवसाय – शेती, रा. परसोडी, पो. पिंपळगाव, त. कळंब, जि. यवतमाळ. ४४५४०१');
-            setDigitalContractorName('SWAPNIL D. DHANVIJ');
+            setDigitalClientDetails('');
+            setDigitalContractorName('');
             setDigitalAgreementNo('');
             setDigitalContactNo('');
             setDigitalLocation('');
@@ -216,6 +225,8 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
             await axios.put(`${API_BASE_URL}/api/agreements/${selectedContract._id}`, {
                 content: editedContent,
                 lastEditedBy: uploadedByName
+            }, {
+                headers: { Authorization: `Bearer ${getToken()}` }
             });
             alert("Agreement updated successfully! Existing signatures have been cleared as a legal precaution.");
             setIsEditing(false);
@@ -235,6 +246,8 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         try {
             await axios.put(`${API_BASE_URL}/api/agreements/${id}/sign`, {
                 role: uploadedByRole // 'admin' or 'client'
+            }, {
+                headers: { Authorization: `Bearer ${getToken()}` }
             });
             alert("Signed successfully!");
             if (editModalOpen) setEditModalOpen(false);
@@ -249,7 +262,9 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         if (e) e.stopPropagation();
         if (!window.confirm("Are you sure you want to delete this agreement?")) return;
         try {
-            await axios.delete(`${API_BASE_URL}/api/agreements/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/agreements/${id}`, {
+                headers: { Authorization: `Bearer ${getToken()}` }
+            });
             fetchAgreements();
         } catch (err) {
             console.error('Delete Error', err);
@@ -264,12 +279,11 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
         setIsEditing(false);
         setEditModalOpen(true);
 
-        // Word Preview Logic for localhost
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        // Word Preview Logic
         const mime = contract.mimetype || '';
         const isWord = mime.includes('word') || mime.includes('officedocument') || contract.originalName?.endsWith('.docx') || contract.originalName?.endsWith('.doc');
 
-        if (contract.type === 'manual' && isWord && isLocal && contract.fileUrl) {
+        if (contract.type === 'manual' && isWord && contract.fileUrl) {
             setWordPreviewLoading(true);
             try {
                 const fileUrl = `${API_BASE_URL}${contract.fileUrl}`;
@@ -462,7 +476,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                     />
                                     <TransliteratedInput 
                                         label={t('contractor_name_label')}
-                                        placeholder="SWAPNIL D. DHANVIJ"
+                                        placeholder=""
                                         value={digitalContractorName}
                                         onChange={(val) => setDigitalContractorName(val)}
                                         required
@@ -487,19 +501,19 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                     />
                                     <TransliteratedInput 
                                         label={t('total_cost')}
-                                        placeholder="12,80,000/-"
+                                        placeholder=""
                                         value={digitalTotalCost}
                                         onChange={(val) => setDigitalTotalCost(val)}
                                     />
                                     <TransliteratedInput 
                                         label={t('total_area')}
-                                        placeholder="800"
+                                        placeholder=""
                                         value={digitalArea}
                                         onChange={(val) => setDigitalArea(val)}
                                     />
                                     <TransliteratedInput 
                                         label={t('meeting_place')}
-                                        placeholder="WARDHA"
+                                        placeholder=""
                                         value={digitalMeetingPlace}
                                         onChange={(val) => setDigitalMeetingPlace(val)}
                                     />
@@ -508,7 +522,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                             label={t('client_bio')}
                                             isTextArea={true}
                                             rows={2}
-                                            placeholder="Age, Occupation, Full Marathi address details..."
+                                            placeholder=""
                                             value={digitalClientDetails}
                                             onChange={(val) => setDigitalClientDetails(val)}
                                         />
@@ -518,7 +532,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                             label={t('plot_details')}
                                             isTextArea={true}
                                             rows={2}
-                                            placeholder="मौजा सिंदी मेघे त. वर्धा, सर्वे नं. १८१..."
+                                            placeholder=""
                                             value={digitalPlotDetails}
                                             onChange={(val) => setDigitalPlotDetails(val)}
                                         />
@@ -539,7 +553,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                         <input 
                                             type="text" 
                                             className="ua-input" 
-                                            placeholder={t('project_title_placeholder') || "e.g. Skyline Apartments"}
+                                            placeholder={t('project_title_placeholder') || ""}
                                             value={projectName}
                                             onChange={(e) => setProjectName(e.target.value)}
                                         />
