@@ -5,15 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const { verifyToken, authorizeRoles } = require('../middleware/authMiddleware');
 
-// Configure Multer for image uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-    }
-});
+const { storage } = require('../config/cloudinary');
 
 const upload = multer({ storage: storage });
 
@@ -59,7 +51,7 @@ router.post('/', verifyToken, authorizeRoles('admin'), upload.array('images', 20
 
         let imageUrls = [];
         if (req.files) {
-            imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+            imageUrls = req.files.map(file => file.path); // Use Cloudinary secure URL
         }
 
         let parsedServices = [];
@@ -118,7 +110,7 @@ router.put('/:id', verifyToken, authorizeRoles('admin'), upload.array('images', 
 
         let newImageUrls = [];
         if (req.files) {
-            newImageUrls = req.files.map(file => `/uploads/${file.filename}`);
+            newImageUrls = req.files.map(file => file.path); // Cloudinary URL
         }
 
         // Combine existing images (if any) with new ones. existingImages might be a string or array depending on frontend

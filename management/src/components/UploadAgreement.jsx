@@ -322,7 +322,22 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                 setWordPreviewHtml(result.value);
             } catch (err) {
                 console.error("Word Conversion Error:", err);
-                setWordPreviewHtml('<p style="color: #ef4444; padding: 20px; text-align: center;">Failed to render Word document preview. Please use the download option below.</p>');
+                if (err.response?.status === 404) {
+                    setWordPreviewHtml(`
+                        <div style="padding: 40px; text-align: center; color: #94a3b8;">
+                            <div style="font-size: 40px; margin-bottom: 20px;">📂</div>
+                            <h3 style="color: #f8fafc; margin-bottom: 10px;">File Not Found on Server</h3>
+                            <p style="font-size: 14px; max-width: 400px; margin: 0 auto 20px;">
+                                This file was likely deleted during a server restart. On Render's free tier, uploaded files are temporary.
+                            </p>
+                            <p style="font-size: 13px; font-weight: 600; color: #818cf8;">
+                                Please delete this record and upload the document again.
+                            </p>
+                        </div>
+                    `);
+                } else {
+                    setWordPreviewHtml('<p style="color: #ef4444; padding: 20px; text-align: center;">Failed to render Word document preview. Please use the download option below.</p>');
+                }
             } finally {
                 setWordPreviewLoading(false);
             }

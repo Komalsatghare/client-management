@@ -8,35 +8,26 @@ const htmlToPdf = require('html-pdf-node');
 const ejs = require('ejs');
 const Agreement = require('../models/Agreement');
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, 'agreement-' + Date.now() + path.extname(file.originalname));
-    }
-});
-
-// NEW: File type validation filter
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = [
-        'application/pdf',
-        'application/msword', 
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'image/jpeg', 
-        'image/png', 
-        'image/webp'
-    ];
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error('Invalid file type. Only PDF, Word Documents, and Images are allowed.'), false);
-    }
-};
+const Agreement = require('../models/Agreement');
+const { cloudinary, storage } = require('../config/cloudinary');
 
 const upload = multer({ 
     storage: storage,
-    fileFilter: fileFilter,
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = [
+            'application/pdf',
+            'application/msword', 
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'image/jpeg', 
+            'image/png', 
+            'image/webp'
+        ];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid file type. Only PDF, Word Documents, and Images are allowed.'), false);
+        }
+    },
     limits: { fileSize: 10 * 1024 * 1024 } // 10MB Limit
 });
 
@@ -44,7 +35,6 @@ const upload = multer({
 // Helper to generate PDF from HTML
 const generatePDF = async (agreement) => {
     const filename = `contract-${agreement._id}-${Date.now()}.pdf`;
-    const filepath = path.join(__dirname, '../uploads', filename);
     
     // Add signature indicator info to the HTML before rendering
     let contentWithSigs = agreement.content;
@@ -62,8 +52,24 @@ const generatePDF = async (agreement) => {
     
     return new Promise((resolve, reject) => {
         htmlToPdf.generatePdf(file, options).then(pdfBuffer => {
-            fs.writeFileSync(filepath, pdfBuffer);
-            resolve(`/uploads/${filename}`);
+            // Upload PDF buffer directly to Cloudinary
+            const uploadStream = cloudinary.uploader.upload_stream(
+                {
+                    resource_type: 'raw',
+                    folder: 'client-management/generated-contracts',
+                    public_id: filename.replace('.pdf', ''),
+                    format: 'pdf'
+                },
+                (error, result) => {
+                    if (error) {
+                        console.error("Cloudinary PDF Upload Error:", error);
+                        reject(error);
+                    } else {
+                        resolve(result.secure_url);
+                    }
+                }
+            );
+            uploadStream.end(pdfBuffer);
         }).catch(err => {
             console.error("PDF Generate Error Detail:", err);
             reject(err);
@@ -84,7 +90,7 @@ router.post('/upload', verifyToken, upload.single('agreementFile'), async (req, 
             return res.status(400).json({ message: 'Please upload a file' });
         }
 
-        const fileUrl = `/uploads/${req.file.filename}`;
+        const fileUrl = req.file.path; // This is the Cloudinary URL from multer-storage-cloudinary
         
         const newAgreement = await Agreement.create({
             projectName,
