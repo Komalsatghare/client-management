@@ -20,6 +20,7 @@ app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 // Define allowed origins
 const allowedOrigins = [
   'https://stellular-alfajores-ee88ff.netlify.app',
+  'https://dhanvij-builders.online',
   'http://localhost:5173',
   'http://localhost:3000'
 ];
@@ -31,7 +32,8 @@ app.use(cors({
     
     const isAllowed = allowedOrigins.indexOf(origin) !== -1 || 
                      origin.endsWith('.netlify.app') || 
-                     origin.endsWith('.render.com');
+                     origin.endsWith('.render.com') ||
+                     origin === 'https://dhanvij-builders.online';
 
     if (!isAllowed) {
       console.warn(`CORS blocked for origin: ${origin}`);
