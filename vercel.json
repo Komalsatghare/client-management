@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build --workspace=management",
+  "outputDirectory": "management/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
