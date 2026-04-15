@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Monorepo for client management system containing backend and two frontends",
   "scripts": {
-    "install:all": "npm install && npm install --workspace=management && npm install --workspace=Admin-Dashboard && npm install --workspace=backend",
+    "install:all": "npm install --legacy-peer-deps && npm install --workspace=management --legacy-peer-deps && npm install --workspace=Admin-Dashboard --legacy-peer-deps && npm install --workspace=backend --legacy-peer-deps",
     "build:management": "npm run build --workspace=management",
     "build:admin": "npm run build --workspace=Admin-Dashboard",
     "build": "npm run build --workspace=management",
