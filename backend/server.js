@@ -33,7 +33,9 @@ app.use(cors({
     const isAllowed = allowedOrigins.indexOf(origin) !== -1 || 
                      origin.endsWith('.netlify.app') || 
                      origin.endsWith('.render.com') ||
-                     origin === 'https://dhanvij-builders.online';
+                     origin === 'https://dhanvij-builders.online' ||
+                     origin === 'https://www.dhanvij-builders.online' ||
+                     origin.endsWith('.dhanvij-builders.online');
 
     if (!isAllowed) {
       console.warn(`CORS blocked for origin: ${origin}`);

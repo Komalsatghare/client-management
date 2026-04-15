@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing Details - Client Management System</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #334155;
+            --accent: #2563eb;
+            --success: #10b981;
+            --fail: #ef4444;
+            --bg: #f8fafc;
+            --text: #0f172a;
+            --border: #cbd5e1;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .summary-box {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--accent);
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+        .summary-item b { display: block; font-size: 20px; color: var(--accent); }
+        h2 {
+            background: var(--secondary);
+            color: white;
+            padding: 10px 15px;
+            font-size: 18px;
+            border-radius: 4px;
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        th {
+            background: #e2e8f0;
+            color: var(--primary);
+            font-weight: 700;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid var(--border);
+        }
+        td {
+            padding: 10px;
+            border: 1px solid var(--border);
+            vertical-align: top;
+        }
+        .status-pass { color: var(--success); font-weight: bold; }
+        .data-cell { font-family: 'Courier New', Courier, monospace; background: #f8fafc; }
+        
+        @media print {
+            body { padding: 0; background: none; }
+            .container { box-shadow: none; border: 1px solid #eee; max-width: 100%; }
+            .btn-print { display: none; }
+            h2 { background: #334; color: white !important; -webkit-print-color-adjust: exact; }
+            th { background: #eee !important; -webkit-print-color-adjust: exact; }
+        }
+        .btn-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-print:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+
+<button class="btn-print" onclick="window.print()">Print/Download PDF</button>
+
+<div class="container">
+    <h1>Testing Details</h1>
+
+    <div class="summary-box">
+        <h3>Test Summary</h3>
+        <div class="summary-grid">
+            <div class="summary-item"><b>50</b> Total Tests</div>
+            <div class="summary-item"><b>50</b> Passed</div>
+            <div class="summary-item"><b>0</b> Failed</div>
+            <div class="summary-item"><b>100%</b> Pass Rate</div>
+        </div>
+    </div>
+
+    <!-- 1. AUTHENTICATION (10 Tests) -->
+    <h2>1. Authentication & Security</h2>
+    <table>
+        <tr>
+            <th>Test ID</th>
+            <th>Test Step</th>
+            <th>Test Data</th>
+            <th>Expected Result</th>
+            <th>Actual Result</th>
+            <th>Status</th>
+        </tr>
+        <tr><td>TC-01</td><td>Admin Login</td><td class="data-cell">Valid credentials</td><td>JWT Token & Admin Dashboard</td><td>Successful</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-02</td><td>Client Login</td><td class="data-cell">Valid credentials</td><td>JWT Token & Client Dashboard</td><td>Successful</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-03</td><td>Invalid Login</td><td class="data-cell">Wrong password</td><td>"Invalid credentials" error</td><td>Error shown</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-04</td><td>Client Signup</td><td class="data-cell">New user data</td><td>Account created, DB entry verified</td><td>Created</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-05</td><td>Auth Middleware</td><td class="data-cell">No token access</td><td>Status 401 Unauthorized</td><td>Blocked</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-06</td><td>Token Expiry</td><td class="data-cell">Expired JWT</td><td>Automatically log out user</td><td>Logged out</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-07</td><td>Admin PW Change</td><td class="data-cell">Old/New Passwords</td><td>DB updated with hashed PW</td><td>Updated</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-08</td><td>OTP Generation</td><td class="data-cell">Email for Reset</td><td>OTP sent to registered email</td><td>Email sent</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-09</td><td>OTP Verification</td><td class="data-cell">Valid 6-digit OTP</td><td>"OTP Verified" & Reset token</td><td>Verified</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-10</td><td>Logout</td><td class="data-cell">Click Logout</td><td>Auth token cleared from storage</td><td>Cleared</td><td class="status-pass">PASS</td></tr>
+    </table>
+
+    <!-- 2. PROJECT MANAGEMENT (10 Tests) -->
+    <h2>2. Project Management (Core)</h2>
+    <table>
+        <tr>
+            <th>Test ID</th>
+            <th>Test Step</th>
+            <th>Test Data</th>
+            <th>Expected Result</th>
+            <th>Actual Result</th>
+            <th>Status</th>
+        </tr>
+        <tr><td>TC-11</td><td>Create Project</td><td class="data-cell">Project JSON</td><td>Entry in MongoDB 'projects'</td><td>Created</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-12</td><td>Edit Project</td><td class="data-cell">Updated fields</td><td>Project details updated in real-time</td><td>Updated</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-13</td><td>Status Update</td><td class="data-cell">Status='Active'</td><td>Client dashboard reflects 'Active'</td><td>Synced</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-14</td><td>Delete Project</td><td class="data-cell">Delete confirm</td><td>Record removed, artifacts deleted</td><td>Deleted</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-15</td><td>Image Upload</td><td class="data-cell">.jpg/.png file</td><td>Stored in Cloudinary, URL in DB</td><td>Uploaded</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-16</td><td>Add Service</td><td class="data-cell">Service name/price</td><td>Budget auto-increments</td><td>Calculated</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-17</td><td>Progress Update</td><td class="data-cell">"In Progress"</td><td>Timeline updated on client view</td><td>Updated</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-18</td><td>Public Project</td><td class="data-cell">Toggle "Public"</td><td>Visible on public portfolio page</td><td>Visible</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-19</td><td>Project Search</td><td class="data-cell">Search string</td><td>Relevant project results filtered</td><td>Filtered</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-20</td><td>Notes Sync</td><td class="data-cell">Plain text</td><td>Notes persist after page refresh</td><td>Persisted</td><td class="status-pass">PASS</td></tr>
+    </table>
+
+    <!-- 3. CLIENT DASHBOARD (8 Tests) -->
+    <h2>3. Client Dashboard & UX</h2>
+    <table>
+        <tr>
+            <th>Test ID</th>
+            <th>Test Step</th>
+            <th>Test Data</th>
+            <th>Expected Result</th>
+            <th>Actual Result</th>
+            <th>Status</th>
+        </tr>
+        <tr><td>TC-21</td><td>Track Project</td><td class="data-cell">Project ID</td><td>Visual progress bar renders</td><td>Rendered</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-22</td><td>Request Modal</td><td class="data-cell">Form input</td><td>Modal closes on success submit</td><td>Closed</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-23</td><td>Profile View</td><td class="data-cell">User session</td><td>Shows correct name/email</td><td>Matched</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-24</td><td>Review Submit</td><td class="data-cell">5 stars + text</td><td>Review stored under project ID</td><td>Stored</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-25</td><td>Mobile Sidebar</td><td class="data-cell">375px width</td><td>Hamburger menu collapses</td><td>Responsive</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-26</td><td>Dashboard Chart</td><td class="data-cell">Payment stats</td><td>Canvas renders financial data</td><td>Rendered</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-27</td><td>Notification</td><td class="data-cell">Status change</td><td>Toast message appears</td><td>Appeared</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-28</td><td>Language Sync</td><td class="data-cell">Locale change</td><td>Dashboard translates to Marathi</td><td>Translated</td><td class="status-pass">PASS</td></tr>
+    </table>
+
+    <!-- 4. ADMIN DASHBOARD (8 Tests) -->
+    <h2>4. Admin Dashboard Ops</h2>
+    <table>
+        <tr>
+            <th>Test ID</th>
+            <th>Test Step</th>
+            <th>Test Data</th>
+            <th>Expected Result</th>
+            <th>Actual Result</th>
+            <th>Status</th>
+        </tr>
+        <tr><td>TC-29</td><td>Client Catalog</td><td class="data-cell">All records</td><td>List of all registered clients</td><td>Listed</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-30</td><td>Project Sort</td><td class="data-cell">Sort by date</td><td>Recent projects at top</td><td>Sorted</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-31</td><td>Global Search</td><td class="data-cell">"Bunglow"</td><td>Search results across categories</td><td>Returned</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-32</td><td>Stats Summary</td><td class="data-cell">DB aggregation</td><td>Total Revenue calculated correctly</td><td>Verified</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-33</td><td>Admin Settings</td><td class="data-cell">Theme toggle</td><td>Dark mode persists</td><td>Applied</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-34</td><td>CSV Export</td><td class="data-cell">Export button</td><td>Excel/CSV file downloads</td><td>Downloaded</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-35</td><td>Modals Check</td><td class="data-cell">Click "Add"</td><td>Modal centers perfectly</td><td>Centered</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-36</td><td>Error Boundary</td><td class="data-cell">API fail</td><td>Graceful "Something went wrong"</td><td>Handled</td><td class="status-pass">PASS</td></tr>
+    </table>
+
+    <!-- 5. AGREEMENTS & CONTRACTS (7 Tests) -->
+    <h2>5. Agreements & Contracts</h2>
+    <table>
+        <tr>
+            <th>Test ID</th>
+            <th>Test Step</th>
+            <th>Test Data</th>
+            <th>Expected Result</th>
+            <th>Actual Result</th>
+            <th>Status</th>
+        </tr>
+        <tr><td>TC-37</td><td>Digital Doc</td><td class="data-cell">Template vars</td><td>PDF matches EJS template</td><td>Matches</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-38</td><td>Cloudinary URL</td><td class="data-cell">Upload pdf</td><td>Secure URL generated</td><td>Generated</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-39</td><td>Double Sign</td><td class="data-cell">Admin/Client sign</td><td>Contract status becomes 'Active'</td><td>Active</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-40</td><td>Contract Edit</td><td class="data-cell">Change clause</td><td>Signatures removed if edited</td><td>Removed</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-41</td><td>Preview PDF</td><td class="data-cell">View button</td><td>Open PDF in new browser tab</td><td>Opened</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-42</td><td>Agreement No</td><td class="data-cell">Auto-gen</td><td>Unique alpha-numeric code</td><td>Unique</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-43</td><td>Download Icon</td><td class="data-cell">Click Download</td><td>Browser download starts</td><td>Started</td><td class="status-pass">PASS</td></tr>
+    </table>
+
+    <!-- 6. PAYMENTS & FINANCIALS (7 Tests) -->
+    <h2>6. Payments & Financials</h2>
+    <table>
+        <tr>
+            <th>Test ID</th>
+            <th>Test Step</th>
+            <th>Test Data</th>
+            <th>Expected Result</th>
+            <th>Actual Result</th>
+            <th>Status</th>
+        </tr>
+        <tr><td>TC-44</td><td>Partial Payment</td><td class="data-cell">Half amount</td><td>Payment status becomes 'Partial'</td><td>Partial</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-45</td><td>Full Payment</td><td class="data-cell">Balance amount</td><td>Payment status becomes 'Completed'</td><td>Completed</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-46</td><td>History Check</td><td class="data-cell">Past entries</td><td>Logs show date/time/transaction ID</td><td>Visible</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-47</td><td>Auto Balance</td><td class="data-cell">Change budget</td><td>Remaining balance recalculates</td><td>Updated</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-48</td><td>Currency Sync</td><td class="data-cell">₹ Format</td><td>Displays as ₹ 00,00,000.00</td><td>Formatted</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-49</td><td>Payment Modal</td><td class="data-cell">Click "Pay"</td><td>Razorpay/Gateways UI opens</td><td>Opened</td><td class="status-pass">PASS</td></tr>
+        <tr><td>TC-50</td><td>Receipt Gen</td><td class="data-cell">Success pay</td><td>Auto-generate receipt PDF</td><td>Generated</td><td class="status-pass">PASS</td></tr>
+    </table>
+
+    <div class="summary-box" style="margin-top: 50px;">
+        <p style="text-align: center; font-style: italic;">End of Comprehensive 50-Item Test Case Report. Total system stability verified.</p>
+    </div>
+</div>
+
+</body>
+</html>
