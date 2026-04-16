@@ -93,7 +93,7 @@ function Navbar() {
           >
             <div className="relative shrink-0">
               <img 
-                src="/images/photo.jpeg" 
+                src="/images/dhanvij builders.jpeg" 
                 alt="Dhanvij Builders Logo" 
                 className="w-10 h-10 rounded-xl object-cover border-2 border-[#d62b1b]/40 group-hover:border-[#d62b1b]/80 shadow-md transition-all duration-300" 
               />
@@ -230,7 +230,7 @@ function Navbar() {
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src="/images/photo.jpeg" alt="Logo" className="w-8 h-8 rounded-lg" />
+            <img src="/images/dhanvij builders.jpeg" alt="Logo" className="w-8 h-8 rounded-lg" />
             <span className="text-white font-bold">Navigation</span>
           </div>
           <button 

@@ -30,7 +30,7 @@ const Sidebar = ({ activeSection, setActiveSection, adminData }) => {
       <div className="sidebar-header">
         <div className="sidebar-logo-wrap">
           <img
-            src="/images/photo.jpeg"
+            src="/images/dhanvij builders.jpeg"
             alt="Dhanvij Builders"
             className="sidebar-logo-img"
             onError={(e) => { e.target.style.display = 'none'; }}
