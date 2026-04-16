@@ -23,6 +23,7 @@ app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 const allowedOrigins = [
   'https://stellular-alfajores-ee88ff.netlify.app',
   'https://dhanvij-builders.online',
+  'https://www.dhanvij-builders.online',
   'http://localhost:5173',
   'http://localhost:3000'
 ];
