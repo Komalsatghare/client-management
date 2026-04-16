@@ -294,7 +294,7 @@ export default function VideoRoom() {
                 ].map((btn, i) => (
                     <div key={i} style={S.ctrlGroup}>
                         <button
-                            id="participantsBtn"
+                            id={btn.label === "Participants" ? "participantsBtn" : undefined}
                             style={btn.red ? S.ctrlBtnRed : (btn.active ? { ...S.ctrlBtn, background: "rgba(37,99,235,0.3)" } : S.ctrlBtn)}
                             onClick={btn.action} title={btn.label}
                         >
