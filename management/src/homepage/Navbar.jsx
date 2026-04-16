@@ -101,7 +101,7 @@ function Navbar() {
             </div>
             <div className="flex flex-col leading-tight">
               <span className="text-white font-extrabold text-base sm:text-lg tracking-tight">Dhanvij Builders</span>
-              <span className="text-[#94a3b8] font-medium text-[10px] uppercase tracking-widest hidden sm:block">Civil Engineering</span>
+              <span className="text-[#cbd5e1] font-bold text-[10px] uppercase tracking-widest hidden sm:block">Civil Engineering</span>
             </div>
           </div>
 
@@ -114,7 +114,7 @@ function Navbar() {
                 className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 relative
                   ${isActive(link.path) 
                     ? "text-white bg-white/10" 
-                    : "text-[#94a3b8] hover:text-white hover:bg-white/5"}`}
+                    : "text-[#cbd5e1] hover:text-white hover:bg-white/5"}`}
               >
                 {link.label}
                 {isActive(link.path) && (
@@ -250,7 +250,7 @@ function Navbar() {
               className={`flex items-center gap-3 p-4 rounded-xl text-base font-semibold transition-all
                 ${isActive(link.path) 
                   ? "bg-[#d62b1b]/10 text-[#d62b1b] border border-[#d62b1b]/20" 
-                  : "text-[#94a3b8] hover:bg-white/5 hover:text-white border border-transparent"}`}
+                  : "text-[#cbd5e1] hover:bg-white/5 hover:text-white border border-transparent"}`}
             >
               <link.icon size={20} />
               {link.label}

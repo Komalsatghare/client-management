@@ -8,8 +8,8 @@ const { verifyToken, authorizeRoles } = require('../middleware/authMiddleware');
 // @access  Private (Client only)
 router.post('/', verifyToken, async (req, res) => {
     try {
-        if (req.user.role !== 'client') {
-            return res.status(403).json({ message: 'Only clients can leave reviews' });
+        if (req.user.role !== 'client' && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Only logged-in users can leave reviews' });
         }
 
         const { rating, comment } = req.body;

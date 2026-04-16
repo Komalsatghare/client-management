@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ChevronDown, ChevronUp, CheckCircle, Clock, Activity, Image as ImageIcon, LayoutDashboard, Download, Maximize2, X } from "lucide-react";
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL, resolveUrl } from "../config";
 import { useLanguage } from "../context/LanguageContext";
 
 const ClientTrackProject = () => {
@@ -178,7 +178,7 @@ const ClientTrackProject = () => {
                                                                                 position: "relative", aspectRatio: "1/1", borderRadius: "10px", 
                                                                                 overflow: "hidden", cursor: "pointer", group: "true"
                                                                             }} onClick={() => setViewerImage(img)}>
-                                                                                <img src={img} alt="Milestone" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s" }} />
+                                                                                <img src={resolveUrl(img)} alt="Milestone" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s" }} />
                                                                                 <div style={{ 
                                                                                     position: "absolute", inset: 0, background: "rgba(0,0,0,0.3)", 
                                                                                     opacity: 0, display: "flex", alignItems: "center",
@@ -216,10 +216,37 @@ const ClientTrackProject = () => {
                     zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center",
                     padding: "40px", backdropFilter: "blur(10px)"
                 }} onClick={() => setViewerImage(null)}>
-                    <button style={{ position: "absolute", top: "20px", right: "20px", background: "rgba(255,255,255,0.1)", border: "none", color: "white", padding: "10px", borderRadius: "50%", cursor: "pointer" }}>
-                        <X size={24} />
-                    </button>
-                    <img src={viewerImage} alt="Full View" style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: "12px", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }} />
+                    <div onClick={e => e.stopPropagation()} style={{ position: "relative", maxWidth: "100%", maxHeight: "100%" }}>
+                        <button 
+                            onClick={() => setViewerImage(null)}
+                            style={{ position: "absolute", top: "-50px", right: 0, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.1)", color: "white", width: "40px", height: "40px", borderRadius: "50%", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                        >
+                            <X size={20} />
+                        </button>
+                        <button 
+                            onClick={async () => {
+                                try {
+                                    const response = await fetch(resolveUrl(viewerImage));
+                                    const blob = await response.blob();
+                                    const url = URL.createObjectURL(blob);
+                                    const link = document.createElement('a');
+                                    link.href = url;
+                                    link.download = viewerImage.split('/').pop() || 'project-photo.jpg';
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                    URL.revokeObjectURL(url);
+                                } catch (err) {
+                                    console.error("Download failed", err);
+                                    alert("Failed to download image.");
+                                }
+                            }}
+                            style={{ position: "absolute", top: "-50px", left: 0, background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.3)", color: "#60a5fa", padding: "8px 20px", borderRadius: "999px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", fontWeight: 700 }}
+                        >
+                            <Download size={16} /> Download Full Photo
+                        </button>
+                        <img src={resolveUrl(viewerImage)} alt="Full View" style={{ maxWidth: "90vw", maxHeight: "80vh", borderRadius: "12px", boxShadow: "0 20px 60px rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                    </div>
                 </div>
             )}
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ChevronDown, ChevronUp, Plus, CheckCircle, Clock, AlertCircle, Activity, Image as ImageIcon, Loader2 } from 'lucide-react';
-import { API_BASE_URL } from '../../config';
+import { ChevronDown, ChevronUp, Plus, CheckCircle, Clock, AlertCircle, Activity, Image as ImageIcon, Loader2, Edit2, Trash2, Download, Maximize2, X } from 'lucide-react';
+import { API_BASE_URL, resolveUrl } from '../../config';
+import TransliteratedInput from '../../components/TransliteratedInput';
 
 
 /* ─── Inline Styles ─────────────────────────────────────────────────────────── */
@@ -181,6 +182,17 @@ const css = `
     font-family:'Inter',sans-serif; transition:all .2s;
 }
 .tp-btn-ghost:hover { background:rgba(255,255,255,0.08); color:#e2e8f0; }
+
+/* Lightbox */
+.tp-lightbox-overlay { 
+    position:fixed; inset:0; background:rgba(5,10,24,0.96); z-index:9999; 
+    display:flex; alignItems:center; justifyContent:center; padding:40px; 
+    backdrop-filter:blur(10px); 
+}
+.tp-lightbox-card { position:relative; max-width:100%; max-height:100%; }
+.tp-lightbox-btn-close { position:absolute; top:-50px; right:0; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.1); color:white; width:40px; height:40px; borderRadius:50%; cursor:pointer; display:flex; alignItems:center; justifyContent:center; }
+.tp-lightbox-btn-down { position:absolute; top:-50px; left:0; background:rgba(96,165,250,0.15); border:1px solid rgba(96,165,250,0.3); color:#60a5fa; padding:8px 20px; borderRadius:999px; cursor:pointer; display:flex; alignItems:center; gap:8px; fontSize:13px; fontWeight:700; }
+.tp-lightbox-img { max-width:90vw; max-height:80vh; borderRadius:16px; boxShadow:0 25px 60px rgba(0,0,0,0.8); border:1px solid rgba(255,255,255,0.1); }
 `;
 
 /* ─── Status Config ─────────────────────────────────────────────────────────── */
@@ -215,6 +227,9 @@ const TrackProject = () => {
     const [error, setError]                 = useState(null);
     const [expandedId, setExpandedId]       = useState(null);
     const [modalOpen, setModalOpen]         = useState(false);
+    const [isEditMode, setIsEditMode]       = useState(false);
+    const [currentMsId, setCurrentMsId]     = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [selectedProject, setSelectedProject] = useState(null);
     const [milestoneForm, setMilestoneForm] = useState({ title:'', description:'', status:'Pending' });
     const [selectedFiles, setSelectedFiles] = useState([]);
@@ -241,8 +256,55 @@ const TrackProject = () => {
     const openMilestoneModal = (project, e) => {
         e.stopPropagation();
         setSelectedProject(project);
+        setIsEditMode(false);
+        setCurrentMsId(null);
         setMilestoneForm({ title:'', description:'', status:'Pending' });
         setModalOpen(true);
+    };
+
+    const openEditMilestoneModal = (project, ms, e) => {
+        e.stopPropagation();
+        setSelectedProject(project);
+        setIsEditMode(true);
+        setCurrentMsId(ms._id);
+        setMilestoneForm({ 
+            title: ms.title || '', 
+            description: ms.description || '', 
+            status: ms.status || 'Pending' 
+        });
+        setModalOpen(true);
+    };
+
+    const handleDeleteMilestone = async (project, msId) => {
+        if (!window.confirm("Are you sure you want to delete this milestone?")) return;
+        try {
+            const token = localStorage.getItem('authToken');
+            await axios.delete(`${API_BASE_URL}/api/projects/${project._id}/progress/${msId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            fetchProjects();
+        } catch (err) {
+            console.error("Error deleting milestone:", err);
+            alert('Failed to delete milestone.');
+        }
+    };
+
+    const downloadImage = async (url) => {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = url.split('/').pop() || 'milestone-image.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(blobUrl);
+        } catch (err) {
+            console.error("Download failed", err);
+            alert("Failed to download image.");
+        }
     };
 
     const handleMilestoneSubmit = async (e) => {
@@ -250,31 +312,40 @@ const TrackProject = () => {
         setActionLoading(true);
         try {
             const token = localStorage.getItem('authToken');
-            const fData = new FormData();
-            fData.append('title', milestoneForm.title);
-            fData.append('description', milestoneForm.description);
-            fData.append('status', milestoneForm.status);
             
-            if (selectedFiles.length > 0) {
-                Array.from(selectedFiles).forEach(file => {
-                    fData.append('images', file);
-                });
-            }
+            if (isEditMode) {
+                await axios.put(
+                    `${API_BASE_URL}/api/projects/${selectedProject._id}/progress/${currentMsId}`,
+                    milestoneForm,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+            } else {
+                const fData = new FormData();
+                fData.append('title', milestoneForm.title);
+                fData.append('description', milestoneForm.description);
+                fData.append('status', milestoneForm.status);
+                
+                if (selectedFiles.length > 0) {
+                    Array.from(selectedFiles).forEach(file => {
+                        fData.append('images', file);
+                    });
+                }
 
-            await axios.put(
-                `${API_BASE_URL}/api/projects/${selectedProject._id}/progress`,
-                fData,
-                { headers: { 
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data'
-                } }
-            );
+                await axios.put(
+                    `${API_BASE_URL}/api/projects/${selectedProject._id}/progress`,
+                    fData,
+                    { headers: { 
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    } }
+                );
+            }
             setModalOpen(false);
             setSelectedFiles([]);
             fetchProjects();
         } catch (err) {
-            console.error("Error adding milestone:", err);
-            alert('Failed to add milestone.');
+            console.error("Error saving milestone:", err);
+            alert('Failed to save milestone.');
         } finally {
             setActionLoading(false);
         }
@@ -378,32 +449,54 @@ const TrackProject = () => {
                                                 return (
                                                     <div key={idx} className="tp-timeline-item">
                                                         <div className="tp-timeline-dot" style={{ background:sc.dot, boxShadow:`0 0 8px ${sc.dot}66` }} />
-                                                        <div style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:'10px', padding:'12px 14px' }}>
-                                                            <p className="tp-ms-title">
-                                                                {getMilestoneIcon(ms.status)}
-                                                                {ms.title}
-                                                            </p>
-                                                            <p className="tp-ms-desc">{ms.description}</p>
-                                                            {ms.images && ms.images.length > 0 && (
-                                                                <div style={{ display:'flex', gap:'8px', margin:'12px 0', flexWrap:'wrap' }}>
-                                                                    {ms.images.map((img, i) => (
-                                                                        <div key={i} style={{ width:'80px', height:'80px', borderRadius:'8px', overflow:'hidden', border:'1px solid rgba(255,255,255,0.1)' }}>
-                                                                            <img src={img} alt={`Milestone ${i}`} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                                                                        <div style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:'10px', padding:'12px 14px' }}>
+                                                                            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
+                                                                                <p className="tp-ms-title" style={{ margin:0 }}>
+                                                                                    {getMilestoneIcon(ms.status)}
+                                                                                    {ms.title}
+                                                                                </p>
+                                                                                <div style={{ display:'flex', gap:'8px' }}>
+                                                                                    <button 
+                                                                                        onClick={(e) => openEditMilestoneModal(project, ms, e)}
+                                                                                        style={{ background:'none', border:'none', color:'#475569', cursor:'pointer' }}
+                                                                                        title="Edit Milestone"
+                                                                                    >
+                                                                                        <Edit2 size={14} />
+                                                                                    </button>
+                                                                                    <button 
+                                                                                        onClick={(e) => { e.stopPropagation(); handleDeleteMilestone(project, ms._id); }}
+                                                                                        style={{ background:'none', border:'none', color:'#475569', cursor:'pointer' }}
+                                                                                        title="Delete Milestone"
+                                                                                    >
+                                                                                        <Trash2 size={14} />
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                            <p className="tp-ms-desc">{ms.description}</p>
+                                                                            {ms.images && ms.images.length > 0 && (
+                                                                                <div style={{ display:'flex', gap:'8px', margin:'12px 0', flexWrap:'wrap' }}>
+                                                                                    {ms.images.map((img, i) => (
+                                                                                        <div 
+                                                                                            key={i} 
+                                                                                            onClick={(e) => { e.stopPropagation(); setSelectedImage(resolveUrl(img)); }}
+                                                                                            style={{ width:'80px', height:'80px', borderRadius:'8px', overflow:'hidden', border:'1px solid rgba(255,255,255,0.1)', cursor:'zoom-in' }}
+                                                                                        >
+                                                                                            <img src={resolveUrl(img)} alt={`Milestone ${i}`} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                                                                                        </div>
+                                                                                    ))}
+                                                                                </div>
+                                                                            )}
+                                                                            <div className="tp-ms-meta">
+                                                                                {ms.date && (
+                                                                                    <span className="tp-ms-date">
+                                                                                        📅 {new Date(ms.date).toLocaleDateString()}
+                                                                                    </span>
+                                                                                )}
+                                                                                <span className="tp-ms-status" style={{ color:sc.c, background:sc.b, border:`1px solid ${sc.bdr}` }}>
+                                                                                    {ms.status}
+                                                                                </span>
+                                                                            </div>
                                                                         </div>
-                                                                    ))}
-                                                                </div>
-                                                            )}
-                                                            <div className="tp-ms-meta">
-                                                                {ms.date && (
-                                                                    <span className="tp-ms-date">
-                                                                        📅 {new Date(ms.date).toLocaleDateString()}
-                                                                    </span>
-                                                                )}
-                                                                <span className="tp-ms-status" style={{ color:sc.c, background:sc.b, border:`1px solid ${sc.bdr}` }}>
-                                                                    {ms.status}
-                                                                </span>
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 );
                                             })}
@@ -423,7 +516,7 @@ const TrackProject = () => {
                             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'22px' }}>
                                 <div>
                                     <h3 style={{ margin:0, fontSize:'17px', fontWeight:700, background:'linear-gradient(135deg,#60a5fa,#a78bfa)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
-                                        Add Milestone
+                                        {isEditMode ? 'Edit Milestone' : 'Add Milestone'}
                                     </h3>
                                     <p style={{ margin:'3px 0 0', fontSize:'12px', color:'#475569' }}>{selectedProject?.name}</p>
                                 </div>
@@ -432,18 +525,23 @@ const TrackProject = () => {
 
                             <form onSubmit={handleMilestoneSubmit}>
                                 <div style={{ marginBottom:14 }}>
-                                    <label className="tp-lbl">Title *</label>
-                                    <input type="text" required placeholder="e.g. Foundation Completed"
-                                        className="tp-inp"
+                                    <TransliteratedInput 
+                                        label="Title *"
+                                        placeholder="e.g. Foundation Completed"
                                         value={milestoneForm.title}
-                                        onChange={e => setMilestoneForm({ ...milestoneForm, title:e.target.value })} />
+                                        onChange={v => setMilestoneForm({ ...milestoneForm, title:v })}
+                                        required
+                                    />
                                 </div>
                                 <div style={{ marginBottom:14 }}>
-                                    <label className="tp-lbl">Description *</label>
-                                    <textarea required rows={4} placeholder="Describe what was accomplished…"
-                                        className="tp-inp" style={{ resize:'vertical' }}
+                                    <TransliteratedInput 
+                                        label="Description *"
+                                        placeholder="Describe what was accomplished…"
                                         value={milestoneForm.description}
-                                        onChange={e => setMilestoneForm({ ...milestoneForm, description:e.target.value })} />
+                                        onChange={v => setMilestoneForm({ ...milestoneForm, description:v })}
+                                        required
+                                        isTextArea
+                                    />
                                 </div>
                                 <div style={{ marginBottom:22 }}>
                                     <label className="tp-lbl">Status</label>
@@ -456,25 +554,27 @@ const TrackProject = () => {
                                     </select>
                                 </div>
                                 
-                                <div style={{ marginBottom:22 }}>
-                                    <label className="tp-lbl">Progress Photos</label>
-                                    <div style={{ position:'relative' }}>
-                                        <input 
-                                            type="file" 
-                                            multiple 
-                                            accept="image/*"
-                                            onChange={e => setSelectedFiles(e.target.files)}
-                                            style={{ display:'none' }}
-                                            id="milestone-images"
-                                        />
-                                        <label htmlFor="milestone-images" style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 14px', background:'rgba(255,255,255,0.03)', border:'1px dashed rgba(255,255,255,0.1)', borderRadius:'10px', cursor:'pointer' }}>
-                                            <ImageIcon size={18} color="#64748b" />
-                                            <span style={{ fontSize:'13px', color: selectedFiles.length > 0 ? '#60a5fa' : '#475569' }}>
-                                                {selectedFiles.length > 0 ? `${selectedFiles.length} files selected` : 'Click to upload photos...'}
-                                            </span>
-                                        </label>
+                                {!isEditMode && (
+                                    <div style={{ marginBottom:22 }}>
+                                        <label className="tp-lbl">Progress Photos</label>
+                                        <div style={{ position:'relative' }}>
+                                            <input 
+                                                type="file" 
+                                                multiple 
+                                                accept="image/*"
+                                                onChange={e => setSelectedFiles(e.target.files)}
+                                                style={{ display:'none' }}
+                                                id="milestone-images"
+                                            />
+                                            <label htmlFor="milestone-images" style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 14px', background:'rgba(255,255,255,0.03)', border:'1px dashed rgba(255,255,255,0.1)', borderRadius:'10px', cursor:'pointer' }}>
+                                                <ImageIcon size={18} color="#64748b" />
+                                                <span style={{ fontSize:'13px', color: selectedFiles.length > 0 ? '#60a5fa' : '#475569' }}>
+                                                    {selectedFiles.length > 0 ? `${selectedFiles.length} files selected` : 'Click to upload photos...'}
+                                                </span>
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
+                                )}
 
                                 {/* Preview dot */}
                                 <div style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 13px', background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'9px', marginBottom:20 }}>
@@ -490,6 +590,18 @@ const TrackProject = () => {
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                )}
+                {/* Global Lightbox Overlay */}
+                {selectedImage && (
+                    <div className="tp-lightbox-overlay" onClick={() => setSelectedImage(null)}>
+                        <div className="tp-lightbox-card" onClick={e => e.stopPropagation()}>
+                            <button className="tp-lightbox-btn-close" onClick={() => setSelectedImage(null)}>✕</button>
+                            <button className="tp-lightbox-btn-down" onClick={() => downloadImage(selectedImage)}>
+                                <Download size={16} /> Download Full Photo
+                            </button>
+                            <img src={selectedImage} alt="Full size view" className="tp-lightbox-img" />
                         </div>
                     </div>
                 )}

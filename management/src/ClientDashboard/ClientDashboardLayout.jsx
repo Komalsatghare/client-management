@@ -106,12 +106,11 @@ export default function ClientDashboardLayout() {
                     }
 
                     /* Sidebar Mobile Handling */
-                    .cdl-sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1100; backdrop-filter:blur(4px); }
-                    .cdl-sidebar-overlay.show { display:block; }
+                    .cdl-sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1100; backdrop-filter:blur(4px); pointer-events:none; }
                     @media (max-width: 768px) {
-                        .client-sidebar-container { position:fixed !important; left:-280px !important; z-index:1200 !important; transition: left 0.3s ease !important; }
+                        .cdl-sidebar-overlay.show { display:block; pointer-events:auto; }
+                        .client-sidebar-container { position:fixed !important; left:-260px !important; z-index:1200 !important; transition: left 0.3s ease !important; }
                         .client-sidebar-container.open { left:0 !important; }
-                        .client-main-area { margin-left:0 !important; }
                     }
                 `}</style>
 

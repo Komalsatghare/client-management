@@ -57,7 +57,7 @@ body { margin: 0; background: var(--bg-base); }
     width: 100%;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
     .client-sidebar-container {
         position: relative;
         left: 0;

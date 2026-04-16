@@ -3,7 +3,7 @@ import { API_BASE_URL } from "../../config";
 
 
 const ACCENT = "#d62b1b";
-const API = `${API_BASE_URL}/api/feedback`;
+const API = `${API_BASE_URL}/api/reviews`;
 
 function StarRating({ value, onChange, readonly = false, size = 22 }) {
   const [hovered, setHovered] = useState(0);
@@ -55,6 +55,7 @@ export default function TestimonialsSection() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
@@ -69,7 +70,13 @@ export default function TestimonialsSection() {
       try {
         const res = await fetch(API);
         const data = await res.json();
-        setFeedbacks(data);
+        // Map Review structure (clientName, comment) to Testimonial structure (name, message)
+        const mappedData = data.map(r => ({
+          ...r,
+          name: r.clientName || r.name,
+          message: r.comment || r.message
+        }));
+        setFeedbacks(mappedData);
       } catch (e) {
         console.error("Failed to load feedback:", e);
       } finally {
@@ -111,19 +118,33 @@ export default function TestimonialsSection() {
     }
     setSubmitting(true);
     try {
+      const token = localStorage.getItem("clientAuthToken") || localStorage.getItem("authToken");
       const res = await fetch(API, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          rating: form.rating,
+          comment: form.message
+        }),
       });
       if (!res.ok) {
         const d = await res.json();
-        throw new Error(d.error || "Submission failed");
+        throw new Error(d.message || "Submission failed");
       }
       const saved = await res.json();
-      setFeedbacks((prev) => [saved, ...prev]);
+      // saved is { message, review } according to backend
+      const newReview = saved.review ? { ...saved.review, name: saved.review.clientName, message: saved.review.comment } : saved;
+      
       setSubmitted(true);
       setForm({ name: "", rating: 0, message: "" });
+      // Reload feedbacks to show the latest
+      const refreshRes = await fetch(API);
+      const refreshData = await refreshRes.json();
+      setFeedbacks(refreshData.map(r => ({ ...r, name: r.clientName, message: r.comment })));
+
     } catch (err) {
       setFormError(err.message);
     } finally {
@@ -446,12 +467,53 @@ export default function TestimonialsSection() {
               <h3>Share Your Experience</h3>
               <p>Have we worked with you? We'd love to hear your feedback.</p>
             </div>
-            <button className="tm-leave-btn" onClick={() => { setShowModal(true); setSubmitted(false); }}>
+            <button className="tm-leave-btn" onClick={() => { 
+              const token = localStorage.getItem("clientAuthToken") || localStorage.getItem("authToken");
+              if (!token) {
+                setShowLoginPrompt(true);
+              } else {
+                const name = localStorage.getItem("clientName") || localStorage.getItem("adminName") || "";
+                setForm(prev => ({ ...prev, name }));
+                setShowModal(true); 
+                setSubmitted(false); 
+              }
+            }}>
               ✍ Leave a Review
             </button>
           </div>
         </div>
       </section>
+
+      {/* Login Prompt Modal */}
+      {showLoginPrompt && (
+        <div className="tm-overlay" onClick={() => setShowLoginPrompt(false)}>
+          <div className="tm-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
+            <button className="tm-modal-close" onClick={() => setShowLoginPrompt(false)}>✕</button>
+            <div style={{ fontSize: '48px', marginBottom: '20px' }}>🔐</div>
+            <h2 className="tm-modal-title">Please Login First</h2>
+            <p className="tm-modal-sub">You need to be logged into your account to share your experience with us.</p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '10px' }}>
+              <button 
+                className="tm-submit-btn" 
+                onClick={() => window.location.href = '/client-login'}
+                style={{ background: '#3b82f6', flex: 1 }}
+              >
+                Client Login
+              </button>
+              <button 
+                className="tm-submit-btn" 
+                onClick={() => window.location.href = '/login'}
+                style={{ background: '#6366f1', flex: 1 }}
+              >
+                Admin Login
+              </button>
+            </div>
+            <p style={{ marginTop: '20px', fontSize: '12px', color: '#475569' }}>
+              Don't have an account? Please contact our team.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Feedback Modal */}
       {showModal && (
@@ -482,6 +544,8 @@ export default function TestimonialsSection() {
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       required
+                      readOnly={!!(localStorage.getItem("clientAuthToken") || localStorage.getItem("authToken"))}
+                      style={{ opacity: (localStorage.getItem("clientAuthToken") || localStorage.getItem("authToken")) ? 0.7 : 1 }}
                     />
                   </div>
                   <div className="tm-field">

@@ -15,9 +15,7 @@ const TopNavbar = ({ activeSection, setActiveSection, adminData, toggleSidebar }
 
     return (
         <div className="top-navbar">
-            <button className="mobile-toggle icon-btn" onClick={toggleSidebar} style={{ marginRight: '10px' }}>
-                <Menu size={20} />
-            </button>
+            {/* mobile-toggle removed as per user request */}
             <div className="navbar-title">
                 {t(activeSection.toLowerCase().replace(/\s+/g, '_')) || activeSection}
             </div>

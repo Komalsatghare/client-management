@@ -17,7 +17,7 @@ const storage = new CloudinaryStorage({
     return {
       folder: 'client-management',
       resource_type: 'auto', // Important for docs/pdfs
-      allowed_formats: ['jpg', 'png', 'pdf', 'doc', 'docx', 'webp'],
+      allowed_formats: ['jpg', 'png', 'pdf', 'doc', 'docx', 'docs', 'webp'],
       public_id: `${Date.now()}-${file.originalname.split('.')[0]}`
     };
   },

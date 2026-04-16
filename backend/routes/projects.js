@@ -217,4 +217,45 @@ router.put('/:id/progress', verifyToken, authorizeRoles('admin'), upload.array('
     }
 });
 
+// Update an existing milestone
+router.put('/:id/progress/:msId', verifyToken, authorizeRoles('admin'), async (req, res) => {
+    try {
+        const { title, description, status } = req.body;
+        const project = await Project.findOneAndUpdate(
+            { _id: req.params.id, "progress._id": req.params.msId },
+            {
+                $set: {
+                    "progress.$.title": title,
+                    "progress.$.description": description,
+                    "progress.$.status": status
+                }
+            },
+            { returnDocument: 'after' }
+        );
+
+        if (!project) return res.status(404).json({ error: 'Project or Milestone not found' });
+        res.json(project);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Delete an existing milestone
+router.delete('/:id/progress/:msId', verifyToken, authorizeRoles('admin'), async (req, res) => {
+    try {
+        const project = await Project.findByIdAndUpdate(
+            req.params.id,
+            {
+                $pull: { progress: { _id: req.params.msId } }
+            },
+            { returnDocument: 'after' }
+        );
+
+        if (!project) return res.status(404).json({ error: 'Project not found' });
+        res.json(project);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
@@ -112,6 +114,56 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(5000, () => {
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
+
+// Store participants per room: { roomId: [ { socketId, name, role } ] }
+const roomParticipants = {};
+
+io.on('connection', (socket) => {
+  console.log('New client connected:', socket.id);
+
+  socket.on('join-room', ({ roomId, name, role }) => {
+    socket.join(roomId);
+    
+    if (!roomParticipants[roomId]) {
+      roomParticipants[roomId] = [];
+    }
+    
+    // Add participant if not already there (by socket id)
+    if (!roomParticipants[roomId].find(p => p.socketId === socket.id)) {
+      roomParticipants[roomId].push({ socketId: socket.id, name, role });
+    }
+    
+    console.log(`${name} joined room: ${roomId}`);
+    io.to(roomId).emit('update-participants', roomParticipants[roomId]);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+    // Remove participant from all rooms they were in
+    for (const roomId in roomParticipants) {
+      const initialCount = roomParticipants[roomId].length;
+      roomParticipants[roomId] = roomParticipants[roomId].filter(p => p.socketId !== socket.id);
+      
+      if (roomParticipants[roomId].length !== initialCount) {
+        io.to(roomId).emit('update-participants', roomParticipants[roomId]);
+      }
+      
+      // Clean up empty rooms
+      if (roomParticipants[roomId].length === 0) {
+        delete roomParticipants[roomId];
+      }
+    }
+  });
+});
+
+server.listen(5000, () => {
   console.log("Server running on port 5000");
 });

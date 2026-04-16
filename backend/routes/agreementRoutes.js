@@ -16,6 +16,8 @@ const upload = multer({
             'application/pdf',
             'application/msword', 
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-word.document.macroEnabled.12',
+            'application/octet-stream', // Fallback for some browsers/files
             'image/jpeg', 
             'image/png', 
             'image/webp'

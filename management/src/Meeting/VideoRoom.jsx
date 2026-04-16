@@ -5,6 +5,7 @@ import {
     Clock, Wifi, Shield, ExternalLink, CheckCircle
 } from "lucide-react";
 import { API_BASE_URL } from "../config";
+import { io } from "socket.io-client";
 
 
 /* ─────────────────────────────────────
@@ -31,6 +32,9 @@ export default function VideoRoom() {
 
     const localVideoRef = useRef(null);
     const timerRef      = useRef(null);
+    const socketRef     = useRef(null);
+
+    const [participants, setParticipants] = useState([]);
 
     /* URL params */
     const meetingNumber = searchParams.get("meetingId") || roomId;
@@ -42,7 +46,7 @@ export default function VideoRoom() {
         ? decodeURIComponent(searchParams.get("name"))
         : role === 1 ? "Admin (Host)" : (localStorage.getItem("clientName") || "Client");
 
-    /* Camera preview */
+    /* Camera preview & Socket setup */
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then(stream => {
@@ -50,7 +54,28 @@ export default function VideoRoom() {
                 if (localVideoRef.current) localVideoRef.current.srcObject = stream;
             })
             .catch(() => setCameraError(true));
-        return () => { if (localStream) localStream.getTracks().forEach(t => t.stop()); };
+
+        // Socket logic
+        socketRef.current = io(API_BASE_URL.replace('/api', ''));
+        
+        socketRef.current.on('connect', () => {
+            console.log("Connected to lobby socket");
+            socketRef.current.emit('join-room', { 
+                roomId, 
+                name: userName, 
+                role: role === 1 ? 'host' : 'participant' 
+            });
+        });
+
+        socketRef.current.on('update-participants', (list) => {
+            console.log("Participants updated:", list);
+            setParticipants(list);
+        });
+
+        return () => { 
+            if (localStream) localStream.getTracks().forEach(t => t.stop()); 
+            if (socketRef.current) socketRef.current.disconnect();
+        };
     }, []);
 
     /* 40-minute timer (starts when user clicks Join) */
@@ -211,7 +236,7 @@ export default function VideoRoom() {
                                     {joinedZoom ? "You're in the meeting!" : "Ready to join?"}
                                 </h2>
                                 <p style={{ margin: 0, color: "#94a3b8", fontSize: "14px" }}>
-                                    Meeting ID: <strong style={{ color: "#e2e8f0" }}>{meetingNumber}</strong>
+                                    Meeting ID: <strong id="roomId" style={{ color: "#e2e8f0" }}>{meetingNumber}</strong>
                                 </p>
                             </div>
 
@@ -229,7 +254,7 @@ export default function VideoRoom() {
                             </div>
 
                             {!joinedZoom ? (
-                                <button className="join-btn" onClick={handleJoinZoom}>
+                                <button id="joinBtn" className="join-btn" onClick={handleJoinZoom}>
                                     <ExternalLink size={18} />
                                     {role === 1 ? "Start Meeting (Host)" : "Join Zoom Meeting"}
                                 </button>
@@ -269,6 +294,7 @@ export default function VideoRoom() {
                 ].map((btn, i) => (
                     <div key={i} style={S.ctrlGroup}>
                         <button
+                            id="participantsBtn"
                             style={btn.red ? S.ctrlBtnRed : (btn.active ? { ...S.ctrlBtn, background: "rgba(37,99,235,0.3)" } : S.ctrlBtn)}
                             onClick={btn.action} title={btn.label}
                         >
@@ -292,17 +318,20 @@ export default function VideoRoom() {
                         <span style={{ color: "#fff", fontWeight: "700" }}>Participants</span>
                         <button style={S.closeBtn} onClick={() => setShowParticipants(false)}>✕</button>
                     </div>
-                    <div style={S.pRow}>
-                        <div style={S.pAvatar}>{userName.charAt(0).toUpperCase()}</div>
-                        <div>
-                            <p style={{ margin: 0, color: "#fff", fontSize: "14px" }}>{userName} (You)</p>
-                            <p style={{ margin: 0, color: "#94a3b8", fontSize: "12px" }}>{role === 1 ? "Host" : "Participant"}</p>
+                    {participants.map((p, i) => (
+                        <div key={i} id={`participant-${p.name}`} style={S.pRow}>
+                            <div style={S.pAvatar}>{p.name.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <p style={{ margin: 0, color: "#fff", fontSize: "14px" }}>{p.name} {p.socketId === socketRef.current?.id ? "(You)" : ""}</p>
+                                <p style={{ margin: 0, color: "#94a3b8", fontSize: "12px" }}>{p.role === 'host' ? "Host" : "Participant"}</p>
+                            </div>
                         </div>
-                        {isMuted && <MicOff size={14} color="#ef4444" style={{ marginLeft: "auto" }} />}
-                    </div>
-                    <p style={{ color: "#64748b", fontSize: "13px", padding: "12px 16px" }}>
-                        Waiting for others to join via Zoom...
-                    </p>
+                    ))}
+                    {participants.length < 2 && (
+                        <p style={{ color: "#64748b", fontSize: "13px", padding: "12px 16px" }}>
+                            Waiting for others to join via Zoom...
+                        </p>
+                    )}
                 </div>
             )}
 
