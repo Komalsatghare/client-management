@@ -522,6 +522,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                             <form className="ua-form" onSubmit={handleDigitalSubmit}>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', width: '100%', marginBottom: '20px' }}>
                                     <TransliteratedInput 
+                                        id="agreementProjectTitle"
                                         label={t('project_title_label')}
                                         placeholder={t('project_title_placeholder')}
                                         value={digitalProjectName}
@@ -529,6 +530,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                         required
                                     />
                                     <TransliteratedInput 
+                                        id="agreementClientName"
                                         label={t('client_party1_name')}
                                         placeholder={t('client_name_placeholder')}
                                         value={digitalClientName}
@@ -536,6 +538,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                         required
                                     />
                                     <TransliteratedInput 
+                                        id="agreementContractorName"
                                         label={t('contractor_name_label')}
                                         placeholder={t('contractor_name_placeholder')}
                                         value={digitalContractorName}
@@ -618,7 +621,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                    <button type="submit" className="ua-btn" disabled={loading} style={{ padding: '12px 30px' }}>
+                                    <button id="initiateDraftBtn" type="submit" className="ua-btn" disabled={loading} style={{ padding: '12px 30px' }}>
                                         <Save size={18} />
                                         {loading ? t('submitting') : t('initiate_draft_btn')}
                                     </button>
@@ -692,7 +695,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                                     </div>
                                                 </div>
                                                 <div style={{ display: 'flex', gap: '10px' }}>
-                                                    <button onClick={() => openEditModal(agr)} style={{ padding: '6px 12px', background: 'rgba(255, 255, 255, 0.05)', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                    <button id={`open-workspace-${agr._id}`} onClick={() => openEditModal(agr)} style={{ padding: '6px 12px', background: 'rgba(255, 255, 255, 0.05)', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                                         <Eye size={14} /> Open Workspace
                                                     </button>
                                                     <button onClick={(e) => handleDelete(agr._id, e)} style={{ padding: '6px 10px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '6px', cursor: 'pointer' }}><Trash2 size={14} /></button>
@@ -807,6 +810,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                         {/* EDITOR LANGUAGE TOGGLE */}
                                         <div style={{ marginLeft: 'auto', display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '20px', padding: '2px', border: '1px solid rgba(255,255,255,0.1)' }}>
                                             <button 
+                                                id="toggleEnBtn"
                                                 type="button" 
                                                 onClick={() => toggleEditorLang('en')}
                                                 style={{ 
@@ -818,6 +822,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                                 EN
                                             </button>
                                             <button 
+                                                id="toggleMrBtn"
                                                 type="button" 
                                                 onClick={() => toggleEditorLang('mr')}
                                                 style={{ 
@@ -963,7 +968,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                             <AlertCircle size={14} /> Saving will reset all signatures
                                         </div>
                                         <button onClick={() => setIsEditing(false)} style={{ padding: '8px 16px', background: 'transparent', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#e2e8f0', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}>Discard</button>
-                                        <button onClick={handleUpdate} disabled={loading} style={{ padding: '8px 20px', background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 700 }}>
+                                        <button id="saveAgreementBtn" onClick={handleUpdate} disabled={loading} style={{ padding: '8px 20px', background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 700 }}>
                                             <Save size={16} /> Save Changes
                                         </button>
                                     </>
@@ -971,6 +976,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                     selectedContract.status !== 'Active' && (
                                         <>
                                             <button 
+                                                id="editAgreementBtn"
                                                 onClick={() => setIsEditing(true)}
                                                 style={{ padding: '8px 16px', background: 'rgba(255, 255, 255, 0.05)', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600 }}
                                             >
