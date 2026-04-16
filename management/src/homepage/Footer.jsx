@@ -253,7 +253,7 @@ export default function Footer() {
           {/* Col 1 — Brand */}
           <div className="ft-brand">
             <div className="ft-brand-logo" onClick={() => navigate("/")}>
-              <img src="/images/dhanvij builders.jpeg" alt="Dhanvij Builders" className="ft-brand-img" />
+              <img src="/images/photo.jpeg" alt="Dhanvij Builders" className="ft-brand-img" />
               <div>
                 <span className="ft-brand-name">Dhanvij Builders</span>
                 <span className="ft-brand-tagline">Civil Engineering · Est. 2025</span>
