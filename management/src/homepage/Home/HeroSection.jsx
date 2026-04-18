@@ -252,10 +252,10 @@ function HeroSection() {
             </p>
 
             <div className="contact-options">
-              <a href="tel:+919011666255" className="contact-btn btn-call">
+              <a href="tel:+917276651565" className="contact-btn btn-call">
                 📞 Call Us Directly
               </a>
-              <a href="https://wa.me/919011666255" target="_blank" rel="noopener noreferrer" className="contact-btn btn-whatsapp">
+              <a href="https://wa.me/917276651565" target="_blank" rel="noopener noreferrer" className="contact-btn btn-whatsapp">
                 💬 Message on WhatsApp
               </a>
               <a

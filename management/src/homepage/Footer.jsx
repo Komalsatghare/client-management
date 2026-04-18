@@ -19,7 +19,7 @@ const services = [
 
 const contactInfo = [
   { icon: "✉️", label: "swapnildhanvij@gmail.com", href: "mailto:swapnildhanvij@gmail.com" },
-  { icon: "📞", label: "+91 90116 66255",           href: "tel:+919011666255" },
+  { icon: "📞", label: "+91 72766 51565",           href: "tel:+917276651565" },
   { icon: "📍", label: "Wardha, Maharashtra",       href: "https://maps.app.goo.gl/QQGbzAQSXpp8hm1b8?g_st=aw" },
 ];
 

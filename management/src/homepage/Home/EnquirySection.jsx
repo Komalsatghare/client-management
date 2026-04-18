@@ -15,8 +15,8 @@ const services = [
 
 const contactInfo = [
   { icon: "📍", label: "Our Office", value: "Wardha, Maharashtra, India" },
-  { icon: "📞", label: "Call Us", value: "+91 98765 43210" },
-  { icon: "✉️", label: "Email Us", value: "info@dhanvijbuilders.com" },
+  { icon: "📞", label: "Call Us", value: "+91 72766 51565" },
+  { icon: "✉️", label: "Email Us", value: "swapnildhanvij@gmail.com" },
   { icon: "🕐", label: "Working Hours", value: "Mon – Sat, 9am – 7pm" },
 ];
 
@@ -34,12 +34,12 @@ function EnquirySection() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Check if user is logged in
     const token = localStorage.getItem('clientAuthToken');
     if (!token) {
-        setSubmitStatus("unauthorized");
-        return;
+      setSubmitStatus("unauthorized");
+      return;
     }
 
     setIsSubmitting(true);
@@ -47,9 +47,9 @@ function EnquirySection() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/inquiries`, {
         method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` 
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(formData),
       });
@@ -301,7 +301,7 @@ function EnquirySection() {
               <div className="enq-field">
                 <label>Phone Number</label>
                 <input className="enq-input" type="tel" name="phone"
-                  placeholder="+91 98765 43210" value={formData.phone}
+                  placeholder="+91 72766 51565" value={formData.phone}
                   onChange={handleChange} required />
               </div>
 

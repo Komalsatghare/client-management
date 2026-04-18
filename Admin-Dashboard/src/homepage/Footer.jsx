@@ -42,7 +42,7 @@ function Footer() {
           <div className="footer-section">
             <h4>Contact Us</h4>
             <p>Email: swapnildhanvij@gmail.com</p>
-            <p>Phone: +91 98765 43210</p>
+            <p>Phone: +91 72766 51565</p>
             <p>Location: Wardha, Maharashtra</p>
           </div>
 
