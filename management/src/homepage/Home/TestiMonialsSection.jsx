@@ -126,6 +126,7 @@ export default function TestimonialsSection() {
           "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
+          clientName: form.name,
           rating: form.rating,
           comment: form.message
         }),
@@ -544,8 +545,6 @@ export default function TestimonialsSection() {
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       required
-                      readOnly={!!(localStorage.getItem("clientAuthToken") || localStorage.getItem("authToken"))}
-                      style={{ opacity: (localStorage.getItem("clientAuthToken") || localStorage.getItem("authToken")) ? 0.7 : 1 }}
                     />
                   </div>
                   <div className="tm-field">

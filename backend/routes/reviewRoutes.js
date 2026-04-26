@@ -12,7 +12,7 @@ router.post('/', verifyToken, async (req, res) => {
             return res.status(403).json({ message: 'Only logged-in users can leave reviews' });
         }
 
-        const { rating, comment } = req.body;
+        const { rating, comment, clientName } = req.body;
 
         if (!rating || !comment) {
             return res.status(400).json({ message: 'Rating and comment are required' });
@@ -23,7 +23,7 @@ router.post('/', verifyToken, async (req, res) => {
             { clientId: req.user.id },
             {
                 clientId: req.user.id,
-                clientName: req.user.name || 'Anonymous Client',
+                clientName: clientName || req.user.name || 'Anonymous Client',
                 rating,
                 comment,
                 isDeleted: false // If it was previously soft-deleted, restore it
