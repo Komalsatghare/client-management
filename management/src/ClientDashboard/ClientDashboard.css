@@ -59,7 +59,9 @@ body { margin: 0; background: var(--bg-base); }
 
 @media (min-width: 768px) {
     .client-sidebar-container {
-        position: relative;
+        position: sticky;
+        top: 0;
+        height: 100vh;
         left: 0;
         margin-left: -260px;
     }
