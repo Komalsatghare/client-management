@@ -35,10 +35,10 @@ const LanguageSwitcher = () => {
                     alignItems: "center",
                     gap: "8px",
                     padding: "8px 12px",
-                    background: "rgba(255, 255, 255, 0.05)",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    background: "#f8fafc",
+                    border: "1px solid #e2e8f0",
                     borderRadius: "8px",
-                    color: "#e2e8f0",
+                    color: "#475569",
                     fontSize: "14px",
                     fontWeight: "600",
                     cursor: "pointer",
@@ -56,10 +56,10 @@ const LanguageSwitcher = () => {
                     top: "100%",
                     right: "0",
                     marginTop: "8px",
-                    background: "#1e293b",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    background: "#ffffff",
+                    border: "1px solid #e2e8f0",
                     borderRadius: "10px",
-                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.4)",
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
                     zIndex: 2000,
                     minWidth: "120px",
                     overflow: "hidden"
@@ -75,14 +75,14 @@ const LanguageSwitcher = () => {
                                 padding: "10px 14px",
                                 cursor: "pointer",
                                 transition: "background 0.2s",
-                                background: language === lang.code ? "rgba(96, 165, 250, 0.15)" : "transparent",
-                                color: language === lang.code ? "#60a5fa" : "#cbd5e1",
+                                background: language === lang.code ? "rgba(59, 130, 246, 0.1)" : "transparent",
+                                color: language === lang.code ? "#3b82f6" : "#475569",
                                 fontWeight: language === lang.code ? "700" : "500",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "space-between"
                             }}
-                            onMouseEnter={(e) => language !== lang.code && (e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)")}
+                            onMouseEnter={(e) => language !== lang.code && (e.currentTarget.style.background = "#f8fafc")}
                             onMouseLeave={(e) => language !== lang.code && (e.currentTarget.style.background = "transparent")}
                         >
                             {lang.name}

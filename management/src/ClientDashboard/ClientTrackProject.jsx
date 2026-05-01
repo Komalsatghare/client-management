@@ -72,7 +72,7 @@ const ClientTrackProject = () => {
     );
 
     return (
-        <div style={{ maxWidth: "900px", margin: "0 auto", padding: "0 20px 40px", fontFamily: "'Inter', sans-serif" }}>
+        <div style={{ width: "100%", maxWidth: "1200px", margin: "0 auto", padding: "0 20px 40px", fontFamily: "'Inter', sans-serif", boxSizing: "border-box" }}>
             <div style={{ marginBottom: "32px" }}>
                 <h1 style={{ margin: 0, fontSize: "28px", fontWeight: 800, background: "linear-gradient(135deg,#60a5fa,#a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                     {t('track_my_project') || "Project Tracking"}

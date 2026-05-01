@@ -280,7 +280,7 @@ export default function ClientDashboardLayout() {
                 </div>
 
                 {/* ── MAIN CONTENT ── */}
-                <main className="cdl-main-content" style={{ maxWidth: "1200px", margin: "0 auto", padding: "32px 28px 64px", position: "relative", zIndex: 1, flex: 1 }}>
+                <main className="cdl-main-content" style={{ width: "100%", maxWidth: "1200px", margin: "0 auto", padding: "32px 28px 64px", position: "relative", zIndex: 1, flex: 1 }}>
                     {renderSection()}
                 </main>
             </div>

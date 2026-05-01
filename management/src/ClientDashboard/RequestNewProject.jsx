@@ -33,11 +33,11 @@ const css = `
 /* ── Action Bar ── */
 .rnp-action-bar {
     display:flex; justify-content:space-between; align-items:center;
-    background:rgba(15,23,42,0.85); backdrop-filter:blur(12px);
+    background:#ffffff; backdrop-filter:blur(12px);
     border-radius:18px; padding:20px 26px;
-    border:1px solid rgba(255,255,255,0.07);
+    border:1px solid #e2e8f0;
     margin-bottom:24px;
-    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+    box-shadow:0 8px 32px rgba(0,0,0,0.05);
 }
 .rnp-title {
     margin:0; font-size:20px; font-weight:800;
@@ -61,9 +61,9 @@ const css = `
 /* ── Meeting Status Banner ── */
 .rnp-meeting-banner {
     display:flex; align-items:center; gap:14px;
-    background:rgba(15,23,42,0.7); backdrop-filter:blur(10px);
+    background:#ffffff; backdrop-filter:blur(10px);
     border-radius:14px; padding:14px 20px;
-    border:1px solid rgba(255,255,255,0.07);
+    border:1px solid #e2e8f0;
     margin-bottom:22px;
 }
 .rnp-meeting-dot {
@@ -80,17 +80,18 @@ const css = `
 
 /* ── Project Card ── */
 .rnp-card {
-    background:rgba(15,23,42,0.85); backdrop-filter:blur(12px);
-    border:1px solid rgba(255,255,255,0.07);
+    background:#ffffff; backdrop-filter:blur(12px);
+    border:1px solid #e2e8f0;
     border-radius:20px; overflow:hidden;
     transition:all .28s; font-family:'Inter',sans-serif;
     animation:rnpFadeUp .35s ease-out both;
     display:flex; flex-direction:column;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
 }
 .rnp-card:hover {
     transform:translateY(-4px);
-    box-shadow:0 16px 48px rgba(0,0,0,0.45);
-    border-color:rgba(96,165,250,0.22);
+    box-shadow:0 12px 30px rgba(0,0,0,0.08);
+    border-color:rgba(96,165,250,0.4);
 }
 
 /* Card accent bar at top */
@@ -116,7 +117,7 @@ const css = `
 .rnp-card:hover .rnp-card-icon-wrap {
     background:rgba(59,130,246,0.2); box-shadow:0 0 0 4px rgba(59,130,246,0.1);
 }
-.rnp-card-title { font-size:16px; font-weight:700; color:#f1f5f9; margin:0 0 4px; }
+.rnp-card-title { font-size:16px; font-weight:700; color:#0f172a; margin:0 0 4px; }
 .rnp-card-desc  { font-size:12px; color:#64748b; margin:0; line-height:1.5; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
 
 /* Status badge */
@@ -142,29 +143,29 @@ const css = `
 .rnp-metrics {
     display:grid; grid-template-columns:1fr 1fr;
     gap:10px; padding:14px 20px;
-    border-top:1px solid rgba(255,255,255,0.05);
-    border-bottom:1px solid rgba(255,255,255,0.05);
+    border-top:1px solid #e2e8f0;
+    border-bottom:1px solid #e2e8f0;
     margin-top:16px;
 }
 .rnp-metric {
     display:flex; align-items:flex-start; gap:10px;
-    background:rgba(255,255,255,0.03); border-radius:10px;
-    padding:10px 12px; border:1px solid rgba(255,255,255,0.05);
+    background:#f8fafc; border-radius:10px;
+    padding:10px 12px; border:1px solid #e2e8f0;
 }
 .rnp-metric-icon { margin-top:1px; flex-shrink:0; }
 .rnp-metric-lbl { font-size:10px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:.06em; }
-.rnp-metric-val { font-size:14px; font-weight:700; color:#e2e8f0; margin-top:2px; }
+.rnp-metric-val { font-size:14px; font-weight:700; color:#0f172a; margin-top:2px; }
 
 /* Requirements panel */
 .rnp-requirements {
     margin:0 20px 16px;
     padding:12px 14px;
-    background:rgba(255,255,255,0.03);
-    border-radius:12px; border:1px solid rgba(255,255,255,0.06);
+    background:#f8fafc;
+    border-radius:12px; border:1px solid #e2e8f0;
     border-left:3px solid rgba(96,165,250,0.4);
 }
 .rnp-requirements-lbl { font-size:10px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
-.rnp-requirements-text { font-size:13px; color:#94a3b8; line-height:1.6; margin:0; white-space:pre-line; }
+.rnp-requirements-text { font-size:13px; color:#475569; line-height:1.6; margin:0; white-space:pre-line; }
 
 /* Admin message */
 .rnp-admin-msg {
@@ -185,8 +186,8 @@ const css = `
     border-radius:14px; border:1px solid;
 }
 .rnp-meeting-panel-title { font-weight:700; font-size:13px; margin:0 0 10px; }
-.rnp-meeting-row { display:flex; align-items:center; gap:8px; margin-bottom:5px; font-size:13px; color:#94a3b8; }
-.rnp-meeting-row b { color:#e2e8f0; }
+.rnp-meeting-row { display:flex; align-items:center; gap:8px; margin-bottom:5px; font-size:13px; color:#64748b; }
+.rnp-meeting-row b { color:#0f172a; }
 .rnp-meeting-row:last-child { margin-bottom:0; }
 
 /* Join Zoom button */
@@ -230,12 +231,12 @@ const css = `
 /* Empty state */
 .rnp-empty {
     text-align:center; padding:72px 32px;
-    background:rgba(15,23,42,0.7); backdrop-filter:blur(10px);
-    border-radius:20px; border:1px solid rgba(255,255,255,0.07);
+    background:#ffffff; backdrop-filter:blur(10px);
+    border-radius:20px; border:1px solid #e2e8f0;
 }
 .rnp-empty-icon { color:#334155; margin:0 auto 18px; display:block; }
-.rnp-empty-title { font-size:20px; font-weight:800; color:#475569; margin:0 0 8px; }
-.rnp-empty-sub   { font-size:14px; color:#334155; margin:0 0 24px; line-height:1.6; }
+.rnp-empty-title { font-size:20px; font-weight:800; color:#0f172a; margin:0 0 8px; }
+.rnp-empty-sub   { font-size:14px; color:#64748b; margin:0 0 24px; line-height:1.6; }
 
 /* Loading */
 .rnp-spinner {
@@ -344,7 +345,7 @@ export default function RequestNewProject() {
 
                 {/* ── Empty State ── */}
                 {!loading && requests.length === 0 && (
-                    <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", borderRadius: "16px", border: "1px dashed rgba(255,255,255,0.1)" }}>
+                    <div style={{ textAlign: "center", padding: "60px", background: "#f8fafc", borderRadius: "16px", border: "1px dashed #cbd5e1" }}>
                         <AlertCircle size={40} style={{ color: "#334155", margin: "0 auto 12px" }} />
                         <p style={{ fontWeight: "700", color: "#94a3b8" }}>{t('no_requests_found') || "No project requests yet."}</p>
                         <p style={{ color: "#64748b", fontSize: "14px" }}>{t('request_initial_desc') || "Start by requesting a new project to collaborate with us."}</p>
@@ -364,8 +365,8 @@ export default function RequestNewProject() {
                                       : meetingRequest?.status === "meeting_scheduled" ? "#60a5fa" : "#a78bfa"}`
                         }} />
                         <div>
-                            <p style={{ margin:0, fontSize:"11px", fontWeight:700, color:"#cbd5e1", textTransform:"uppercase", letterSpacing:".08em" }}>Current Meeting Status</p>
-                            <p style={{ margin:"3px 0 0", fontSize:"15px", fontWeight:800, color: meetingRequest?.status === "completed" ? "#10b981" : "#f1f5f9" }}>{meetingStatusText}</p>
+                            <p style={{ margin:0, fontSize:"11px", fontWeight:700, color:"#64748b", textTransform:"uppercase", letterSpacing:".08em" }}>Current Meeting Status</p>
+                            <p style={{ margin:"3px 0 0", fontSize:"15px", fontWeight:800, color: meetingRequest?.status === "completed" ? "#10b981" : "#0f172a" }}>{meetingStatusText}</p>
                         </div>
                         {meetingRequest?.status === "completed" ? <CheckCircle size={20} color="#10b981" style={{ marginLeft:"auto" }} /> : <Zap size={18} color="#f59e0b" style={{ marginLeft:"auto" }} />}
                     </div>

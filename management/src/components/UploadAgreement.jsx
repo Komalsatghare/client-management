@@ -354,22 +354,22 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
 
 
     return (
-        <div style={{ fontFamily: "'Inter', sans-serif", color: '#e2e8f0', marginTop: '24px' }}>
+        <div style={{ fontFamily: "'Inter', sans-serif", color: '#334155', marginTop: '24px', width: '100%', boxSizing: 'border-box' }}>
             <style>{`
-                .ua-card { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; backdrop-filter: blur(10px); }
-                .ua-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 10px; }
-                .ua-tab { background: transparent; border: none; color: #94a3b8; font-size: 14px; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 6px; transition: all .2s; }
-                .ua-tab.active { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
-                .ua-form { display: flex; flex-direction: column; gap: 16px; background: rgba(255, 255, 255, 0.03); padding: 20px; border-radius: 12px; border: 1px dashed rgba(255, 255, 255, 0.15); margin-bottom: 24px; }
+                .ua-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); width: 100%; box-sizing: border-box; }
+                .ua-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+                .ua-tab { background: transparent; border: none; color: #64748b; font-size: 14px; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 6px; transition: all .2s; }
+                .ua-tab.active { background: rgba(99, 102, 241, 0.1); color: #4f46e5; }
+                .ua-form { display: flex; flex-direction: column; gap: 16px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px dashed #cbd5e1; margin-bottom: 24px; }
                 .ua-input-grp { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-                .ua-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .06em; }
-                .ua-input { padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; background: rgba(15, 23, 42, 0.6); color: white; font-size: 13px; outline: none; transition: border-color .2s; }
-                .ua-input:focus { border-color: rgba(96, 165, 250, 0.5); }
+                .ua-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .06em; }
+                .ua-input { padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; background: #ffffff; color: #0f172a; font-size: 13px; outline: none; transition: border-color .2s; }
+                .ua-input:focus { border-color: #3b82f6; }
                 .ua-btn { padding: 10px 20px; background: linear-gradient(135deg, #3b82f6, #6366f1); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all .2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); align-self: flex-start; }
                 .ua-btn:hover:not(:disabled) { box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4); transform: translateY(-1px); }
                 .ua-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-                .ua-item { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); padding: 14px 20px; border-radius: 10px; transition: background .2s; }
-                .ua-item:hover { background: rgba(255, 255, 255, 0.06); }
+                .ua-item { display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid #e2e8f0; padding: 14px 20px; border-radius: 10px; transition: background .2s; }
+                .ua-item:hover { background: #f1f5f9; }
                 .ua-status { padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
                 
                 .ua-modal-overlay { position: fixed; inset: 0; background: rgba(5, 10, 24, 0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
@@ -473,11 +473,11 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
 
             <div className="ua-card">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '25px' }}>
-                    <div style={{ padding: '8px', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '8px', color: '#818cf8' }}>
+                    <div style={{ padding: '8px', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '8px', color: '#4f46e5' }}>
                         <Shield size={20} />
                     </div>
                     <div>
-                        <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.01em' }}>
+                        <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.01em' }}>
                             {t('contracts_agreements')}
                         </h2>
                         <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>
@@ -487,13 +487,13 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                 </div>
 
                 {/* PRIMARY NAVIGATION */}
-                <div style={{ display: 'flex', gap: '24px', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px' }}>
+                <div style={{ display: 'flex', gap: '24px', marginBottom: '30px', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
                     <button 
                         onClick={() => setViewContext('workspace')}
-                        style={{ background: 'transparent', border: 'none', color: viewContext === 'workspace' ? '#818cf8' : '#64748b', fontSize: '14px', fontWeight: 700, cursor: 'pointer', padding: '0 4px 10px', position: 'relative', transition: 'all 0.2s' }}
+                        style={{ background: 'transparent', border: 'none', color: viewContext === 'workspace' ? '#4f46e5' : '#64748b', fontSize: '14px', fontWeight: 700, cursor: 'pointer', padding: '0 4px 10px', position: 'relative', transition: 'all 0.2s' }}
                     >
                         Agreement Workspace
-                        {viewContext === 'workspace' && <div style={{ position: 'absolute', bottom: -1, left: 0, right: 0, height: 2, background: '#818cf8', borderRadius: '2px' }} />}
+                        {viewContext === 'workspace' && <div style={{ position: 'absolute', bottom: -1, left: 0, right: 0, height: 2, background: '#4f46e5', borderRadius: '2px' }} />}
                     </button>
                     <button 
                         onClick={() => setViewContext('my_agreements')}
@@ -675,19 +675,19 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
 
                         <div style={{ marginTop: '20px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 15px' }}>
-                                <h3 style={{ margin: 0, fontSize: '14.5px', fontWeight: 800, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <Monitor size={15} style={{ color: '#818cf8' }} /> Active Negotiations
+                                <h3 style={{ margin: 0, fontSize: '14.5px', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <Monitor size={15} style={{ color: '#4f46e5' }} /> Active Negotiations
                                 </h3>
                             </div>
                             {(() => {
                                 const activeDigital = agreements.filter(agr => agr.type === 'digital' && agr.status !== 'Active');
-                                if (activeDigital.length === 0) return <div style={{ padding: '20px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>No active digital negotiations found.</div>;
+                                if (activeDigital.length === 0) return <div style={{ padding: '20px', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>No active digital negotiations found.</div>;
                                 return (
                                     <div className="ua-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                         {activeDigital.map(agr => (
                                             <div key={agr._id} className="ua-item">
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                                    <p style={{ margin: 0, fontWeight: 700, fontSize: '14.5px', color: '#e2e8f0' }}>{agr.projectName}</p>
+                                                    <p style={{ margin: 0, fontWeight: 700, fontSize: '14.5px', color: '#0f172a' }}>{agr.projectName}</p>
                                                     <div style={{ display: 'flex', gap: '8px', fontSize: '11px', color: '#64748b' }}>
                                                         <span>ADMIN: {agr.adminSigned ? 'SIGNED' : 'PENDING'}</span>
                                                         <span>•</span>
@@ -695,7 +695,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                                     </div>
                                                 </div>
                                                 <div style={{ display: 'flex', gap: '10px' }}>
-                                                    <button id={`open-workspace-${agr._id}`} onClick={() => openEditModal(agr)} style={{ padding: '6px 12px', background: 'rgba(255, 255, 255, 0.05)', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                    <button id={`open-workspace-${agr._id}`} onClick={() => openEditModal(agr)} style={{ padding: '6px 12px', background: '#f8fafc', color: '#475569', border: '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                                         <Eye size={14} /> Open Workspace
                                                     </button>
                                                     <button onClick={(e) => handleDelete(agr._id, e)} style={{ padding: '6px 10px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '6px', cursor: 'pointer' }}><Trash2 size={14} /></button>
@@ -710,12 +710,12 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                 ) : (
                     <div>
                         <div style={{ marginBottom: '24px' }}>
-                            <h3 style={{ margin: '0 0 15px', fontSize: '14.5px', fontWeight: 800, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <h3 style={{ margin: '0 0 15px', fontSize: '14.5px', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <CheckCircle size={15} style={{ color: '#10b981' }} /> Finalized Records
                             </h3>
                             {(() => {
                                 const finalized = agreements.filter(agr => agr.status === 'Active' || agr.type === 'manual');
-                                if (finalized.length === 0) return <div style={{ padding: '40px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center', color: '#64748b' }}>No finalized agreements found in your vault.</div>;
+                                if (finalized.length === 0) return <div style={{ padding: '40px', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1', textAlign: 'center', color: '#64748b' }}>No finalized agreements found in your vault.</div>;
                                 return (
                                     <div className="ua-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                         {finalized.map(agr => (
@@ -736,10 +736,10 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                                                     </div>
                                                 </div>
                                                 <div style={{ display: 'flex', gap: '10px' }}>
-                                                    <button onClick={() => openEditModal(agr)} style={{ padding: '6px 12px', background: 'rgba(255, 255, 255, 0.05)', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}><Eye size={14} /> View</button>
+                                                    <button onClick={() => openEditModal(agr)} style={{ padding: '6px 12px', background: '#f8fafc', color: '#475569', border: '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}><Eye size={14} /> View</button>
                                                     {agr.fileUrl && (
                                                         <a href={resolveUrl(agr.fileUrl)} target="_blank" rel="noreferrer" download style={{ textDecoration: 'none' }}>
-                                                            <button style={{ padding: '6px 12px', background: 'rgba(255, 255, 255, 0.05)', color: '#60a5fa', border: '1px solid rgba(96, 165, 250, 0.2)', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}><Download size={14} /> Download</button>
+                                                            <button style={{ padding: '6px 12px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}><Download size={14} /> Download</button>
                                                         </a>
                                                     )}
                                                     {uploadedByRole === 'admin' && <button onClick={(e) => handleDelete(agr._id, e)} style={{ padding: '6px 10px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '6px', cursor: 'pointer' }}><Trash2 size={14} /></button>}

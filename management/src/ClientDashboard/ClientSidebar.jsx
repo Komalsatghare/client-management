@@ -75,26 +75,7 @@ export default function ClientSidebar({ activeSection, setActiveSection, onClose
                 .csb-nav-btn.active .csb-nav-label { color:#0f172a; }
                 .csb-nav-btn:hover:not(.active) .csb-nav-label { color:#0f172a; }
 
-                .csb-user-card {
-                    display:flex; align-items:center; gap:10px;
-                    background:rgba(0,0,0,0.02); border:1px solid rgba(0,0,0,0.05);
-                    border-radius:12px; padding:12px 14px; margin-bottom:12px;
-                }
-                .csb-user-avatar {
-                    width:36px; height:36px; border-radius:10px; flex-shrink:0;
-                    background:linear-gradient(135deg,#3b82f6,#7c3aed);
-                    display:flex; align-items:center; justify-content:center;
-                    color:white; font-weight:800; font-size:15px;
-                    box-shadow:0 4px 12px rgba(99,102,241,0.2);
-                }
-                .csb-meeting-btn {
-                    width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
-                    padding:11px 14px; background:rgba(59,130,246,0.1);
-                    border:1px solid rgba(59,130,246,0.2); cursor:pointer; font-size:13px; font-weight:700;
-                    color:#3b82f6; border-radius:10px; transition:all .2s;
-                    font-family:'Inter',sans-serif; text-decoration:none;
-                }
-                .csb-meeting-btn:hover { background:rgba(59,130,246,0.15); border-color:rgba(59,130,246,0.3); transform:translateY(-1px); }
+
             `}</style>
 
             {/* Logo */}
@@ -134,20 +115,6 @@ export default function ClientSidebar({ activeSection, setActiveSection, onClose
                 })}
             </nav>
 
-            {/* Bottom */}
-            <div className="client-sidebar-bottom">
-                {/* User card */}
-                <div className="csb-user-card">
-                    <div className="csb-user-avatar">{clientName.charAt(0).toUpperCase()}</div>
-                    <div>
-                        <div style={{ fontSize:"12px", fontWeight:700, color:"#0f172a", lineHeight:1 }}>{clientName}</div>
-                        <div style={{ fontSize:"11px", color:"#64748b", marginTop:"2px" }}>Client Account</div>
-                    </div>
-                </div>
-                <a href="mailto:swapnildhanvij@gmail.com?subject=Meeting%20Request" className="csb-meeting-btn">
-                    <Mail size={16} /> Request a Meeting
-                </a>
-            </div>
         </aside>
     );
 }

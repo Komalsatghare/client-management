@@ -67,14 +67,14 @@ const ClientReview = () => {
     }
 
     return (
-        <div style={{ maxWidth: "600px", margin: "0 auto", fontFamily: "'Inter', sans-serif" }}>
+        <div style={{ width: "100%", maxWidth: "800px", margin: "0 auto", fontFamily: "'Inter', sans-serif", boxSizing: "border-box" }}>
             <div style={{
-                background: "rgba(15,23,42,0.85)",
+                background: "#ffffff",
                 backdropFilter: "blur(12px)",
-                border: "1px solid rgba(255,255,255,0.07)",
+                border: "1px solid #e2e8f0",
                 borderRadius: "24px",
                 padding: "32px",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
+                boxShadow: "0 10px 30px rgba(0,0,0,0.05)"
             }}>
                 <div style={{ textAlign: "center", marginBottom: "32px" }}>
                     <div style={{
@@ -85,7 +85,7 @@ const ClientReview = () => {
                     }}>
                         <Star size={32} fill={rating >= 1 ? "currentColor" : "none"} />
                     </div>
-                    <h2 style={{ fontSize: "24px", fontWeight: 800, color: "white", margin: 0 }}>
+                    <h2 style={{ fontSize: "24px", fontWeight: 800, color: "#0f172a", margin: 0 }}>
                         {isEditing ? (t('edit_your_review') || "Edit Your Review") : (t('leave_a_review') || "Leave a Review")}
                     </h2>
                     <p style={{ color: "#94a3b8", fontSize: "14px", marginTop: "8px" }}>
@@ -109,7 +109,7 @@ const ClientReview = () => {
                                     onMouseLeave={() => setHover(null)}
                                     style={{
                                         background: "none", border: "none", cursor: "pointer",
-                                        color: (hover || rating) >= star ? "#fbbf24" : "rgba(255,255,255,0.1)",
+                                        color: (hover || rating) >= star ? "#fbbf24" : "#cbd5e1",
                                         transition: "transform 0.1s ease, color 0.1s ease",
                                         transform: hover === star ? "scale(1.2)" : "scale(1)"
                                     }}
@@ -136,18 +136,18 @@ const ClientReview = () => {
                                 placeholder={t('review_placeholder') || "Tell us what you liked or how we can improve..."}
                                 style={{
                                     width: "100%", height: "140px", padding: "14px 16px",
-                                    background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)",
-                                    borderRadius: "16px", color: "white", fontSize: "14px",
+                                    background: "#f8fafc", border: "1px solid #cbd5e1",
+                                    borderRadius: "16px", color: "#0f172a", fontSize: "14px",
                                     outline: "none", transition: "all 0.2s", resize: "none",
                                     boxSizing: "border-box"
                                 }}
                                 onFocus={(e) => {
-                                    e.target.style.borderColor = "#60a5fa";
-                                    e.target.style.background = "rgba(96,165,250,0.05)";
+                                    e.target.style.borderColor = "#3b82f6";
+                                    e.target.style.background = "#ffffff";
                                 }}
                                 onBlur={(e) => {
-                                    e.target.style.borderColor = "rgba(255,255,255,0.1)";
-                                    e.target.style.background = "rgba(255,255,255,0.03)";
+                                    e.target.style.borderColor = "#cbd5e1";
+                                    e.target.style.background = "#f8fafc";
                                 }}
                             />
                             <MessageSquare size={16} color="#475569" style={{ position: "absolute", bottom: "16px", right: "16px" }} />
