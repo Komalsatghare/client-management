@@ -1,5 +1,5 @@
 import React from "react";
-import { FileText, LogOut, LayoutDashboard, Building2, X, Star } from "lucide-react";
+import { FileText, LogOut, LayoutDashboard, Building2, X, Star, Mail } from "lucide-react";
 
 export default function ClientSidebar({ activeSection, setActiveSection, onClose }) {
     const clientName = localStorage.getItem("clientName") || "Client";
@@ -35,11 +35,11 @@ export default function ClientSidebar({ activeSection, setActiveSection, onClose
                 .csb-close-btn {
                     position:absolute; top:18px; right:14px;
                     width:32px; height:32px; border-radius:8px;
-                    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
-                    color:#94a3b8; display:flex; align-items:center; justify-content:center;
+                    background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.05);
+                    color:#64748b; display:flex; align-items:center; justify-content:center;
                     cursor:pointer; transition:all .2s;
                 }
-                .csb-close-btn:hover { background:rgba(239,68,68,0.1); color:#f87171; border-color:rgba(239,68,68,0.2); }
+                .csb-close-btn:hover { background:rgba(239,68,68,0.1); color:#ef4444; border-color:rgba(239,68,68,0.2); }
 
                 .csb-section-label {
                     font-size:10px; font-weight:700; color:#475569;
@@ -54,30 +54,30 @@ export default function ClientSidebar({ activeSection, setActiveSection, onClose
                     font-family:'Inter',sans-serif; transition:all .2s;
                     text-align:left; position:relative;
                 }
-                .csb-nav-btn:hover { background:rgba(255,255,255,0.06); transform:translateX(2px); }
+                .csb-nav-btn:hover { background:rgba(0,0,0,0.02); transform:translateX(2px); }
                 .csb-nav-btn.active {
-                    background:linear-gradient(135deg,rgba(59,130,246,0.18),rgba(139,92,246,0.12));
-                    border:1px solid rgba(59,130,246,0.25);
-                    box-shadow:0 10px 20px rgba(0,0,0,0.2);
+                    background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(139,92,246,0.08));
+                    border:1px solid rgba(59,130,246,0.2);
+                    box-shadow:0 10px 20px rgba(0,0,0,0.05);
                 }
                 .csb-nav-icon {
                     width:36px; height:36px; border-radius:10px; flex-shrink:0;
                     display:flex; align-items:center; justify-content:center;
-                    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);
+                    background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.05);
                     transition:all .2s;
                 }
                 .csb-nav-btn.active .csb-nav-icon {
-                    background:rgba(59,130,246,0.15); border-color:rgba(59,130,246,0.3); color:#60a5fa;
+                    background:rgba(59,130,246,0.15); border-color:rgba(59,130,246,0.3); color:#3b82f6;
                 }
                 .csb-nav-btn:not(.active) .csb-nav-icon { color:#64748b; }
-                .csb-nav-label { font-size:13px; font-weight:600; color:#cbd5e1; transition:color .2s; }
-                .csb-nav-sub   { font-size:11px; color:#475569; margin-top:2px; }
-                .csb-nav-btn.active .csb-nav-label { color:#f1f5f9; }
-                .csb-nav-btn:hover:not(.active) .csb-nav-label { color:#f1f5f9; }
+                .csb-nav-label { font-size:13px; font-weight:600; color:#334155; transition:color .2s; }
+                .csb-nav-sub   { font-size:11px; color:#64748b; margin-top:2px; }
+                .csb-nav-btn.active .csb-nav-label { color:#0f172a; }
+                .csb-nav-btn:hover:not(.active) .csb-nav-label { color:#0f172a; }
 
                 .csb-user-card {
                     display:flex; align-items:center; gap:10px;
-                    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);
+                    background:rgba(0,0,0,0.02); border:1px solid rgba(0,0,0,0.05);
                     border-radius:12px; padding:12px 14px; margin-bottom:12px;
                 }
                 .csb-user-avatar {
@@ -85,16 +85,16 @@ export default function ClientSidebar({ activeSection, setActiveSection, onClose
                     background:linear-gradient(135deg,#3b82f6,#7c3aed);
                     display:flex; align-items:center; justify-content:center;
                     color:white; font-weight:800; font-size:15px;
-                    box-shadow:0 4px 12px rgba(99,102,241,0.3);
+                    box-shadow:0 4px 12px rgba(99,102,241,0.2);
                 }
-                .csb-logout-btn {
-                    width:100%; display:flex; align-items:center; gap:10px;
-                    padding:11px 14px; background:transparent;
-                    border:none; cursor:pointer; font-size:13px; font-weight:600;
-                    color:#94a3b8; border-radius:10px; transition:all .2s;
-                    font-family:'Inter',sans-serif;
+                .csb-meeting-btn {
+                    width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+                    padding:11px 14px; background:rgba(59,130,246,0.1);
+                    border:1px solid rgba(59,130,246,0.2); cursor:pointer; font-size:13px; font-weight:700;
+                    color:#3b82f6; border-radius:10px; transition:all .2s;
+                    font-family:'Inter',sans-serif; text-decoration:none;
                 }
-                .csb-logout-btn:hover { background:rgba(239,68,68,0.1); color:#f87171; }
+                .csb-meeting-btn:hover { background:rgba(59,130,246,0.15); border-color:rgba(59,130,246,0.3); transform:translateY(-1px); }
             `}</style>
 
             {/* Logo */}
@@ -140,13 +140,13 @@ export default function ClientSidebar({ activeSection, setActiveSection, onClose
                 <div className="csb-user-card">
                     <div className="csb-user-avatar">{clientName.charAt(0).toUpperCase()}</div>
                     <div>
-                        <div style={{ fontSize:"12px", fontWeight:700, color:"#e2e8f0", lineHeight:1 }}>{clientName}</div>
-                        <div style={{ fontSize:"11px", color:"#475569", marginTop:"2px" }}>Client Account</div>
+                        <div style={{ fontSize:"12px", fontWeight:700, color:"#0f172a", lineHeight:1 }}>{clientName}</div>
+                        <div style={{ fontSize:"11px", color:"#64748b", marginTop:"2px" }}>Client Account</div>
                     </div>
                 </div>
-                <button onClick={handleLogout} className="csb-logout-btn">
-                    <LogOut size={16} /> Sign Out
-                </button>
+                <a href="mailto:swapnildhanvij@gmail.com?subject=Meeting%20Request" className="csb-meeting-btn">
+                    <Mail size={16} /> Request a Meeting
+                </a>
             </div>
         </aside>
     );

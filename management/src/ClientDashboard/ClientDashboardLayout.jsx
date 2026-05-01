@@ -62,7 +62,7 @@ export default function ClientDashboardLayout() {
     };
 
     return (
-        <div style={{ minHeight: "100vh", background: "#070d1a", fontFamily: "'Inter', sans-serif", display: "flex", overflowX: "hidden" }}>
+        <div style={{ minHeight: "100vh", background: "#f8fafc", fontFamily: "'Inter', sans-serif", display: "flex", overflowX: "hidden" }}>
             
             <aside className={`client-sidebar-container ${isSidebarOpen ? 'open' : ''}`}>
                 <ClientSidebar 
@@ -79,24 +79,24 @@ export default function ClientDashboardLayout() {
                 {/* ── Ambient background glow ── */}
                 <style>{`
                     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-                    .cdl-glow-1 { position:fixed; top:-200px; right:-100px; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(59,130,246,0.07) 0%, transparent 70%); pointer-events:none; z-index:0; }
-                    .cdl-glow-2 { position:fixed; bottom:-200px; left:-100px; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%); pointer-events:none; z-index:0; }
-                    .cdl-hero-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 14px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); font-size:12px; font-weight:600; color:rgba(255,255,255,0.7); margin-bottom:14px; }
-                    .cdl-step-card { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:10px 16px; transition:all .2s; cursor:default; }
-                    .cdl-step-card:hover { background:rgba(255,255,255,0.11); border-color:rgba(255,255,255,0.18); transform:translateY(-2px); }
-                    .cdl-step-num { width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; color:white; flex-shrink:0; }
-                    .cdl-profile-btn { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:7px 14px; cursor:pointer; transition:all .2s; }
+                    .cdl-glow-1 { position:fixed; top:-200px; right:-100px; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%); pointer-events:none; z-index:0; }
+                    .cdl-glow-2 { position:fixed; bottom:-200px; left:-100px; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%); pointer-events:none; z-index:0; }
+                    .cdl-hero-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 14px; border-radius:999px; background:rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.05); font-size:12px; font-weight:600; color:#334155; margin-bottom:14px; }
+                    .cdl-step-card { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.7); border:1px solid rgba(0,0,0,0.05); border-radius:12px; padding:10px 16px; transition:all .2s; cursor:default; }
+                    .cdl-step-card:hover { background:rgba(255,255,255,1); border-color:rgba(0,0,0,0.1); transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.05); }
+                    .cdl-step-num { width:26px; height:26px; border-radius:50%; background:rgba(59,130,246,0.1); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; color:#3b82f6; flex-shrink:0; }
+                    .cdl-profile-btn { display:flex; align-items:center; gap:10px; background:rgba(0,0,0,0.02); border:1px solid rgba(0,0,0,0.05); border-radius:12px; padding:7px 14px; cursor:pointer; transition:all .2s; }
                     .cdl-profile-btn:hover, .cdl-profile-btn.open { background:rgba(96,165,250,0.1); border-color:rgba(96,165,250,0.3); }
-                    .cdl-profile-dropdown { position:absolute; top:calc(100% + 10px); right:0; width:300px; background:#0d1832; border-radius:18px; border:1px solid rgba(255,255,255,0.1); box-shadow:0 20px 50px rgba(0,0,0,0.7); z-index:1000; overflow:hidden; animation:dropIn .18s ease-out; }
+                    .cdl-profile-dropdown { position:absolute; top:calc(100% + 10px); right:0; width:300px; background:#ffffff; border-radius:18px; border:1px solid #e2e8f0; box-shadow:0 20px 50px rgba(0,0,0,0.1); z-index:1000; overflow:hidden; animation:dropIn .18s ease-out; }
                     @keyframes dropIn { from { opacity:0; transform:translateY(-8px) scale(.97); } to { opacity:1; transform:none; } }
-                    .cdl-info-row { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+                    .cdl-info-row { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid #f1f5f9; }
                     .cdl-info-row:last-child { border-bottom:none; }
-                    .cdl-info-icon { width:32px; height:32px; border-radius:9px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+                    .cdl-info-icon { width:32px; height:32px; border-radius:9px; background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.05); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
                     .cdl-logout-btn-nav { display:flex; align-items:center; gap:6px; padding:8px 14px; background:rgba(239,68,68,0.1); color:#f87171; border:1px solid rgba(239,68,68,0.2); border-radius:10px; font-weight:600; font-size:13px; cursor:pointer; transition:all .2s; font-family:'Inter',sans-serif; }
                     .cdl-logout-btn-nav:hover { background:rgba(239,68,68,0.18); border-color:rgba(239,68,68,0.35); }
-                    .cdl-logout-btn-full { width:100%; display:flex; align-items:center; justify-content:center; gap:7px; padding:10px; background:rgba(239,68,68,0.1); color:#f87171; border:1px solid rgba(239,68,68,0.2); border-radius:10px; font-weight:700; font-size:13px; cursor:pointer; transition:all .2s; font-family:'Inter',sans-serif; }
+                    .cdl-logout-btn-full { width:100%; display:flex; align-items:center; justify-content:center; gap:7px; padding:10px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.2); border-radius:10px; font-weight:700; font-size:13px; cursor:pointer; transition:all .2s; font-family:'Inter',sans-serif; }
                     .cdl-logout-btn-full:hover { background:rgba(239,68,68,0.18); }
-                    .cdl-hamburger { display:none; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:8px; color:white; cursor:pointer; align-items:center; justify-content:center; }
+                    .cdl-hamburger { display:none; background:rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:8px; color:#334155; cursor:pointer; align-items:center; justify-content:center; }
                     
                     @media (max-width: 768px) {
                         .cdl-hamburger { display:flex; }
@@ -122,9 +122,9 @@ export default function ClientDashboardLayout() {
                 {/* ── TOP NAV ── */}
                 <header style={{
                     position: "sticky", top: 0, zIndex: 100,
-                    background: "rgba(7,13,26,0.92)",
-                    borderBottom: "1px solid rgba(255,255,255,0.07)",
-                    boxShadow: "0 1px 20px rgba(0,0,0,0.4)",
+                    background: "rgba(255,255,255,0.92)",
+                    borderBottom: "1px solid #e2e8f0",
+                    boxShadow: "0 1px 20px rgba(0,0,0,0.05)",
                     backdropFilter: "blur(20px)"
                 }}>
                     <div style={{
@@ -138,11 +138,11 @@ export default function ClientDashboardLayout() {
                                 className="cdl-hamburger" 
                                 onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
                                 style={{ 
-                                    display: (window.innerWidth < 768 || !isSidebarOpen) ? "flex" : "none",
+                                    display: !isSidebarOpen ? "flex" : "",
                                     marginRight: "8px",
-                                    background: isSidebarOpen ? "rgba(239, 68, 68, 0.1)" : "rgba(255, 255, 255, 0.05)",
-                                    borderColor: isSidebarOpen ? "rgba(239, 68, 68, 0.2)" : "rgba(255, 255, 255, 0.1)",
-                                    color: isSidebarOpen ? "#f87171" : "white"
+                                    background: isSidebarOpen ? "rgba(239, 68, 68, 0.1)" : "rgba(0, 0, 0, 0.05)",
+                                    borderColor: isSidebarOpen ? "rgba(239, 68, 68, 0.2)" : "rgba(0, 0, 0, 0.1)",
+                                    color: isSidebarOpen ? "#ef4444" : "#334155"
                                 }}
                             >
                                 {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
@@ -183,8 +183,8 @@ export default function ClientDashboardLayout() {
                                         {clientName.charAt(0).toUpperCase()}
                                     </div>
                                     <div className="hidden-mobile">
-                                        <p style={{ margin: 0, fontWeight: 700, fontSize: "13px", color: "#f1f5f9", lineHeight: 1 }}>{clientName}</p>
-                                        <p style={{ margin: 0, fontSize: "11px", color: "#475569", marginTop: "2px" }}>{t('role')}: Client</p>
+                                        <p style={{ margin: 0, fontWeight: 700, fontSize: "13px", color: "#0f172a", lineHeight: 1 }}>{clientName}</p>
+                                        <p style={{ margin: 0, fontSize: "11px", color: "#64748b", marginTop: "2px" }}>{t('role')}: Client</p>
                                     </div>
                                 </button>
 
@@ -213,8 +213,8 @@ export default function ClientDashboardLayout() {
                                                 <div key={i} className="cdl-info-row">
                                                     <div className="cdl-info-icon">{row.icon}</div>
                                                     <div>
-                                                        <p style={{ margin: 0, fontSize: "11px", color: "#475569", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".05em" }}>{row.label}</p>
-                                                        <p style={{ margin: 0, fontSize: "13px", color: "#e2e8f0", fontWeight: 600, marginTop: "1px" }}>{row.value}</p>
+                                                        <p style={{ margin: 0, fontSize: "11px", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".05em" }}>{row.label}</p>
+                                                        <p style={{ margin: 0, fontSize: "13px", color: "#0f172a", fontWeight: 600, marginTop: "1px" }}>{row.value}</p>
                                                     </div>
                                                 </div>
                                             ))}
@@ -239,11 +239,11 @@ export default function ClientDashboardLayout() {
 
                 {/* ── HERO BANNER ── */}
                 <div className="cdl-hero-banner" style={{
-                    background: "linear-gradient(135deg, #061229 0%, #0f2d6b 45%, #2d1a6e 100%)",
+                    background: "linear-gradient(135deg, #eff6ff 0%, #e0e7ff 45%, #ede9fe 100%)",
                     padding: "44px 28px 48px",
                     position: "relative", overflow: "hidden"
                 }}>
-                    <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize:"40px 40px", pointerEvents:"none" }} />
+                    <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)", backgroundSize:"40px 40px", pointerEvents:"none" }} />
 
                     <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
                         <div className="cdl-hero-chip">
@@ -251,13 +251,13 @@ export default function ClientDashboardLayout() {
                             {activeSection}
                         </div>
 
-                        <p style={{ margin: "0 0 6px", fontSize: "14px", color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
-                            {t('welcome_back')}, <strong style={{ color: "rgba(255,255,255,0.95)" }}>{clientName}</strong> 👋
+                        <p style={{ margin: "0 0 6px", fontSize: "14px", color: "#475569", fontWeight: 500 }}>
+                            {t('welcome_back')}, <strong style={{ color: "#0f172a" }}>{clientName}</strong> 👋
                         </p>
-                        <h1 className="cdl-hero-title" style={{ margin: "0 0 10px", fontSize: "30px", fontWeight: 900, color: "white", letterSpacing: "-.02em" }}>
+                        <h1 className="cdl-hero-title" style={{ margin: "0 0 10px", fontSize: "30px", fontWeight: 900, color: "#1e1b4b", letterSpacing: "-.02em" }}>
                             {t(activeSection.toLowerCase().replace(/\s+/g, '_')) || activeSection}
                         </h1>
-                        <p style={{ margin: 0, fontSize: "15px", color: "#cbd5e1", maxWidth: "480px", lineHeight: 1.65, fontWeight: 500 }}>
+                        <p style={{ margin: 0, fontSize: "15px", color: "#475569", maxWidth: "480px", lineHeight: 1.65, fontWeight: 500 }}>
                             {t('submit_proposal_desc')}
                         </p>
 
@@ -270,8 +270,8 @@ export default function ClientDashboardLayout() {
                                 <div key={i} className="cdl-step-card">
                                     <div className="cdl-step-num">{i + 1}</div>
                                     <div>
-                                        <p style={{ margin: 0, fontWeight: 700, fontSize: "13px", color: "white" }}>{step.label}</p>
-                                        <p style={{ margin: 0, fontSize: "11px", color: "rgba(255,255,255,0.5)", marginTop: "1px" }}>{step.hint}</p>
+                                        <p style={{ margin: 0, fontWeight: 700, fontSize: "13px", color: "#0f172a" }}>{step.label}</p>
+                                        <p style={{ margin: 0, fontSize: "11px", color: "#64748b", marginTop: "1px" }}>{step.hint}</p>
                                     </div>
                                 </div>
                             ))}
