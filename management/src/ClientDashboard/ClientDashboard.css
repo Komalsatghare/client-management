@@ -59,14 +59,19 @@ body { margin: 0; background: var(--bg-base); }
 
 @media (min-width: 768px) {
     .client-sidebar-container {
-        position: sticky;
+        position: fixed;
         top: 0;
-        height: 100vh;
-        left: 0;
-        margin-left: -260px;
+        bottom: 0;
+        left: -260px;
+        z-index: 1000;
+        margin-left: 0; /* Override any previous inline or base styles */
     }
     .client-sidebar-container.open {
-        margin-left: 0;
+        left: 0;
+    }
+    .client-main-wrapper.with-sidebar {
+        margin-left: 260px;
+        width: calc(100% - 260px);
     }
 }
 
