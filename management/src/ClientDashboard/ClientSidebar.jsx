@@ -1,5 +1,5 @@
 import React from "react";
-import { FileText, LogOut, LayoutDashboard, Building2, X, Star, Mail } from "lucide-react";
+import { FileText, LogOut, LayoutDashboard, Building2, X, Star, Mail, Home } from "lucide-react";
 
 export default function ClientSidebar({ activeSection, setActiveSection, onClose }) {
     const clientName = localStorage.getItem("clientName") || "Client";
@@ -11,6 +11,7 @@ export default function ClientSidebar({ activeSection, setActiveSection, onClose
     };
 
     const menuItems = [
+        { name: "Home", icon: <Home size={18} />, desc: "Go to homepage" },
         { name: "Request New Project", icon: <FileText size={18} />, desc: "Submit proposals" },
         { name: "Track My Project", icon: <FileText size={18} />, desc: "Milestones & Progress" },
         { name: "Agreements", icon: <FileText size={18} />, desc: "View and sign contracts" },
@@ -102,7 +103,13 @@ export default function ClientSidebar({ activeSection, setActiveSection, onClose
                     const isActive = activeSection === item.name;
                     return (
                         <button key={item.name}
-                            onClick={() => setActiveSection(item.name)}
+                            onClick={() => {
+                                if (item.name === "Home") {
+                                    window.location.href = "/";
+                                } else {
+                                    setActiveSection(item.name);
+                                }
+                            }}
                             className={`csb-nav-btn${isActive ? " active" : ""}`}>
                             {/* Indicator bar removed as requested */}
                             <div className="csb-nav-icon">{item.icon}</div>

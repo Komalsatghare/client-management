@@ -372,6 +372,20 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                 .ua-item:hover { background: #f1f5f9; }
                 .ua-status { padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
                 
+                /* Dark mode overrides for Admin Dashboard */
+                .admin-dark.ua-card { background: #0f172a; border-color: #1e293b; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+                .admin-dark .ua-tabs { border-color: #334155; }
+                .admin-dark .ua-tab { color: #94a3b8; }
+                .admin-dark .ua-tab.active { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
+                .admin-dark .ua-form { background: #1e293b; border-color: #334155; }
+                .admin-dark .ua-label { color: #94a3b8; }
+                .admin-dark .ua-input { background: #0f172a; border-color: #334155; color: #f8fafc; }
+                .admin-dark .ua-item { background: #1e293b; border-color: #334155; }
+                .admin-dark .ua-item:hover { background: #334155; }
+                .admin-dark h2, .admin-dark h3 { color: #f8fafc !important; }
+                .admin-dark p { color: #94a3b8 !important; }
+                .admin-dark .ua-status { background: #334155; color: #e2e8f0; }
+                
                 .ua-modal-overlay { position: fixed; inset: 0; background: rgba(5, 10, 24, 0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
                 .ua-modal { background: #0f172a; width: 100%; max-width: 900px; height: 100vh; max-height: 100vh; overflow-y: hidden; padding: 20px 40px; position: relative; display: flex; flex-direction: column; border-radius: 0; box-shadow: 0 0 100px rgba(0,0,0,0.9); }
                 
@@ -471,7 +485,7 @@ export default function UploadAgreement({ uploadedByRole, uploadedByName }) {
                 }
             `}</style>
 
-            <div className="ua-card">
+            <div className={`ua-card ${uploadedByRole === 'admin' ? 'admin-dark' : ''}`}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '25px' }}>
                     <div style={{ padding: '8px', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '8px', color: '#4f46e5' }}>
                         <Shield size={20} />
